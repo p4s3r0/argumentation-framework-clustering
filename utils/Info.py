@@ -1,6 +1,6 @@
 from colorama import Fore, Back, Style
 
-INFO = f"{Style.BRIGHT + Fore.YELLOW}[INFO ]{Style.RESET_ALL} ->   "
+INFO = f"{Style.BRIGHT + Fore.BLUE}[INFO ]{Style.RESET_ALL} ->   "
 
 
 

@@ -9,3 +9,6 @@ class Argument:
         self.z3_value = z3.Bool(f'{name}')
         self.is_singleton = True if len(clustered_arguments) == 0 else False
         self.clustered_arguments = clustered_arguments
+
+    def __repr__(self) -> str:
+        return self.name

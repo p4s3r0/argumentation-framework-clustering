@@ -2,6 +2,7 @@ import argparse
 
 from parser import Parser
 from utils import Info
+from extensionSolver import admissible
 
 class ProgramArguments:
     def __init__(self, input_file: str):
@@ -27,8 +28,13 @@ def main():
     parser = Parser.Parser()
     parser.parseFile(args.input_file)
     Info.info("Input File Parsed")
+    admissibles = admissible.getAdmissibleSets(parser.arguments)
+    print(admissibles)
+    Info.info("Admissible Sets Computed")
     Info.info("Ending Program")
+
 
 
 if __name__ == '__main__':
     main()
+

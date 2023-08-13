@@ -28,3 +28,8 @@ def attackOnUnknownArgument(line_number: int, attack: str, defend: str):
 @ERROR
 def firstLineParamAmountIncorrect():
     print(f"Parse Error - Header Line of input File does not fullfill requirements. Should be: {Fore.CYAN}p af <X>{Fore.RESET}, where <X> is a positive integer.")
+
+
+@ERROR
+def WrongInputFileending():
+    print(f"Input File Error - Wrong Input File Ending. Should be: {Fore.CYAN}<X>.af{Fore.RESET}.")
