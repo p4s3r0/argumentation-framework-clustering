@@ -2,13 +2,13 @@ import z3
 
 
 class Argument:
-    def __init__(self, name: str, clustered_arguments: list = []) -> None:
+    def __init__(self, name: str) -> None:
         self.name = name
         self.attacks = list()
         self.defends = list()
         self.z3_value = z3.Bool(f'{name}')
-        self.is_singleton = True if len(clustered_arguments) == 0 else False
-        self.clustered_arguments = clustered_arguments
+        self.is_singleton = True
+        self.clustered_arguments = list()
 
     def __repr__(self) -> str:
         return self.name

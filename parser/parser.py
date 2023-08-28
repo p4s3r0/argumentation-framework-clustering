@@ -26,20 +26,30 @@ class Parser:
         with open(filepath, "r") as f:
             current_line_number = 1
             header_line_parsed = False
+            cluster_definitions = False
             for line in f:
                 current_line_number += 1
-                # skip empty line
-                if len(line.split()) == 0:
-                    continue
-                # skip comments
-                if line.split()[0] == '#':
+                # skip empty and commented line
+                if len(line.split()) == 0 or line.split()[0] == '#':
                     continue
                 # parse first line
                 if not header_line_parsed:
                     header_line_parsed = self.parseFirstLine(line.split())
                     continue
+                # parse clustered arguments
+                if line.split()[0] == '--cluster--':
+                    cluster_definitions = True
+                    continue
+                
+                if cluster_definitions: 
+                    self.parseClusteredArgument(line=line.split(), line_number=current_line_number)
+                    continue
+
                 # parse attack
                 self.parseAttack(line=line.split(), line_number=current_line_number)
+
+        for arg in self.arguments:
+            print(arg, self.arguments[arg].is_singleton, self.arguments[arg].clustered_arguments)
 
 
 
@@ -63,6 +73,8 @@ class Parser:
     # @line -> current line of input file
     # @line_number -> current line number of attacl
     def parseAttack(self, line: list, line_number: int) -> None:
+        if len(line) != 2:
+            Error.malformedLine(line_number=line_number, line=line)
         attacker = line[0]
         defender = line[1]
         if attacker not in self.arguments or defender not in self.arguments:
@@ -70,3 +82,18 @@ class Parser:
 
         self.arguments[attacker].attacks.append(defender)
         self.arguments[defender].defends.append(attacker)
+
+
+    def parseClusteredArgument(self, line: list, line_number: int) -> None:
+        clustered_argument = line[0]
+        if line[1] != "<-":
+            Error.clusteringParseError(line_number=line_number)
+        
+        if clustered_argument not in self.arguments:
+            Error.clusteringArgumentDoesNotExist(line_number=line_number, argument=clustered_argument)
+
+        self.arguments[clustered_argument].is_singleton = False
+
+        for arg in line[2:]:
+            self.arguments[clustered_argument].clustered_arguments.append(arg)
+

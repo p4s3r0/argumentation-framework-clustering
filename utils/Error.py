@@ -29,6 +29,17 @@ def attackOnUnknownArgument(line_number: int, attack: str, defend: str):
 def firstLineParamAmountIncorrect():
     print(f"Parse Error - Header Line of input File does not fullfill requirements. Should be: {Fore.CYAN}p af <X>{Fore.RESET}, where <X> is a positive integer.")
 
+@ERROR
+def clusteringParseError(line_number: int):
+    print(f"Parse Error - Cluster Definition incorrect at line {line_number}. Should be: {Fore.CYAN}<C> <- <X1> <X2> ...{Fore.RESET}, where <C> is the cluster name and <Xx> the arguments <C> is clustered.")
+
+@ERROR
+def clusteringArgumentDoesNotExist(line_number: int, argument: str):
+    print(f"Parse Error - Argument {argument} does not exist at line {line_number}.")
+
+@ERROR
+def malformedLine(line_number: int, line: list):
+    print(f"Parse Error - Malformed Line [{line_number}]: {Fore.CYAN}{' '.join(line)}{Fore.RESET}.")
 
 @ERROR
 def WrongInputFileending():

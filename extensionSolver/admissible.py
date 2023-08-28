@@ -15,6 +15,7 @@ def getAdmissibleSets(arguments: dict):
     # get a: a∈A
     a: Argument.Argument
     for a in arguments.values():
+
         # check if b exists
         if len(a.defends) == 0:
             s.add(z3.Implies(a.z3_value, True))
@@ -29,14 +30,18 @@ def getAdmissibleSets(arguments: dict):
         b: Argument.Argument
         for b in a.defends:
             b = arguments[b]
-            clause_left = z3.And(clause_left, z3.Not(b.z3_value))
-            
-            # check if c exists
+            if a.is_singleton and b.is_singleton:
+                clause_left = z3.And(clause_left, z3.Not(b.z3_value))
+
+            if not a.is_singleton:
+                continue
+
+
+            clause_right_right = False
+             # check if c exists
             if len(b.defends) == 0:
                 clause_right = z3.And(clause_right, False)
                 continue
-
-            clause_right_right = False
             # get c: (c,b)∈R
             c: Argument.Argument
             for c in b.defends:
