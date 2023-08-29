@@ -2,6 +2,7 @@ import argparse
 
 from parser import Parser
 from utils import Info
+from utils import Visualizer
 from extensionSolver import admissible
 
 class ProgramArguments:
@@ -31,6 +32,8 @@ def main():
     admissibles = admissible.getAdmissibleSets(parser.arguments)
     print(admissibles)
     Info.info("Admissible Sets Computed")
+    Info.info("Visualizing Argumentation Framework")
+    Visualizer.show(parser.arguments)
     Info.info("Ending Program")
 
 

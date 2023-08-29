@@ -24,7 +24,7 @@ class Parser:
         if not os.path.exists(filepath): 
             Error.FileNotFound(filepath)
         with open(filepath, "r") as f:
-            current_line_number = 1
+            current_line_number = 0
             header_line_parsed = False
             cluster_definitions = False
             for line in f:
