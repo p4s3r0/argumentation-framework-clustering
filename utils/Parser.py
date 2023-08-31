@@ -48,9 +48,6 @@ class Parser:
                 # parse attack
                 self.parseAttack(line=line.split(), line_number=current_line_number)
 
-        for arg in self.arguments:
-            print(arg, self.arguments[arg].is_singleton, self.arguments[arg].clustered_arguments)
-
 
 
     # -----------------------------------------------------------------------------
