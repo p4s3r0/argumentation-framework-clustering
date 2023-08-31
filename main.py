@@ -3,7 +3,7 @@ import argparse
 from parser import Parser
 from utils import Info
 from utils import Visualizer
-from extensionSolver import admissible
+from semantic import AdmissibleSolver
 
 class ProgramArguments:
     def __init__(self, input_file: str):
@@ -29,7 +29,8 @@ def main():
     parser = Parser.Parser()
     parser.parseFile(args.input_file)
     Info.info("Input File Parsed")
-    admissibles = admissible.getAdmissibleSets(parser.arguments)
+    solver = AdmissibleSolver.AdmissibleSolver(AF=parser.arguments, algorithm="BFS")
+    admissibles = solver.computeSets()
     print(admissibles)
     Info.info("Admissible Sets Computed")
     Info.info("Visualizing Argumentation Framework")

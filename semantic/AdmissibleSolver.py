@@ -1,0 +1,75 @@
+import z3
+
+from utils import Argument
+from utils import Solver
+
+
+class AdmissibleSolver:
+    def __init__(self, AF: dict[str, Argument.Argument], algorithm: str) -> None:
+        '''
+        @AF ->        Argumentation Framework
+        @semantic  -> "conflict_free" or "admissible"
+        @algorithm -> "BFS"=(Breadth First Search) or "DFS"=(Depth First Search)
+        '''
+        self.AF = AF
+        self.algorithm = algorithm
+        self.solution = list()
+        self.solver = z3.Solver()
+        self.setRulesAdmissible()
+
+
+
+    # -----------------------------------------------------------------------------
+    # Define clauses for admissible extensions
+    def setRulesAdmissible(self):
+        # get a: a∈A
+        a: Argument.Argument
+        for a in self.AF.values():
+
+            # check if b exists
+            if len(a.defends) == 0:
+                self.solver.add(z3.Implies(a.z3_value, True))
+                continue
+
+            # (a -> ^{b:(b,a)∈R}(¬b)
+            clause_left = True
+            # (a -> ^{b:(b,a)∈R} (v{c:(c,b)∈R})))
+            clause_right = True
+
+            # get b: b:(b,a)∈R
+            b: Argument.Argument
+            for b in a.defends:
+                b = self.AF[b]
+                if a.is_singleton and b.is_singleton:
+                    clause_left = z3.And(clause_left, z3.Not(b.z3_value))
+
+                if not a.is_singleton:
+                    continue
+
+
+                clause_right_right = False
+                # check if c exists
+                if len(b.defends) == 0:
+                    clause_right = z3.And(clause_right, False)
+                    continue
+                # get c: (c,b)∈R
+                c: Argument.Argument
+                for c in b.defends:
+                    c = self.AF[c]
+                    clause_right_right = z3.Or(clause_right_right, c.z3_value)
+                    
+                clause_right = z3.And(clause_right, clause_right_right)
+            clause = z3.And(z3.Implies(a.z3_value, clause_left), z3.Implies(a.z3_value, clause_right))
+            self.solver.add(clause)
+
+
+
+    def computeSets(self):
+        ''' Computes the defined Sets with the according algorithm '''
+        if self.algorithm == "BFS":
+            while model := Solver.solve(self.solver):
+                self.solution.append(Solver.transformModelIntoArguments(arguments=self.AF, model=model))
+                self.solver.add(Solver.negatePreviousModel(arguments=self.AF, model=model))
+            else:
+                return self.solution
+            
