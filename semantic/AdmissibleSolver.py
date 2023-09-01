@@ -5,14 +5,13 @@ from utils import Solver
 
 
 class AdmissibleSolver:
-    def __init__(self, AF: dict[str, Argument.Argument], algorithm: str) -> None:
+    def __init__(self, AF: dict[str, Argument.Argument]) -> None:
         '''
         @AF ->        Argumentation Framework
         @semantic  -> "conflict_free" or "admissible"
         @algorithm -> "BFS"=(Breadth First Search) or "DFS"=(Depth First Search)
         '''
         self.AF = AF
-        self.algorithm = algorithm
         self.solution = list()
         self.solver = z3.Solver()
         self.setRulesAdmissible()
@@ -64,12 +63,26 @@ class AdmissibleSolver:
 
 
 
-    def computeSets(self):
+    def computeSets(self, solution_amount: int=-1):
         ''' Computes the defined Sets with the according algorithm '''
-        if self.algorithm == "BFS":
-            while model := Solver.solve(self.solver):
-                self.solution.append(Solver.transformModelIntoArguments(arguments=self.AF, model=model))
-                self.solver.add(Solver.negatePreviousModel(arguments=self.AF, model=model))
-            else:
-                return self.solution
+        while (model := Solver.solve(self.solver)) and (len(self.solution) < solution_amount or solution_amount == -1):
+            self.solution.append(Solver.transformModelIntoArguments(arguments=self.AF, model=model))
+            self.solver.add(Solver.negatePreviousModel(arguments=self.AF, model=model))
+        else:
+            return self.solution
+        
+
+    
+    def verifySet(self, admissible_set: list):
+        self.solver.push()
+        #TODO: deconstruct clustered argument into singletons
+        for arg in admissible_set:
+            self.solver.add(self.AF[arg].z3_value == True)
+
+        if Solver.solve(self.solver):
+            self.solver.pop()
+            return True
+        else:
+            self.solver.pop()
+            return False
             

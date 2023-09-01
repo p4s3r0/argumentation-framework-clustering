@@ -44,3 +44,8 @@ def malformedLine(line_number: int, line: list):
 @ERROR
 def WrongInputFileending():
     print(f"Input File Error - Wrong Input File Ending. Should be: {Fore.CYAN}<X>.af{Fore.RESET}.")
+
+
+@ERROR
+def wrongAlgorithm(algo: str):
+    print(f"Argument Error - Algorithm {Fore.CYAN}{algo}{Fore.RESET} is not valid. Chose between 'BFS' or 'DFS'")
