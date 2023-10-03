@@ -13,7 +13,6 @@ class Parser:
     def __init__(self) -> None:
         self.arguments = dict()
         
-        
 
     # -----------------------------------------------------------------------------
     # parses the whole .af file.
@@ -93,4 +92,6 @@ class Parser:
 
         for arg in line[2:]:
             self.arguments[clustered_argument].clustered_arguments.append(arg)
+
+
 

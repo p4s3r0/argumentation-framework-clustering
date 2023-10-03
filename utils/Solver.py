@@ -38,10 +38,21 @@ def negatePreviousModel(arguments: dict[str, Argument.Argument], model: z3.Model
 
 
 
-def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Argument]]):
+def compareSets(af_1: dict[str, Argument.Argument], af_2: dict[str, Argument.Argument], set1: list[list[Argument.Argument]], set2: list[list[Argument.Argument]]):
     #TODO: deconstruct clustered argument into singletons for both lists
-    set1 = [[int(arg.name) for arg in s1] for s1 in set1]
-    set2 = [[int(arg.name) for arg in s2] for s2 in set2]
+
+    deconstructed_list_1 = [deconstructClusteredList(af=af_1, clustered_list=sol) for sol in set1]
+    deconstructed_list_2 = [deconstructClusteredList(af=af_2, clustered_list=sol) for sol in set2]
+    
+    for sol in set1:
+        deconstructed_list_1.append(deconstructClusteredList(af=af_1, clustered_list=sol))
+
+    for sol in set2:
+        deconstructed_list_2.append(deconstructClusteredList(af=af_2, clustered_list=sol))
+
+
+    set1 = [[int(arg.name) for arg in s1] for s1 in deconstructed_list_1]
+    set2 = [[int(arg.name) for arg in s2] for s2 in deconstructed_list_2]
 
     for s1 in set1:
         if s1 not in set2:
@@ -49,4 +60,27 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
     return "FAITHFUL"
 
 
+
+def deconstructClusteredList(af: dict[str, Argument.Argument], clustered_list: list[Argument.Argument]):
+    current_deconstructed_list = list() #singletons of result
+    current_clustered_arguments = list() #clustered args of result
+
+    for arg in clustered_list:
+        if arg.is_singleton:
+            current_deconstructed_list.append(arg)
+        else:
+            current_clustered_arguments.append(arg)
+
+
+    while len(current_clustered_arguments) > 0:
+        cluster = current_clustered_arguments[0]
+        for arg in cluster.clustered_arguments:
+            if af[arg].is_singleton:
+                current_deconstructed_list.append(af[arg])
+            else:
+                current_clustered_arguments.append(af[arg])
+        current_clustered_arguments.pop(0)
+    
+    return current_deconstructed_list
+            
     

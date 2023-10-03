@@ -51,11 +51,11 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str):
     if algorithm == "BFS":
         set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
-        if (cmp:=Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
+
+        if (cmp:=Solver.compareSets(af_1=parser_file_1.arguments, af_2=parser_file_2.arguments, set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             print(f"SPURIOUS! Because Set {cmp}")
         else:
             print("FAITHFUL!")
-
     else:
         while set_af_2 := solver_af_2.computeSets(1):
             if solver_af_1.verifySet(set_af_2) == False:
@@ -63,10 +63,6 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str):
                 break
         else:
             print("FAITHFUL!")
-    
-    print(set_af_2)
-    print(set_af_1)
-
 
 
 
@@ -81,7 +77,7 @@ def main():
         parser = Parser.Parser()
         parser.parseFile(args.input_file)
         Info.info("Input File Parsed")
-        solver = AdmissibleSolver.AdmissibleSolver(AF=parser.arguments, algorithm="BFS")
+        solver = AdmissibleSolver.AdmissibleSolver(AF=parser.arguments)
         admissibles = solver.computeSets()
         print(admissibles)
     
