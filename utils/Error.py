@@ -49,3 +49,7 @@ def WrongInputFileending():
 @ERROR
 def wrongAlgorithm(algo: str):
     print(f"Argument Error - Algorithm {Fore.CYAN}{algo}{Fore.RESET} is not valid. Chose between 'BFS' or 'DFS'")
+
+@ERROR
+def notEnoughArguments():
+    print(f"Parse Error - More Arguments in Attacks then defined in p-Line.")

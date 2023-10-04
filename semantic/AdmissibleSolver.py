@@ -2,6 +2,7 @@ import z3
 
 from utils import Argument
 from utils import Solver
+from utils import ClusterHelperFunctions
 
 
 class AdmissibleSolver:
@@ -63,26 +64,58 @@ class AdmissibleSolver:
 
 
 
-    def computeSets(self, solution_amount: int=-1):
+    def computeSets(self, solution_amount: int=-1, algorithm: str="BFS"):
         ''' Computes the defined Sets with the according algorithm '''
-        while (model := Solver.solve(self.solver)) and (len(self.solution) < solution_amount or solution_amount == -1):
+        if algorithm == "DFS":
+            self.solution.clear()
+
+        while ((model := Solver.solve(self.solver)) != False) and (len(self.solution) < solution_amount or solution_amount == -1):
             self.solution.append(Solver.transformModelIntoArguments(arguments=self.AF, model=model))
             self.solver.add(Solver.negatePreviousModel(arguments=self.AF, model=model))
         else:
-            return self.solution
+            if algorithm == "BFS":
+                return self.solution
+            else:
+                if len(self.solution) < solution_amount:
+                    return False
+                return self.solution
+            
         
 
     
     def verifySet(self, admissible_set: list):
-        self.solver.push()
-        #TODO: deconstruct clustered argument into singletons
-        for arg in admissible_set:
-            self.solver.add(self.AF[arg].z3_value == True)
-
-        if Solver.solve(self.solver):
-            self.solver.pop()
+        if admissible_set == [[]]:
             return True
-        else:
-            self.solver.pop()
-            return False
-            
+
+        deconstructed_list = ClusterHelperFunctions.deconstructClusteredList(clustered_list=admissible_set[0])
+
+        for combination in deconstructed_list: 
+            if len(deconstructed_list) > 1:
+                for solution in combination:
+                    self.solver.push()
+                    for arg in solution:
+                        self.solver.add(self.AF[arg].z3_value == True)
+
+                    if Solver.solve(self.solver):
+                        self.solver.pop()
+                        return True
+                    else:
+                        self.solver.pop()
+                else:
+                    return admissible_set
+
+            else: 
+                self.solver.push()
+                for argument in self.AF.keys():
+                    if argument in combination:
+                        self.solver.add(self.AF[argument].z3_value == True)
+                    else:
+                        self.solver.add(self.AF[argument].z3_value == False)
+                if Solver.solve(self.solver):
+                    self.solver.pop()
+                    return True
+                else:
+                    self.solver.pop()
+                    return admissible_set
+
+        return admissible_set                

@@ -4,6 +4,7 @@ from utils import Parser
 from utils import Info
 from utils import Visualizer
 from utils import Error
+from utils import Out
 from utils import Solver
 from semantic import AdmissibleSolver
 
@@ -45,25 +46,24 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str):
     parser_file_2.parseFile(filepath=file2)
     Info.info("Input File 2 Parsed")
 
-    solver_af_1 = AdmissibleSolver.AdmissibleSolver(AF=parser_file_2.arguments)
-    solver_af_2 = AdmissibleSolver.AdmissibleSolver(AF=parser_file_1.arguments)
+    solver_af_1 = AdmissibleSolver.AdmissibleSolver(AF=parser_file_1.arguments)
+    solver_af_2 = AdmissibleSolver.AdmissibleSolver(AF=parser_file_2.arguments)
     
     if algorithm == "BFS":
         set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
 
-        if (cmp:=Solver.compareSets(af_1=parser_file_1.arguments, af_2=parser_file_2.arguments, set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
-            print(f"SPURIOUS! Because Set {cmp}")
+        if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
+            Out.Spurious(cmp)
         else:
-            print("FAITHFUL!")
+            Out.Faithful()
     else:
-        while set_af_2 := solver_af_2.computeSets(1):
-            if solver_af_1.verifySet(set_af_2) == False:
-                print("SPURIOUS!")
+        while (set_af_2 := solver_af_2.computeSets(1, algorithm=algorithm)) != False:
+            if (cmp:=solver_af_1.verifySet(set_af_2)) != True:
+                Out.Spurious(cmp[0])
                 break
         else:
-            print("FAITHFUL!")
-
+            Out.Faithful()
 
 
 def main():
@@ -79,7 +79,6 @@ def main():
         Info.info("Input File Parsed")
         solver = AdmissibleSolver.AdmissibleSolver(AF=parser.arguments)
         admissibles = solver.computeSets()
-        print(admissibles)
     
         Info.info("Admissible Sets Computed")
 

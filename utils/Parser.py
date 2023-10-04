@@ -22,10 +22,13 @@ class Parser:
             Error.WrongInputFileending()
         if not os.path.exists(filepath): 
             Error.FileNotFound(filepath)
+
         with open(filepath, "r") as f:
             current_line_number = 0
             header_line_parsed = False
             cluster_definitions = False
+            arg_amount = -1
+
             for line in f:
                 current_line_number += 1
                 # skip empty and commented line
@@ -33,7 +36,8 @@ class Parser:
                     continue
                 # parse first line
                 if not header_line_parsed:
-                    header_line_parsed = self.parseFirstLine(line.split())
+                    header_line_parsed = True
+                    arg_amount = self.parseFirstLine(line.split())
                     continue
                 # parse clustered arguments
                 if line.split()[0] == '--cluster--':
@@ -48,6 +52,13 @@ class Parser:
                 self.parseAttack(line=line.split(), line_number=current_line_number)
 
 
+        if (diff := arg_amount - len(self.arguments.keys())) < 0:
+            Error.notEnoughArguments()
+
+        if (diff := arg_amount - len(self.arguments.keys())) > 0:
+            for i in range(diff):
+                self.arguments[f"orphan_{i}"] = Argument.Argument(name=f"orphan_{i}")
+
 
     # -----------------------------------------------------------------------------
     # processes the first "p" line of the input and creates <N> many arguments
@@ -58,9 +69,7 @@ class Parser:
         if line[0] != 'p' or line[1] != "af" or not line[2].isdigit():
             Error.inputFileFirstLineIncorrect(line[0], line[1], line[2])
 
-        for name in range(1, int(line[2])+1):
-            self.arguments[str(name)] = Argument.Argument(name=str(name))
-        return True
+        return int(line[2])
 
 
 
@@ -73,8 +82,13 @@ class Parser:
             Error.malformedLine(line_number=line_number, line=line)
         attacker = line[0]
         defender = line[1]
-        if attacker not in self.arguments or defender not in self.arguments:
-            Error.attackOnUnknownArgument(line_number=line_number, attack=attacker, defend=defender)
+
+        if defender not in self.arguments:
+            self.arguments[str(defender)] = Argument.Argument(name=str(defender))
+
+        if attacker not in self.arguments:
+            self.arguments[str(attacker)] = Argument.Argument(name=str(attacker))
+
 
         self.arguments[attacker].attacks.append(defender)
         self.arguments[defender].defends.append(attacker)
