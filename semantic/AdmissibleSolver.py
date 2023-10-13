@@ -26,6 +26,9 @@ class AdmissibleSolver:
         a: Argument.Argument
         for a in self.AF.values():
 
+            if not a.is_singleton:
+                continue
+            
             # check if b exists
             if len(a.defends) == 0:
                 self.solver.add(z3.Implies(a.z3_value, True))
@@ -40,12 +43,9 @@ class AdmissibleSolver:
             b: Argument.Argument
             for b in a.defends:
                 b = self.AF[b]
-                if a.is_singleton and b.is_singleton:
+
+                if b.is_singleton:
                     clause_left = z3.And(clause_left, z3.Not(b.z3_value))
-
-                if not a.is_singleton:
-                    continue
-
 
                 clause_right_right = False
                 # check if c exists

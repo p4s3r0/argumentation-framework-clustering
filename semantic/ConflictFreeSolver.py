@@ -26,6 +26,9 @@ class ConflictFreeSolver:
         a: Argument.Argument
         for a in self.AF.values():
 
+            if not a.is_singleton:
+                continue
+
             # check if b exists
             if len(a.defends) == 0:
                 self.solver.add(z3.Implies(a.z3_value, True))
