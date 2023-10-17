@@ -3,6 +3,7 @@ import z3
 from utils import Argument
 from utils import Solver
 from utils import ClusterHelperFunctions
+from utils import Info
 
 
 class AdmissibleSolver:
@@ -66,13 +67,18 @@ class AdmissibleSolver:
 
     def computeSets(self, solution_amount: int=-1, algorithm: str="BFS"):
         ''' Computes the defined Sets with the according algorithm '''
+        Info.info(f"Computing Admissible Sets with {algorithm}")
+
         if algorithm == "DFS":
             self.solution.clear()
 
+        k = 0
         while ((model := Solver.solve(self.solver)) != False) and (len(self.solution) < solution_amount or solution_amount == -1):
+            k += 1
             self.solution.append(Solver.transformModelIntoArguments(arguments=self.AF, model=model))
             self.solver.add(Solver.negatePreviousModel(arguments=self.AF, model=model))
         else:
+            Info.info(f"Found {k} many solutions")
             if algorithm == "BFS":
                 return self.solution
             else:
