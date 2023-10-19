@@ -28,7 +28,7 @@ class ConflictFreeSolver:
 
             if not a.is_singleton:
                 continue
-
+            
             # check if b exists
             if len(a.defends) == 0:
                 self.solver.add(z3.Implies(a.z3_value, True))
@@ -36,20 +36,16 @@ class ConflictFreeSolver:
 
             # (a -> ^{b:(b,a)∈R}(¬b)
             clause_left = True
+            # (a -> ^{b:(b,a)∈R} (v{c:(c,b)∈R})))
+            clause_right = True
 
             # get b: b:(b,a)∈R
             b: Argument.Argument
             for b in a.defends:
                 b = self.AF[b]
-                if a.is_singleton and b.is_singleton:
-                    clause_left = z3.And(clause_left, z3.Not(b.z3_value))
 
-                if not a.is_singleton:
-                    continue
-
-            clause = z3.Implies(a.z3_value, clause_left)
-            self.solver.add(clause)
-
+                if b.is_singleton:
+                    self.solver.add(z3.Not(z3.And(a.z3_value, b.z3_value)))
 
 
     def computeSets(self):

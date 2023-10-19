@@ -79,8 +79,7 @@ def main():
         Info.info("Input File Parsed")
         solver = AdmissibleSolver.AdmissibleSolver(AF=parser.arguments)
         admissibles = solver.computeSets()
-        #Out.Admissibles(admissibles=admissibles)
-    
+        Out.Admissibles(admissibles=admissibles)
         Info.info("Admissible Sets Computed")
 
         Info.info("Visualizing Argumentation Framework")

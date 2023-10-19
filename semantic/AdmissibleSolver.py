@@ -46,7 +46,7 @@ class AdmissibleSolver:
                 b = self.AF[b]
 
                 if b.is_singleton:
-                    clause_left = z3.And(clause_left, z3.Not(b.z3_value))
+                    clause_left = z3.And(clause_left, z3.Not(z3.And(a.z3_value, b.z3_value)))
 
                 clause_right_right = False
                 # check if c exists

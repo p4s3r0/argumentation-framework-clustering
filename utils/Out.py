@@ -6,7 +6,6 @@ def OUT(func):
     def wrapper(*args, **kwargs):
         print(f"{OUT_MESSAGE}", end="")
         func(*args, **kwargs)
-        exit()
     return wrapper
 
 
@@ -30,3 +29,4 @@ def Admissibles(admissibles: list) -> None:
         for arg in set:
             print(arg.name, end=",")
         print("}, ", end="")
+    print("")
