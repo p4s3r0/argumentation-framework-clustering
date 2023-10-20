@@ -53,3 +53,8 @@ def wrongAlgorithm(algo: str):
 @ERROR
 def notEnoughArguments():
     print(f"Parse Error - More Arguments in Attacks then defined in p-Line.")
+
+
+@ERROR
+def wrongSemantic():
+    print(f"Wrong semantic, valid semantics: {Fore.CYAN}CF{Fore.RESET}, {Fore.CYAN}AD{Fore.RESET}, {Fore.CYAN}ST{Fore.RESET}.")

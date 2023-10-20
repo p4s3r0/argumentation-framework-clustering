@@ -1,27 +1,6 @@
 from utils import Argument
 import itertools
-
-# def deconstructClusteredList(af: dict[str, Argument.Argument], clustered_list: list[Argument.Argument]):
-#     current_deconstructed_list = list() #singletons of result
-#     current_clustered_arguments = list() #clustered args of result
-
-#     for arg in clustered_list:
-#         if arg.is_singleton:
-#             current_deconstructed_list.append(arg)
-#         else:
-#             current_clustered_arguments.append(arg)
-
-#     while len(current_clustered_arguments) > 0:
-#         cluster = current_clustered_arguments[0]
-#         for arg in cluster.clustered_arguments:
-#             if af[arg].is_singleton:
-#                 current_deconstructed_list.append(af[arg])
-#             else:
-#                 current_clustered_arguments.append(af[arg])
-#         current_clustered_arguments.pop(0)
-    
-#     return current_deconstructed_list
-            
+   
 
 def deconstructClusteredList(clustered_list: list[Argument.Argument]):
     singleton_arguments = list() #singletons of result

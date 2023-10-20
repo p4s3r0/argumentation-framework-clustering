@@ -7,4 +7,5 @@ p af 5
 4 5
 5 5
 
+# stable: {a, d}
 # admissible: ∅, {a}, {c}, {d}, {a, c} and {a,d}

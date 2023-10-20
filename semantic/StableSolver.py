@@ -6,7 +6,7 @@ from utils import ClusterHelperFunctions
 from utils import Info
 
 
-class AdmissibleSolver:
+class StableSolver:
     def __init__(self, AF: dict[str, Argument.Argument]) -> None:
         '''
         @AF ->        Argumentation Framework
@@ -14,13 +14,13 @@ class AdmissibleSolver:
         self.AF = AF
         self.solution = list()
         self.solver = z3.Solver()
-        self.setRulesAdmissible()
+        self.setRulesStable()
 
 
 
     # -----------------------------------------------------------------------------
     # Define clauses for admissible extensions
-    def setRulesAdmissible(self):
+    def setRulesStable(self):
         # get a: a∈A
         a: Argument.Argument
         for a in self.AF.values():
@@ -36,7 +36,7 @@ class AdmissibleSolver:
             # (a -> ^{b:(b,a)∈R}(¬b)
             clause_left = True
             # (a -> ^{b:(b,a)∈R} (v{c:(c,b)∈R})))
-            clause_right = True
+            clause_right = a.z3_value
 
             # get b: b:(b,a)∈R
             b: Argument.Argument
@@ -45,21 +45,11 @@ class AdmissibleSolver:
 
                 if b.is_singleton:
                     clause_left = z3.And(clause_left, z3.Not(z3.And(a.z3_value, b.z3_value)))
+                    clause_right = z3.Or(clause_right, b.z3_value)
 
-                clause_right_right = False
-                # check if c exists
-                if len(b.defends) == 0:
-                    clause_right = z3.And(clause_right, False)
-                    continue
-                # get c: (c,b)∈R
-                c: Argument.Argument
-                for c in b.defends:
-                    c = self.AF[c]
-                    clause_right_right = z3.Or(clause_right_right, c.z3_value)
-                    
-                clause_right = z3.And(clause_right, clause_right_right)
-            clause = z3.And(z3.Implies(a.z3_value, clause_left), z3.Implies(a.z3_value, clause_right))
+            clause = z3.And(clause_left, clause_right)
             self.solver.add(clause)
+            print(clause)
 
 
 
@@ -88,38 +78,38 @@ class AdmissibleSolver:
 
     
     def verifySet(self, verify_set: list):
-            if verify_set == [[]]:
-                return True
+        if verify_set == [[]]:
+            return True
 
-            deconstructed_list = ClusterHelperFunctions.deconstructClusteredList(clustered_list=verify_set[0])
+        deconstructed_list = ClusterHelperFunctions.deconstructClusteredList(clustered_list=verify_set[0])
 
-            for combination in deconstructed_list: 
-                if len(deconstructed_list) > 1:
-                    for solution in combination:
-                        self.solver.push()
-                        for arg in solution:
-                            self.solver.add(self.AF[arg].z3_value == True)
-
-                        if Solver.solve(self.solver):
-                            self.solver.pop()
-                            return True
-                        else:
-                            self.solver.pop()
-                    else:
-                        return verify_set
-
-                else: 
+        for combination in deconstructed_list: 
+            if len(deconstructed_list) > 1:
+                for solution in combination:
                     self.solver.push()
-                    for argument in self.AF.keys():
-                        if argument in combination:
-                            self.solver.add(self.AF[argument].z3_value == True)
-                        else:
-                            self.solver.add(self.AF[argument].z3_value == False)
+                    for arg in solution:
+                        self.solver.add(self.AF[arg].z3_value == True)
+
                     if Solver.solve(self.solver):
                         self.solver.pop()
                         return True
                     else:
                         self.solver.pop()
-                        return verify_set
+                else:
+                    return verify_set
 
-            return verify_set                
+            else: 
+                self.solver.push()
+                for argument in self.AF.keys():
+                    if argument in combination:
+                        self.solver.add(self.AF[argument].z3_value == True)
+                    else:
+                        self.solver.add(self.AF[argument].z3_value == False)
+                if Solver.solve(self.solver):
+                    self.solver.pop()
+                    return True
+                else:
+                    self.solver.pop()
+                    return verify_set
+
+        return verify_set                
