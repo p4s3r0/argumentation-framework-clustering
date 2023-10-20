@@ -12,9 +12,8 @@ $$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SING
 
 ### Stable Sets (need rework)
 Problem: `{2,4}` would be valid for `input/basic.af`
-$$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big) \big)  
-\land
-\big( a \bigvee_{b:(b,a)\in R, b \in A_{SINGLETONS}} b \big) $$
+
+$$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big) \big) \land \big( a \bigvee_{b:(b,a)\in R, b \in A_{SINGLETONS}} b \big) $$
 
 # References and Other Works
 [Checking the acceptability of a set of arguments](https://www.pims.math.ca/science/2004/NMR/papers/paper08.pdf)
