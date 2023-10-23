@@ -10,10 +10,8 @@ $$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SING
 $$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big) \land \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)\big)$$
 
 
-### Stable Sets (need rework)
-Problem: `{2,4}` would be valid for `input/basic.af`
-
-$$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big) \big) \land \big( a \bigvee_{b:(b,a)\in R, b \in A_{SINGLETONS}} b \big) $$
+### Stable Sets 
+$$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big) \big) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big) \big) \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{SINGLETONS}} \lnot c\big)$$
 
 # References and Other Works
 [Checking the acceptability of a set of arguments](https://www.pims.math.ca/science/2004/NMR/papers/paper08.pdf)
