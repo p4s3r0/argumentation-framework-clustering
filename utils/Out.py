@@ -22,9 +22,17 @@ def Faithful() -> None:
 
 
 @OUT
-def Admissibles(admissibles: list) -> None:
-    print(f"{Style.BRIGHT}ADMISSIBLE SETS: {Style.RESET_ALL}", end="")
-    for set in admissibles:
+def SolutionSets(semantic: str, sets: list) -> None:
+
+    semantic_text = ""
+    if semantic == "AD":
+        semantic_text = "ADMISSIBLE"
+    elif semantic == "CF":
+        semantic_text = "CONFLICT-FREE"
+    else:
+        semantic_text = "STABLE"
+    print(f"{Style.BRIGHT}{semantic_text} SETS: {Style.RESET_ALL}", end="")
+    for set in sets:
         print("{", end="")
         for arg in set:
             print(arg.name, end=",")

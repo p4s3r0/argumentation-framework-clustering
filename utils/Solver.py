@@ -40,6 +40,19 @@ def negatePreviousModel(arguments: dict[str, Argument.Argument], model: z3.Model
 
 
 
+def negatePreviousSolution(arguments: dict[str, Argument.Argument], solution: list[Argument.Argument]):
+    arg: Argument.Argument
+    negated_clause = False
+    for arg in arguments.values():
+        if any(sol.name == arg.name for sol in solution):
+            negated_clause = z3.Or(negated_clause, z3.Not(arg.z3_value))
+        else:
+            negated_clause = z3.Or(negated_clause, arg.z3_value)
+    return negated_clause
+
+
+
+
 def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Argument]]):
     '''Compares two Sets and checks if they are equal'''
     deconstructed_list_1 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set1]
@@ -61,6 +74,14 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
     return "FAITHFUL"
 
 
+
+def checkIfSetInSolution(solver, sol_set: list[Argument.Argument]):
+    set_name = sorted([arg.value for arg in sol_set])
+    for sol in solver.solution:
+        solution_name = sorted([arg.value for arg in sol])
+        if set_name == solution_name:
+            return True
+    return False
 
 
     

@@ -8,10 +8,13 @@ from utils import Info
 from utils import Solver
 from utils import ClusterHelperFunctions
 
+current_semantic = ""
 
 
 def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument]):
-    global current_solver
+    global current_semantic
+    current_semantic = semantic
+
     if semantic == "CF":
         return ConflictFreeSolver.ConflictFreeSolver(AF=AF)
     elif semantic == "AD":
@@ -29,11 +32,26 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
     if algorithm == "DFS":
         current_solver.solution.clear()
 
-    k = 0
+    k = 1 # 1 because empty set is not calculated but added by hand
     while ((model := Solver.solve(current_solver.solver)) != False) and (len(current_solver.solution) < solution_amount or solution_amount == -1):
         k += 1
-        current_solver.solution.append(Solver.transformModelIntoArguments(arguments=current_solver.AF, model=model))
-        current_solver.solver.add(Solver.negatePreviousModel(arguments=current_solver.AF, model=model))
+        sol = Solver.transformModelIntoArguments(arguments=current_solver.AF, model=model)
+
+        if not Solver.checkIfSetInSolution(solver=current_solver, sol_set=sol):
+            current_solver.solver.add(Solver.negatePreviousModel(arguments=current_solver.AF, model=model))
+            current_solver.solution.append(sol)
+
+
+
+        if current_semantic == "CF":
+            # if conflict free, add also subsets of calculated solution
+            subsets = ConflictFreeSolver.solutionRefinement(current_solver.solution[-1])
+            for subset in subsets:
+                if not Solver.checkIfSetInSolution(solver=current_solver, sol_set=subset):
+                    k += 1
+                    current_solver.solution.append(subset)
+                    current_solver.solver.add(Solver.negatePreviousSolution(arguments=current_solver.AF, solution=subset))            
+
     else:
         Info.info(f"Found {k} many solutions")
         if algorithm == "BFS":
@@ -42,6 +60,7 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
             if len(current_solver.solution) < solution_amount:
                 return False
             return current_solver.solution
+        
         
 
 

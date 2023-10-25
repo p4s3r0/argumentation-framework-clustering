@@ -81,11 +81,14 @@ def main():
         Info.info("Input File Parsed")
         solver = getSemanticSolver(semantic=args.semantic, AF=parser.arguments)
         admissibles = solver.computeSets()
-        Out.Admissibles(admissibles=admissibles)
-        Info.info("Admissible Sets Computed")
+
+        
+    
+        Out.SolutionSets(semantic=args.semantic, sets=admissibles)
+        Info.info("Solution Sets Computed")
 
         #Info.info("Visualizing Argumentation Framework")
-        Visualizer.show(parser.arguments)
+        #Visualizer.show(parser.arguments)
 
     Info.info("Ending Program")
 

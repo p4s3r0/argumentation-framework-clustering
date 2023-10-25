@@ -2,6 +2,7 @@ import z3
 
 from utils import Argument
 from . import SemanticHelper 
+from functools import reduce
 
 class ConflictFreeSolver:
     def __init__(self, AF: dict[str, Argument.Argument]) -> None:
@@ -9,7 +10,7 @@ class ConflictFreeSolver:
         @AF ->        Argumentation Framework
         '''
         self.AF = AF
-        self.solution = list()
+        self.solution = []
         self.solver = z3.Solver()
         self.setRulesConflictFree()
 
@@ -36,11 +37,28 @@ class ConflictFreeSolver:
 
                 if b.is_singleton:
                     self.solver.add(z3.Not(z3.And(a.z3_value, b.z3_value)))
+
+
+        # skip empty set solution in calculation but add by hand
+        clause = False
+        for arg in self.AF.values():
+            clause = z3.Or(clause, arg.z3_value)
+        self.solver.add(clause)
+        self.solution.append([])
         
+
 
     def computeSets(self, solution_amount: int=-1, algorithm: str="BFS"):
         return SemanticHelper.computeSets(self, solution_amount, algorithm)
 
 
+
     def verifySet(self, verify_set: list):
         return SemanticHelper.verifySet(self, verify_set)
+
+
+
+def solutionRefinement(solution: list):
+    subsets = reduce(lambda result, x: result + [subset + [x] for subset in result], solution, [[]])
+    subsets.pop(0)
+    return subsets

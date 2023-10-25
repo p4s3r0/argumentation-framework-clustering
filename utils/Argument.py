@@ -4,6 +4,7 @@ import z3
 class Argument:
     def __init__(self, name: str) -> None:
         self.name = name
+        self.value = int(name) if name.isdigit() else -1
         self.attacks = list()
         self.defends = list()
         self.z3_value = z3.Bool(f'{name}')
