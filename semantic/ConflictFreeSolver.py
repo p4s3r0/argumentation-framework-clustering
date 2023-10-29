@@ -55,6 +55,18 @@ class ConflictFreeSolver:
 
     def verifySet(self, verify_set: list):
         return SemanticHelper.verifySet(self, verify_set)
+    
+
+
+    def negateSolutions(self, solution: list):
+        diff_set = list()
+        solution_names = [sol.name for sol in solution]
+        clause = False
+        for arg in self.AF.keys():
+            if arg not in solution_names:
+                clause = z3.Or(clause, self.AF[arg].z3_value)
+
+        self.solver.add(clause)
 
 
 
@@ -62,3 +74,5 @@ def solutionRefinement(solution: list):
     subsets = reduce(lambda result, x: result + [subset + [x] for subset in result], solution, [[]])
     subsets.pop(0)
     return subsets
+
+

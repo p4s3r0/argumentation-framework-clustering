@@ -46,11 +46,11 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
         if current_semantic == "CF":
             # if conflict free, add also subsets of calculated solution
             subsets = ConflictFreeSolver.solutionRefinement(current_solver.solution[-1])
+            current_solver.negateSolutions(current_solver.solution[-1])
             for subset in subsets:
                 if not Solver.checkIfSetInSolution(solver=current_solver, sol_set=subset):
                     k += 1
                     current_solver.solution.append(subset)
-                    current_solver.solver.add(Solver.negatePreviousSolution(arguments=current_solver.AF, solution=subset))            
 
     else:
         Info.info(f"Found {k} many solutions")
