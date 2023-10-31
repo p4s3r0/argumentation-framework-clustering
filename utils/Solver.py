@@ -1,6 +1,7 @@
 import z3
 from utils import Argument
 from utils import ClusterHelperFunctions
+from utils import outsourced
 
 def solve(solver: z3.Solver):
     ''' Solves the current Solver Clauses '''
@@ -57,7 +58,7 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
     '''Compares two Sets and checks if they are equal'''
     deconstructed_list_1 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set1]
     deconstructed_list_2 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set2]
-
+    
     for solution in deconstructed_list_2:
         if len(solution) > 1:
             got_solution = False
@@ -71,6 +72,7 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
             for s2 in solution:
                 if s2 not in deconstructed_list_1:
                     return s2
+                
     return "FAITHFUL"
 
 

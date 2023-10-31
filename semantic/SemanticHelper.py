@@ -11,14 +11,14 @@ from utils import ClusterHelperFunctions
 current_semantic = ""
 
 
-def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument]):
+def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument]=None):
     global current_semantic
     current_semantic = semantic
 
     if semantic == "CF":
         return ConflictFreeSolver.ConflictFreeSolver(AF=AF)
     elif semantic == "AD":
-        return AdmissibleSolver.AdmissibleSolver(AF=AF)
+        return AdmissibleSolver.AdmissibleSolver(AF=AF, AF_main=AF_main)
     elif semantic == "ST":
         return StableSolver.StableSolver(AF=AF)
     else:

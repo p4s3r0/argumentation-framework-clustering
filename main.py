@@ -49,7 +49,7 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
     Info.info("Input File 2 Parsed")
 
     solver_af_1 = getSemanticSolver(semantic=semantic, AF=parser_file_1.arguments)
-    solver_af_2 = getSemanticSolver(semantic=semantic, AF=parser_file_2.arguments)
+    solver_af_2 = getSemanticSolver(semantic=semantic, AF=parser_file_2.arguments, AF_main=parser_file_1.arguments)
     
     if algorithm == "BFS":
         set_af_1 = solver_af_1.computeSets()

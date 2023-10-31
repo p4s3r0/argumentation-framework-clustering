@@ -21,12 +21,15 @@ def deconstructClusteredList(clustered_list: list[Argument.Argument]):
 
     all_combinations = list(itertools.product(*deconstructed_cluster))
 
+
     deconstructed_cluster_with_singletons = list()
     for set in all_combinations:
         curr_set = list(set)
 
         for singleton in singleton_arguments:
             curr_set.append(singleton.name)
+
         deconstructed_cluster_with_singletons.append(curr_set)
-            
+
+
     return deconstructed_cluster_with_singletons
