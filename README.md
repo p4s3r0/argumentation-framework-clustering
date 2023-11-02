@@ -41,6 +41,13 @@ $$ \varphi_{st-abs}(\hat F) \land \varphi'(F) $$
 
 $$\varphi_{st-abs}(\hat F) = \bigwedge_{\hat a \in \hat A_{SINGLETONS}} \big( \bigwedge_{\hat b:(\hat b,\hat a)\in \hat R, \hat b \in \hat A_{SINGLETONS}} \lnot \big( \hat a \wedge \hat b \big) \big) \land \bigwedge_{\hat a \in \hat A} \big( \hat a \bigvee_{\hat b:(\hat b,\hat a)\in \hat R} \hat b\big) \land \bigwedge_{\hat a \in \hat A} \big( \big(  \hat a \bigwedge_{\hat b:(\hat b,\hat a) \in \hat R} \lnot \hat b\big)  \rightarrow \big( \bigwedge_{\hat c:(\hat a,\hat c), \hat c \in \hat A_{SINGLETONS}} \lnot \hat c\big) \big)$$
 
+$$\varphi'(F) = \bigwedge_{\hat a \in \hat A_{CLUSTER}} \big( \hat a \rightarrow \bigvee_{a \in \hat a} a \big)  \land \overline{cf}(F) \land \overline{att}(F) \land \overline{con}(F)$$
+
+$$\overline{cf}(F) = \bigvee_{a \in A_{SINGLETONS}} \big( \bigvee_{b:(b,a)\in R, b \in A_{SINGLETONS}} \big( a \land b \big) \big) $$
+
+$$\overline{att}(F) = \bigvee_{a \in A} \big( \lnot a \bigwedge_{b:(b,a)\in R} \lnot b \big)$$
+
+$$\overline{con}(F) = \bigvee_{a \in A} \big( \big( a \bigwedge_{b:(b,a)\in R} \lnot b) \land \big(\bigvee_{c:(a,c), c\in A_{SINGLETON}} c\big) \big)$$
 
 ---
 

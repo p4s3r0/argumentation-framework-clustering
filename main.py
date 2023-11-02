@@ -55,6 +55,8 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
         set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
 
+        Out.SolutionSets(semantic, set_af_2)
+
         if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             Out.Spurious(cmp)
         else:
@@ -80,11 +82,11 @@ def main():
         parser.parseFile(args.input_file)
         Info.info("Input File Parsed")
         solver = getSemanticSolver(semantic=args.semantic, AF=parser.arguments)
-        admissibles = solver.computeSets()
+        solutions = solver.computeSets()
 
         
     
-        Out.SolutionSets(semantic=args.semantic, sets=admissibles)
+        Out.SolutionSets(semantic=args.semantic, sets=solutions)
         Info.info("Solution Sets Computed")
 
         #Info.info("Visualizing Argumentation Framework")

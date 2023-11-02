@@ -20,7 +20,7 @@ def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], AF_main: 
     elif semantic == "AD":
         return AdmissibleSolver.AdmissibleSolver(AF=AF, AF_main=AF_main)
     elif semantic == "ST":
-        return StableSolver.StableSolver(AF=AF)
+        return StableSolver.StableSolver(AF=AF, AF_main=AF_main)
     else:
         Error.wrongSemantic()
 

@@ -5,11 +5,12 @@ from . import SemanticHelper
 
 
 class StableSolver:
-    def __init__(self, AF: dict[str, Argument.Argument]) -> None:
+    def __init__(self, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument]) -> None:
         '''
         @AF ->        Argumentation Framework
         '''
         self.AF = AF
+        self.AF_main = AF_main
         self.solution = list()
         self.solver = z3.Solver()
         self.setRulesStable()
@@ -102,6 +103,115 @@ class StableSolver:
         # Add the final clause to the solver 
         self.solver.add(z3.And(z3.And(cf_clause, middle_clause), right_clause))
         
+    
+        if self.AF_main == None:
+            return
+        
+        # Refinement
+        # clause_left AND clause_cf AND clause_att AND clause_con
+
+        #clause_left
+        clause_left = True
+        hat_a: Argument.Argument
+        for hat_a in self.AF.values():
+            
+            if hat_a.is_singleton:
+                continue
+
+            clause_left_inner = False
+            for a in hat_a.clustered_arguments:
+                clause_left_inner = z3.Or(clause_left_inner, self.AF_main[a].z3_value) 
+
+            clause_left = z3.Implies(hat_a.z3_value, clause_left_inner)
+
+
+        #clause_cf
+        clause_cf = False
+        a: Argument.Argument
+        for a in self.AF_main.values():
+
+            if not a.is_singleton:
+                continue 
+
+            # check if b exists
+            if len(a.defends) == 0:
+                continue
+
+            clause_cf_inner = False
+            
+            # get b: b:(b,a)∈R
+            b: Argument.Argument
+            for b in a.defends:
+                b = self.AF_main[b]
+                if not b.is_singleton:
+                    continue
+                
+                clause_cf_inner = z3.Or(clause_cf_inner, z3.And(a.z3_value, b.z3_value))
+
+            clause_cf = z3.Or(clause_cf, clause_cf_inner)
+        
+
+        #clause_att
+        clause_att = False
+        a: Argument.Argument
+        for a in self.AF_main.values():
+
+            # check if b exists
+            if len(a.defends) == 0:
+                clause_att = z3.Or(clause_att, z3.Not(a.z3_value))
+                continue
+
+            clause_att_inner = True
+            
+            # get b: b:(b,a)∈R
+            b: Argument.Argument 
+            for b in a.defends:
+                b = self.AF_main[b]
+                clause_att_inner = z3.And(clause_att_inner, z3.Not(b.z3_value))
+            
+            clause_att = z3.Or(z3.Not(a.z3_value), clause_att_inner)
+
+        
+        # clause_con
+        clause_con = False
+        a: Argument.Argument
+        for a in self.AF_main.values():
+
+            # check if b exists
+            if len(a.defends) == 0:
+                clause_con = z3.Or(clause_con, a.z3_value)
+                continue
+
+            clause_con_left = True
+            # get b: b:(b,a)∈R
+            b: Argument.Argument 
+            for b in a.defends:
+                b = self.AF_main[b]
+                clause_con_left = z3.And(clause_con_left, z3.Not(b.z3_value))
+
+
+            # check if c exists
+            if len(a.attacks) == 0:
+                continue
+
+
+            clause_con_right = False
+            # get c: b:(a,c)∈R
+            c: Argument.Argument
+            for c in a.attacks:
+                c = self.AF_main[c]
+
+                if not c.is_singleton:
+                    continue
+
+                clause_con_right = z3.Or(clause_con_right, c.z3_value)
+
+            clause_con = z3.Or(clause_con, z3.And(clause_con_left, clause_con_right))
+
+        self.solver.add(z3.And(z3.And(z3.And(clause_left, clause_cf), clause_att), clause_con))
+
+
+
 
 
 
