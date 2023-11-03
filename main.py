@@ -86,7 +86,7 @@ def main():
 
         
     
-        Out.SolutionSets(semantic=args.semantic, sets=solutions)
+        # Out.SolutionSets(semantic=args.semantic, sets=solutions)
         Info.info("Solution Sets Computed")
 
         #Info.info("Visualizing Argumentation Framework")

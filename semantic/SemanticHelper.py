@@ -7,6 +7,7 @@ from utils import Argument
 from utils import Info
 from utils import Solver
 from utils import ClusterHelperFunctions
+from utils import Out
 
 current_semantic = ""
 
@@ -35,6 +36,8 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
     k = 1 # 1 because empty set is not calculated but added by hand
     while ((model := Solver.solve(current_solver.solver)) != False) and (len(current_solver.solution) < solution_amount or solution_amount == -1):
         k += 1
+        Out.CurrSolution(k)
+
         sol = Solver.transformModelIntoArguments(arguments=current_solver.AF, model=model)
 
         if not Solver.checkIfSetInSolution(solver=current_solver, sol_set=sol):
@@ -50,9 +53,11 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
             for subset in subsets:
                 if not Solver.checkIfSetInSolution(solver=current_solver, sol_set=subset):
                     k += 1
+                    Out.CurrSolution(k)
                     current_solver.solution.append(subset)
 
     else:
+        print()
         Info.info(f"Found {k} many solutions")
         if algorithm == "BFS":
             return current_solver.solution

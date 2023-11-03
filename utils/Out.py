@@ -38,3 +38,8 @@ def SolutionSets(semantic: str, sets: list) -> None:
             print(arg.name, end=",")
         print("}, ", end="")
     print("")
+
+
+@OUT
+def CurrSolution(amount: int) -> None:
+    print(f"Current Solutions Found {Fore.CYAN + Style.BRIGHT}{amount}{Style.RESET_ALL}", end="\r")

@@ -6,15 +6,12 @@ import matplotlib.pyplot as plt
 # setting seed to not randomize the graph drawing
 import random
 import numpy as np
-seed = 1
-random.seed(seed)
 
 def nudge(pos, x_shift, y_shift):
     return {n:(x + x_shift, y + y_shift) for n,(x,y) in pos.items()}
 
 
 def show(data: dict):
-    np.random.seed(seed)
     G = nx.DiGraph()
     edges = list()
 

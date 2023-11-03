@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "pretty-time-zsh": "^1.0.1"
+  }
+}
