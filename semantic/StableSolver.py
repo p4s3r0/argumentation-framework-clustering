@@ -25,11 +25,7 @@ class StableSolver:
         a: Argument.Argument
         for a in self.AF.values():
 
-            if not a.is_singleton:
-                continue
-            
-            # check if b exists
-            if len(a.defends) == 0:
+            if not a.is_singleton or len(a.defends) == 0:
                 continue
 
             cf_clause_inner = True

@@ -20,19 +20,14 @@ class AdmissibleSolver:
     def setRulesAdmissible(self):
         ''' Sets the rules for admissibility check. Formula is in the Readme'''
         # get a: a∈A
+
+        clause_cf = True
         a: Argument.Argument
         for a in self.AF.values():
 
-            if not a.is_singleton:
+            if not a.is_singleton or len(a.defends) == 0:
                 continue
             
-            # check if b exists
-            if len(a.defends) == 0:
-                self.solver.add(z3.Implies(a.z3_value, True))
-                continue
-
-            clause_left = True
-            clause_right = True
 
             # get b: b:(b,a)∈R
             b: Argument.Argument
@@ -40,24 +35,43 @@ class AdmissibleSolver:
                 b = self.AF[b]
 
                 if b.is_singleton:
-                    clause_left = z3.And(clause_left, z3.Not(z3.And(a.z3_value, b.z3_value)))
+                    clause_cf = z3.And(clause_cf, (z3.Not(z3.And(a.z3_value, b.z3_value))))
 
-                clause_right_right = False
-                # check if c exists
+        clause_right = True
+        a: Argument.Argument
+        for a in self.AF.values():
+
+            if not a.is_singleton:
+                continue
+
+            if len(a.defends) == 0:
+                clause_right = z3.And(clause_right, z3.Implies(a.z3_value, True))
+                continue
+
+            clause_right_and = True
+
+            # get b: b:(b,a)∈R
+            b: Argument.Argument
+            for b in a.defends:
+                b = self.AF[b]
+
                 if len(b.defends) == 0:
-                    clause_right = z3.And(clause_right, False)
-                    continue
+                    clause_right_and = False
+                    break
+
+                clause_right_or = False
                 # get c: (c,b)∈R
                 c: Argument.Argument
                 for c in b.defends:
                     c = self.AF[c]
-                    clause_right_right = z3.Or(clause_right_right, c.z3_value)
-                    
-                clause_right = z3.And(clause_right, clause_right_right)
-            clause = z3.And(z3.Implies(a.z3_value, clause_left), z3.Implies(a.z3_value, clause_right))
-            self.solver.add(clause)
-
+                    clause_right_or = z3.Or(clause_right_or, c.z3_value)
+                clause_right_and = z3.And(clause_right_and, clause_right_or)
         
+            clause_right = z3.And(clause_right, z3.Implies(a.z3_value, clause_right_and))
+        
+        clause = z3.And(clause_cf, clause_right)
+        self.solver.add(clause)        
+
 
         if self.AF_main == None:
             return

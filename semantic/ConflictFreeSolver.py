@@ -22,13 +22,9 @@ class ConflictFreeSolver:
         a: Argument.Argument
         for a in self.AF.values():
 
-            if not a.is_singleton:
+            if not a.is_singleton or len(a.defends) == 0:
                 continue
             
-            # check if b exists
-            if len(a.defends) == 0:
-                self.solver.add(z3.Implies(a.z3_value, True))
-                continue
 
             # get b: b:(b,a)∈R
             b: Argument.Argument
@@ -59,7 +55,6 @@ class ConflictFreeSolver:
 
 
     def negateSolutions(self, solution: list):
-        diff_set = list()
         solution_names = [sol.name for sol in solution]
         clause = False
         for arg in self.AF.keys():

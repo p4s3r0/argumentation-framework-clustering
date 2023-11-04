@@ -46,7 +46,7 @@ def clusterAF(attacks: list, arg_amount: int, cluster_size: int):
 
 
 def generateFile(C_AF: list, inp_file: str, clustered_argument_amount: int, arg_amount: int):
-    with open(f"clustered_{inp_file}", "w") as f:
+    with open(f"{inp_file[:-6]}_c{clustered_argument_amount}.af", "w") as f:
         f.write(f"p af {arg_amount - clustered_argument_amount + 1}\n")
         f.write("# Clustered with Script\n")
         for attack in C_AF:

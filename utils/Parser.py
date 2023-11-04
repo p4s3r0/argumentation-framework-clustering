@@ -57,7 +57,7 @@ class Parser:
 
         if (diff := arg_amount - len(self.arguments.keys())) > 0:
             for i in range(diff):
-                self.arguments[f"orphan_{i}"] = Argument.Argument(name=f"orphan_{i}")
+                self.arguments[f"singleton_{i}"] = Argument.Argument(name=f"singleton_{i}")
 
 
     # -----------------------------------------------------------------------------

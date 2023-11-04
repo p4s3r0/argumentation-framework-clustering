@@ -39,14 +39,12 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
         Out.CurrSolution(k)
 
         sol = Solver.transformModelIntoArguments(arguments=current_solver.AF, model=model)
+        current_solver.solution.append(sol)
 
-        if not Solver.checkIfSetInSolution(solver=current_solver, sol_set=sol):
+
+        if current_semantic != "CF":
             current_solver.solver.add(Solver.negatePreviousModel(arguments=current_solver.AF, model=model))
-            current_solver.solution.append(sol)
-
-
-
-        if current_semantic == "CF":
+        else:
             # if conflict free, add also subsets of calculated solution
             subsets = ConflictFreeSolver.solutionRefinement(current_solver.solution[-1])
             current_solver.negateSolutions(current_solver.solution[-1])
@@ -58,7 +56,7 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
 
     else:
         print()
-        Info.info(f"Found {k} many solutions")
+        Info.info(f"Found {len(current_solver.solution)} many solutions")
         if algorithm == "BFS":
             return current_solver.solution
         else:
