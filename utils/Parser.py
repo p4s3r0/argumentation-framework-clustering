@@ -50,15 +50,7 @@ class Parser:
 
                 # parse attack
                 self.parseAttack(line=line.split(), line_number=current_line_number)
-
-
-        if (diff := arg_amount - len(self.arguments.keys())) < 0:
-            Error.notEnoughArguments()
-
-        if (diff := arg_amount - len(self.arguments.keys())) > 0:
-            for i in range(diff):
-                self.arguments[f"singleton_{i}"] = Argument.Argument(name=f"singleton_{i}")
-
+        return self.arguments, arg_amount
 
     # -----------------------------------------------------------------------------
     # processes the first "p" line of the input and creates <N> many arguments
@@ -69,6 +61,8 @@ class Parser:
         if line[0] != 'p' or line[1] != "af" or not line[2].isdigit():
             Error.inputFileFirstLineIncorrect(line[0], line[1], line[2])
 
+        for i in range(1, int(line[2])+1,+1):
+            self.arguments[f"{i}"] = Argument.Argument(name=f"{i}")
         return int(line[2])
 
 

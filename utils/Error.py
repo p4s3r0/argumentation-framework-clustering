@@ -58,3 +58,12 @@ def notEnoughArguments():
 @ERROR
 def wrongSemantic():
     print(f"Wrong semantic, valid semantics: {Fore.CYAN}CF{Fore.RESET}, {Fore.CYAN}AD{Fore.RESET}, {Fore.CYAN}ST{Fore.RESET}.")
+
+
+@ERROR
+def concretizeCLIARgumentInvalid(arg: str):
+    print(f"Invalid argument {Fore.CYAN}{arg}{Fore.RESET} in program argument concretize list.")
+
+@ERROR
+def concretizeOfCluster(arg: str):
+    print(f"Invalid argument {Fore.CYAN}{arg}{Fore.RESET}, can't concretize cluster.")
