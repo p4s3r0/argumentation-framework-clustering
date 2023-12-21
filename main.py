@@ -95,21 +95,33 @@ def concretizeCluster(set_to_concretize: list, file_abstract: str, file_concrete
         if not abstract_abstract_af.arguments[arg].is_singleton:
             for concretize_arg in set_to_concretize:
                 if concretize_arg in abstract_abstract_af.arguments[arg].clustered_arguments:
-                    # check which attacks the singleton has
-                    for argument_attacks in concrete_af.arguments[concretize_arg].attacks:
-                        if argument_attacks in abstract_abstract_af.arguments[arg].clustered_arguments:
-                            abstract_abstract_af.arguments[concretize_arg].attacks.append(arg)
-                            abstract_abstract_af.arguments[arg].defends.append(concretize_arg)
-                            break;
-                    # check which defender the singleton has
-                    for argument_defends in concrete_af.arguments[concretize_arg].defends:
-                        if argument_defends in abstract_abstract_af.arguments[arg].clustered_arguments:
-                            abstract_abstract_af.arguments[concretize_arg].defends.append(arg)
-                            abstract_abstract_af.arguments[arg].attacks.append(concretize_arg)
-                            break;
                     abstract_abstract_af.arguments[arg].clustered_arguments.remove(concretize_arg)
 
 
+    for arg in set_to_concretize:
+        # iterate over all clusters
+        for cluster in abstract_af.arguments.keys():
+            if not abstract_af.arguments[cluster].is_singleton:
+                # check if argument attacks argument in cluster
+                for arg_attack in concrete_af.arguments[arg].attacks:
+                    if arg_attack in abstract_abstract_af.arguments[cluster].clustered_arguments:
+                        abstract_abstract_af.arguments[arg].attacks.append(cluster)
+                        abstract_abstract_af.arguments[cluster].defends.append(arg)
+                # check if argument is attacked by arguments in cluster
+                for arg_defend in concrete_af.arguments[arg].defends:
+                    if arg_defend in abstract_abstract_af.arguments[cluster].clustered_arguments:
+                        abstract_abstract_af.arguments[arg].defends.append(cluster)
+                        abstract_abstract_af.arguments[cluster].attacks.append(arg)
+
+        # check for attacks between concretized arguments
+        for arg_attacks in concrete_af.arguments[arg].attacks:
+            if arg_attacks in set_to_concretize:
+                if arg_attacks not in abstract_abstract_af.arguments[arg].attacks:
+                    abstract_abstract_af.arguments[arg].attacks.append(arg_attacks)
+                if arg not in abstract_abstract_af.arguments[arg_attacks].defends:
+                    abstract_abstract_af.arguments[arg_attacks].defends.append(arg)
+
+    
 
     # Check if spurious
     print("spurious check")
