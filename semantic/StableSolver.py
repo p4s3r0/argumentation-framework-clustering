@@ -99,6 +99,12 @@ class StableSolver:
         # Add the final clause to the solver 
         self.solver.add(z3.And(z3.And(cf_clause, middle_clause), right_clause))
         
+        # skip empty set solution in calculation but add by hand
+        clause = False
+        for arg in self.AF.values():
+            clause = z3.Or(clause, arg.z3_value)
+        self.solver.add(clause)
+        self.solution.append([])
     
         if self.AF_main == None:
             return
