@@ -67,3 +67,7 @@ def concretizeCLIARgumentInvalid(arg: str):
 @ERROR
 def concretizeOfCluster(arg: str):
     print(f"Invalid argument {Fore.CYAN}{arg}{Fore.RESET}, can't concretize cluster.")
+
+@ERROR
+def programArgumentsInvalid(cause: str):
+    print(f"Invalid Program Arguments. {cause}")

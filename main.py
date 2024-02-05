@@ -10,7 +10,7 @@ from utils import Solver
 from semantic.SemanticHelper import getSemanticSolver
 
 class ProgramArguments:
-    def __init__(self, input_file: str, compare_input_file: str, algorithm: str, semantic: str, concretize: list):
+    def __init__(self, input_file: str, function: str, compare_input_file: str, algorithm: str, semantic: str, concretize: list):
         self.input_file = input_file
         self.compare_input_file = compare_input_file
         if algorithm != "BFS" and algorithm != "DFS" and algorithm != None:
@@ -18,6 +18,7 @@ class ProgramArguments:
         self.algorithm = algorithm if algorithm != None and algorithm == "DFS" else "BFS"
         self.semantic = semantic if semantic != None else "AD"
         self.concretize = concretize
+        self.function = function
 
 
 
@@ -26,6 +27,7 @@ def argumentParser():
     Parses The Process Arguments 
     @return -> ProgramArguments instance with the according arguments'''
     parser = argparse.ArgumentParser(description="Parses an AF file and computes clustered AF. \nAuthor: Pasero Christian")
+    parser.add_argument("f", metavar="<function>", action="store", help="Defines the behaviour of the program. Choices: SETS (=calculates sets of semantic), CHECK (=determines if two AFs are faithful), CONCRETIZE (=concretizes a list of arguments)", choices=['SETS', 'CHECK', 'CONCRETIZE'])
     parser.add_argument("i", metavar="<input_file>", action="store", help="Filename of input file")
     parser.add_argument("-c", metavar="<input_file_2>", action="store", help="Filename of the second input file for which spuriousness should be checked", required=False)
     parser.add_argument("-a", metavar="<algorithm>", action="store", help="Which algorithm should be used BFS or DFS. BFS is default.", required=False)
@@ -33,7 +35,7 @@ def argumentParser():
     parser.add_argument("-p", metavar="[list of arguments]", nargs='+', required=False, help="A space separated list of arguments which should be concrete")
 
     arguments = vars(parser.parse_args())
-    return ProgramArguments(arguments["i"], arguments["c"], arguments["a"], arguments["s"], arguments["p"])
+    return ProgramArguments(arguments["i"], arguments["f"], arguments["c"], arguments["a"], arguments["s"], arguments["p"])
 
 
 
@@ -97,7 +99,6 @@ def concretizeCluster(set_to_concretize: list, file_abstract: str, file_concrete
                 if concretize_arg in abstract_abstract_af.arguments[arg].clustered_arguments:
                     abstract_abstract_af.arguments[arg].clustered_arguments.remove(concretize_arg)
 
-
     for arg in set_to_concretize:
         # iterate over all clusters
         for cluster in abstract_af.arguments.keys():
@@ -121,12 +122,23 @@ def concretizeCluster(set_to_concretize: list, file_abstract: str, file_concrete
                 if arg not in abstract_abstract_af.arguments[arg_attacks].defends:
                     abstract_abstract_af.arguments[arg_attacks].defends.append(arg)
 
-    
-
     # Check if spurious
     print("spurious check")
     Info.info("Visualizing Argumentation Framework")
     Visualizer.show(abstract_abstract_af.arguments)
+
+
+
+def computeSemanticSets(input_file: str, semantic: str):
+    af = ArgumentationFramework.ArgumentationFramework()
+    af.parseFile(input_file)
+    Info.info("Input File Parsed")
+    solver = getSemanticSolver(semantic=semantic, AF=af.arguments)
+    solutions = solver.computeSets()
+    Out.SolutionSets(semantic=semantic, sets=solutions)
+    Info.info("Solution Sets Computed")
+    Info.info("Visualizing Argumentation Framework")
+    # Visualizer.show(af.arguments)
 
 
 
@@ -135,21 +147,24 @@ def main():
     args = argumentParser()
     Info.info("Program Arguments Parsed")
 
-    if args.compare_input_file != None and args.concretize == None:
-        compareTwoAFs(args.input_file, args.compare_input_file, args.algorithm, args.semantic)
-    elif args.concretize != None:
-        concretizeCluster(args.concretize, args.input_file, args.compare_input_file)
-    else:
-        af = ArgumentationFramework.ArgumentationFramework()
-        af.parseFile(args.input_file)
-        Info.info("Input File Parsed")
-        solver = getSemanticSolver(semantic=args.semantic, AF=af.arguments)
-        solutions = solver.computeSets()
-        Out.SolutionSets(semantic=args.semantic, sets=solutions)
-        Info.info("Solution Sets Computed")
+    if args.function == "SETS":
+        computeSemanticSets(input_file=args.input_file, semantic=args.semantic)
 
-        Info.info("Visualizing Argumentation Framework")
-        Visualizer.show(af.arguments)
+    elif args.function == "CHECK":
+        if args.compare_input_file == None:
+            Error.programArgumentsInvalid("Function = CHECK, but second AF is missing.")
+        compareTwoAFs(args.input_file, args.compare_input_file, args.algorithm, args.semantic)
+
+
+    elif args.function == "CONCRETIZE":
+        if args.concretize == None:
+            Error.programArgumentsInvalid("Function = CONCRETIZE, but concretize list is missing")
+
+        if args.compare_input_file == None:
+            Error.programArgumentsInvalid("Function = CONCRETIZE, but concrete AF is missing.")
+
+        concretizeCluster(args.concretize, args.input_file, args.compare_input_file)
+        
 
     Info.info("Ending Program")
 

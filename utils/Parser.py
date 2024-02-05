@@ -28,6 +28,7 @@ class Parser:
             header_line_parsed = False
             cluster_definitions = False
             arg_amount = -1
+ 
 
             for line in f:
                 current_line_number += 1
@@ -50,6 +51,7 @@ class Parser:
 
                 # parse attack
                 self.parseAttack(line=line.split(), line_number=current_line_number)
+
         return self.arguments, arg_amount
 
     # -----------------------------------------------------------------------------
@@ -61,8 +63,9 @@ class Parser:
         if line[0] != 'p' or line[1] != "af" or not line[2].isdigit():
             Error.inputFileFirstLineIncorrect(line[0], line[1], line[2])
 
-        for i in range(1, int(line[2])+1,+1):
-            self.arguments[f"{i}"] = Argument.Argument(name=f"{i}")
+        #TODO: Do i need next two lines? This would breaks SET with clusters. Check main paper fig 1b  
+        # for i in range(1, int(line[2])+1,+1):
+        #     self.arguments[f"{i}"] = Argument.Argument(name=f"{i}")
         return int(line[2])
 
 
@@ -83,9 +86,9 @@ class Parser:
         if attacker not in self.arguments:
             self.arguments[str(attacker)] = Argument.Argument(name=str(attacker))
 
-
         self.arguments[attacker].attacks.append(defender)
         self.arguments[defender].defends.append(attacker)
+
 
 
     def parseClusteredArgument(self, line: list, line_number: int) -> None:
