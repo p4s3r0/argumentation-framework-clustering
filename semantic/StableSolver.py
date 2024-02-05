@@ -109,6 +109,9 @@ class StableSolver:
         if self.AF_main == None:
             return
         
+        #TODO: CHECK REFINEMENT
+        return
+        
         # Refinement
         # clause_left AND clause_cf AND clause_att AND clause_con
 

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 # setting seed to not randomize the graph drawing
 import random
 import numpy as np
+from utils import Argument
 
 def nudge(pos, x_shift, y_shift):
     return {n:(x + x_shift, y + y_shift) for n,(x,y) in pos.items()}
@@ -20,11 +21,11 @@ def show(data: dict):
     singletons_in_cluster = list()
     singletons = list()
 
-    for i in range(len(data)):
-        arg = str(i+1)
+
+    for arg in data:
         for attack in data[arg].attacks:
             edges.append( (data[arg].name, attack) )
-
+#
         if not data[arg].is_singleton:
             clusters.append(arg)
             for arg_cluster in data[arg].clustered_arguments:
@@ -36,15 +37,13 @@ def show(data: dict):
             singletons.append(str(i+1))
         
 
-    for i in range(len(data)):
-        if str(i+1) in clusters:
+    for arg in data:
+        if arg in clusters:
             colors.append("#FF0000")
-        elif str(i+1) in singletons_in_cluster:
-            colors.append("#FF8888")
-        elif str(i+1) in singletons:
+        else:
             colors.append("white")
 
-    G.add_nodes_from([str(i+1) for i in range(len(data))])
+    G.add_nodes_from([arg for arg in data])
     G.add_edges_from(edges)
 
     pos=nx.spring_layout(G)
@@ -54,6 +53,7 @@ def show(data: dict):
     "edgecolors": "black",
     "arrowsize": 20,
     }
+
 
     nx.draw(G, pos, **options, node_color=colors)
     pos = nudge(pos, 0, -0.005)

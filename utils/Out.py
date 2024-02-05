@@ -22,7 +22,7 @@ def Faithful() -> None:
 
 
 @OUT
-def SolutionSets(semantic: str, sets: list) -> None:
+def SolutionSets(semantic: str, sets: list, name: str = "") -> None:
 
     semantic_text = ""
     if semantic == "AD":
@@ -31,7 +31,7 @@ def SolutionSets(semantic: str, sets: list) -> None:
         semantic_text = "CONFLICT-FREE"
     else:
         semantic_text = "STABLE"
-    print(f"{Style.BRIGHT}{semantic_text} SETS: {Style.RESET_ALL}", end="")
+    print(f"{Style.BRIGHT}{semantic_text} SETS: {Style.RESET_ALL} {name}", end="")
     for set in sets:
         print("{", end="")
         for arg in set:

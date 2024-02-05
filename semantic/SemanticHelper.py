@@ -28,7 +28,7 @@ def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], AF_main: 
 
 def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
     ''' Computes the defined Sets with the according algorithm '''
-    Info.info(f"Computing Conflict Free Sets with {algorithm}")
+    Info.info(f"Computing {current_semantic} Sets with {algorithm}")
 
     if algorithm == "DFS":
         current_solver.solution.clear()
@@ -55,7 +55,6 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
                     current_solver.solution.append(subset)
 
     else:
-        print()
         Info.info(f"Found {len(current_solver.solution)} many solutions")
         if algorithm == "BFS":
             return current_solver.solution

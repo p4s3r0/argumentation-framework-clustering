@@ -7,6 +7,8 @@ from utils import Visualizer
 from utils import Error
 from utils import Out
 from utils import Solver
+from utils import Argument
+
 from semantic.SemanticHelper import getSemanticSolver
 
 class ProgramArguments:
@@ -47,11 +49,12 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
     @algorithm -> Choose between BFS (=default) or DFS'''
     af_main = ArgumentationFramework.ArgumentationFramework()
     af_main.parseFile(filepath=file1)
-    Info.info("Input File 1 Parsed")
+    Info.info(f"Input File Concrete {file1} parsed")
 
     af_abstract = ArgumentationFramework.ArgumentationFramework()
     af_abstract.parseFile(filepath=file2)
-    Info.info("Input File 2 Parsed")
+    Info.info(f"Input File Abstracxt {file2} parsed")
+
 
     solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_main.arguments)
     solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_main.arguments)
@@ -60,7 +63,8 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
         set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
 
-        Out.SolutionSets(semantic, set_af_2)
+        Out.SolutionSets(semantic, set_af_1, "Concrete: ")
+        Out.SolutionSets(semantic, set_af_2, "Abstract: ")
 
         if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             Out.Spurious(cmp)
@@ -93,6 +97,7 @@ def concretizeCluster(set_to_concretize: list, file_abstract: str, file_concrete
     # Create new concretize AF
     abstract_abstract_af = copy.deepcopy(abstract_af)
 
+    # remove argument from clustered_arguments 
     for arg in abstract_abstract_af.arguments.keys():
         if not abstract_abstract_af.arguments[arg].is_singleton:
             for concretize_arg in set_to_concretize:
@@ -106,11 +111,17 @@ def concretizeCluster(set_to_concretize: list, file_abstract: str, file_concrete
                 # check if argument attacks argument in cluster
                 for arg_attack in concrete_af.arguments[arg].attacks:
                     if arg_attack in abstract_abstract_af.arguments[cluster].clustered_arguments:
+                        # check if argument already created, if not, add to arguments
+                        if arg not in abstract_abstract_af.arguments:
+                            abstract_abstract_af.arguments[arg] = Argument.Argument(name=str(arg))
                         abstract_abstract_af.arguments[arg].attacks.append(cluster)
                         abstract_abstract_af.arguments[cluster].defends.append(arg)
                 # check if argument is attacked by arguments in cluster
                 for arg_defend in concrete_af.arguments[arg].defends:
                     if arg_defend in abstract_abstract_af.arguments[cluster].clustered_arguments:
+                        # check if argument already created, if not, add to arguments
+                        if arg not in abstract_abstract_af.arguments:
+                            abstract_abstract_af.arguments[arg] = Argument.Argument(name=str(arg))
                         abstract_abstract_af.arguments[arg].defends.append(cluster)
                         abstract_abstract_af.arguments[cluster].attacks.append(arg)
 
@@ -121,6 +132,25 @@ def concretizeCluster(set_to_concretize: list, file_abstract: str, file_concrete
                     abstract_abstract_af.arguments[arg].attacks.append(arg_attacks)
                 if arg not in abstract_abstract_af.arguments[arg_attacks].defends:
                     abstract_abstract_af.arguments[arg_attacks].defends.append(arg)
+
+    # check for each argument if it is still attacking cluster
+    for cluster in abstract_abstract_af.arguments:
+        if not abstract_abstract_af.arguments[cluster].is_singleton:
+            for singleton in abstract_abstract_af.arguments:
+                if abstract_abstract_af.arguments[singleton].is_singleton:
+                    singleton_is_not_attacking_cluster = True
+                    # if singleton attacks cluster, check if it is still true
+                    if cluster in abstract_abstract_af.arguments[singleton].attacks:
+                        for cluster_singleton in abstract_abstract_af.arguments[cluster].clustered_arguments:
+                            if singleton in concrete_af.arguments[cluster_singleton].defends:
+                                singleton_is_not_attacking_cluster = False
+                        if singleton_is_not_attacking_cluster:
+                            abstract_abstract_af.arguments[singleton].attacks.remove(cluster)
+                            abstract_abstract_af.arguments[cluster].defends.remove(singleton)
+                            # add attacks to now concretized singletons
+                            for attacked_by_singleton in concrete_af.arguments[singleton].attacks:
+                                abstract_abstract_af.arguments[singleton].attacks.append(attacked_by_singleton)
+                                abstract_abstract_af.arguments[attacked_by_singleton].defends.append(singleton)
 
     # Check if spurious
     print("spurious check")

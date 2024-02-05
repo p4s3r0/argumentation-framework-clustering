@@ -3,6 +3,7 @@ import itertools
    
 
 def deconstructClusteredList(clustered_list: list[Argument.Argument]):
+    #TODO: make combinations bigger, check notion mark
     singleton_arguments = list() #singletons of result
     clustered_arguments = list() #clustered args of result
     deconstructed_cluster = list()
