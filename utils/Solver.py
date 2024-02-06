@@ -58,13 +58,9 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
     '''Compares two Sets and checks if they are equal'''
     deconstructed_list_1 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set1]
     deconstructed_list_2 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set2]
-
-    print("l1", deconstructed_list_1)
-    print()
-    print("l2", deconstructed_list_2)
     
     for solution in deconstructed_list_2:
-        if len(solution) > 1:
+        if len(solution) > 0:
             got_solution = False
             for curr_comb_solution in solution:
                 if curr_comb_solution in deconstructed_list_1:
