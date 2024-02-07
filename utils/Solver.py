@@ -62,12 +62,17 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
     for solution in deconstructed_list_2:
         if len(solution) > 0:
             got_solution = False
-            for curr_comb_solution in solution:
-                if curr_comb_solution in deconstructed_list_1:
-                    got_solution = True
-                    break
-            if not got_solution: 
-                return solution
+            if isinstance(solution[0], list): 
+                for curr_comb_solution in solution:
+                    if curr_comb_solution in deconstructed_list_1:
+                        got_solution = True
+                        break
+                if not got_solution: 
+                    return solution
+            else:
+                if not solution in deconstructed_list_1:
+                    return solution
+                
         else:
             for s2 in solution:
                 if s2 not in deconstructed_list_1:

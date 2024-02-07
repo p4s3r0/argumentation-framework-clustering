@@ -54,11 +54,9 @@ def wrongAlgorithm(algo: str):
 def notEnoughArguments():
     print(f"Parse Error - More Arguments in Attacks then defined in p-Line.")
 
-
 @ERROR
 def wrongSemantic():
     print(f"Wrong semantic, valid semantics: {Fore.CYAN}CF{Fore.RESET}, {Fore.CYAN}AD{Fore.RESET}, {Fore.CYAN}ST{Fore.RESET}.")
-
 
 @ERROR
 def concretizeCLIARgumentInvalid(arg: str):
@@ -67,6 +65,10 @@ def concretizeCLIARgumentInvalid(arg: str):
 @ERROR
 def concretizeOfCluster(arg: str):
     print(f"Invalid argument {Fore.CYAN}{arg}{Fore.RESET}, can't concretize cluster.")
+
+@ERROR
+def emptyConcretizerList():
+    print(f"Concretizer List is empty.")
 
 @ERROR
 def programArgumentsInvalid(cause: str):
