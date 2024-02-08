@@ -59,6 +59,7 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
     deconstructed_list_1 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set1]
     deconstructed_list_2 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set2]
     
+    ret = list()
     for solution in deconstructed_list_2:
         if len(solution) > 0:
             got_solution = False
@@ -68,17 +69,19 @@ def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Ar
                         got_solution = True
                         break
                 if not got_solution: 
-                    return solution
+                    # return problem set 
+                    problem_set = [arg.name for arg in set2[deconstructed_list_2.index(solution)]]
+                    ret.append(problem_set)
             else:
                 if not solution in deconstructed_list_1:
-                    return solution
+                    ret.append(solution)
                 
         else:
             for s2 in solution:
                 if s2 not in deconstructed_list_1:
-                    return s2
+                    ret.append(s2)
                 
-    return "FAITHFUL"
+    return "FAITHFUL" if len(ret) == 0 else ret
 
 
 

@@ -73,3 +73,8 @@ def emptyConcretizerList():
 @ERROR
 def programArgumentsInvalid(cause: str):
     print(f"Invalid Program Arguments. {cause}")
+
+
+@ERROR
+def attacklessArgumentHasAttacks(line_number: int, arg:str):
+    print(f"Attackless argument {arg} in line {line_number} has attacks.")

@@ -49,12 +49,12 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
     @file2 -> filepath of the second AF which should be parsed and compared
     @algorithm -> Choose between BFS (=default) or DFS'''
     af_main = ArgumentationFramework.ArgumentationFramework()
-    af_main.parseFile(filepath=file1)
-    Info.info(f"Input File Concrete {file1} parsed")
+    af_main.parseFile(filepath=file2)
+    Info.info(f"Input File Concrete {file2} parsed")
 
     af_abstract = ArgumentationFramework.ArgumentationFramework()
-    af_abstract.parseFile(filepath=file2)
-    Info.info(f"Input File Abstracxt {file2} parsed")
+    af_abstract.parseFile(filepath=file1)
+    Info.info(f"Input File Abstracxt {file1} parsed")
 
 
     solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_main.arguments)
@@ -216,7 +216,7 @@ def computeSemanticSets(input_file: str, semantic: str):
     Out.SolutionSets(semantic=semantic, sets=solutions)
     Info.info("Solution Sets Computed")
     Info.info("Visualizing Argumentation Framework")
-    # Visualizer.show(af.arguments)
+    Visualizer.show(af.arguments)
 
 
 def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str, semantic: str):
@@ -233,11 +233,11 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
         if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             Out.Spurious(cmp)
             # filter problematic singletons which cause spuriousness
-            problem_sets = [set(p) for p in cmp]
-            problem_singletons = problem_sets[0]
-            for i in range(len(problem_sets)-1):
-                problem_singletons = problem_singletons & problem_sets[i]
-            return False, list(problem_singletons)
+            # problem_sets = [set(p) for p in cmp]
+            # problem_singletons = problem_sets[0]
+            # for i in range(len(problem_sets)-1):
+            #     problem_singletons = problem_singletons & problem_sets[i]
+            return False, list(cmp)
         else:
             Out.Faithful()
             return True, None
@@ -261,36 +261,65 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
     # TODO: also implement for more problematic singletons
     
     # all combinations
-    depth_2_combinations = list()
+    depth_2_single_view = list()
 
-    for prob in problematic_singletons:
+    # Filter cluster out of problematic singletons
+    filtered_problematic_singletons = list()
+    for problem_sets in problematic_singletons:
         curr = list()
-        # defender depth = 1 and 2
-        for direct in af_concrete.arguments[prob].defends:
-            for i in range(len(af_concrete.arguments[direct].defends)+1):
-                curr.extend(itertools.combinations(af_concrete.arguments[direct].defends, i))
-            for i in range(len(curr)):
-                curr[i] = list(curr[i])
-                curr[i].extend(direct)
-                for conc in concretizer_list:
-                    if conc not in curr[i]:
-                        curr[i].extend(conc)
-                curr[i].sort()
-        depth_2_combinations.extend(curr)
-        
+        for arg in problem_sets:
+            if arg in af_abstract.arguments:
+                if af_abstract.arguments[arg].is_singleton:
+                    curr.append(arg)
+            else:
+                curr.append(arg)
+        if len(curr) > 0 and curr not in filtered_problematic_singletons:
+            curr.sort()
+            filtered_problematic_singletons.append(curr)
+
+    for prob_set in filtered_problematic_singletons:
+        for prob in prob_set:
+            curr = list()
+            # defender depth = 1 and 2
+            for direct in af_concrete.arguments[prob].defends:
+                for i in range(len(af_concrete.arguments[direct].defends)+1):
+                    curr.extend(itertools.combinations(af_concrete.arguments[direct].defends, i))
+                for i in range(len(curr)):
+                    curr[i] = list(curr[i])
+                    curr[i].extend(direct)
+                    if prob not in curr[i]:
+                            curr[i].extend(prob)
+                    curr[i].sort()
+            depth_2_single_view.extend(curr)
+            
+            curr = list()
+            # attacker depth = 1 and 2
+            for direct in af_concrete.arguments[prob].attacks:
+                for i in range(len(af_concrete.arguments[direct].attacks)+1):
+                    curr.extend(itertools.combinations(af_concrete.arguments[direct].attacks, i))
+                for i in range(len(curr)):
+                    curr[i] = list(curr[i])
+                    curr[i].extend(direct)
+                    if prob not in curr[i]:
+                        curr[i].extend(prob)
+                    curr[i].sort()
+            depth_2_single_view.extend(curr)
+
+    all_comb = list()
+    for i in range(1, len(depth_2_single_view)+1, 1):
+        all_comb.extend(itertools.combinations(depth_2_single_view, i))
+
+
+    depth_2_combinations = list()
+    for combination in all_comb:
         curr = list()
-        # attacker depth = 1 and 2
-        for direct in af_concrete.arguments[prob].attacks:
-            for i in range(len(af_concrete.arguments[direct].attacks)+1):
-                curr.extend(itertools.combinations(af_concrete.arguments[direct].attacks, i))
-            for i in range(len(curr)):
-                curr[i] = list(curr[i])
-                curr[i].extend(direct)
-                for conc in concretizer_list:
-                    if conc not in curr[i]:
-                        curr[i].extend(conc)
-                curr[i].sort()
-        depth_2_combinations.extend(curr)
+        for comb in combination:
+            for single in comb:
+                if single not in curr:
+                    curr.append(single)
+            curr.sort()
+            if curr not in depth_2_combinations:
+                depth_2_combinations.append(curr)
         
     # TODO: potential bugs here
     # sort out singletons which are not in cluster
@@ -345,10 +374,11 @@ def main():
         
         concretized_af = concretizeCluster(set_to_concretize=args.concretize, abstract_af=abstract_af, concrete_af=concrete_af)
         faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=args.algorithm, semantic=args.semantic)
-        Visualizer.show(abstract_af.arguments)
+        Visualizer.show(concretized_af.arguments)
         
         if faithful[0] == False:
             concretizer_list = createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=faithful[1], concretizer_list=args.concretize)
+            Info.info(f"Problematic Singletons: {faithful[1]}, Further tests: {concretizer_list}")
             for maybe_sol in concretizer_list:
                 Info.info(f"Spurious, trying to concretize {maybe_sol}")
                 concretized_af = concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af, concrete_af=concrete_af)

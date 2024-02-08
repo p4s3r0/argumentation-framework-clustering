@@ -27,6 +27,7 @@ class Parser:
             current_line_number = 0
             header_line_parsed = False
             cluster_definitions = False
+            attackless_definitions = False
             arg_amount = -1
  
 
@@ -44,9 +45,18 @@ class Parser:
                 if line.split()[0] == '--cluster--':
                     cluster_definitions = True
                     continue
+
+                if line.split()[0] == '--attackless--':
+                    attackless_definitions = True
+                    cluster_definitions = False
+                    continue
                 
                 if cluster_definitions: 
                     self.parseClusteredArgument(line=line.split(), line_number=current_line_number)
+                    continue
+
+                if attackless_definitions:
+                    self.parseAttackless(line=line.split(), line_number=current_line_number)
                     continue
 
                 # parse attack
@@ -103,6 +113,15 @@ class Parser:
 
         for arg in line[2:]:
             self.arguments[clustered_argument].clustered_arguments.append(arg)
+
+
+
+    def parseAttackless(self, line: list, line_number: int) -> None:
+        arg = line[0]
+
+        if arg in self.arguments:
+            Error.attacklessArgumentHasAttacks(line_number=line_number, arg=arg)
+        self.arguments[str(arg)] = Argument.Argument(name=str(arg))
 
 
 
