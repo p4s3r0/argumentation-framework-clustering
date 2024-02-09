@@ -12,42 +12,51 @@ from utils import Argument
 
 from semantic.SemanticHelper import getSemanticSolver
 
+
 class ProgramArguments:
-    def __init__(self, input_file: str, function: str, compare_input_file: str, algorithm: str, semantic: str, concretize: list):
+    def __init__(self, input_file: str, function: str, compare_input_file: str, algorithm: str, semantic: str,
+                 concretize: list):
         self.input_file = input_file
         self.compare_input_file = compare_input_file
-        if algorithm != "BFS" and algorithm != "DFS" and algorithm != None:
+        if algorithm != "BFS" and algorithm != "DFS" and algorithm is not None:
             Error.wrongAlgorithm(algorithm)
-        self.algorithm = algorithm if algorithm != None and algorithm == "DFS" else "BFS"
-        self.semantic = semantic if semantic != None else "AD"
+        self.algorithm = algorithm if algorithm is not None and algorithm == "DFS" else "BFS"
+        self.semantic = semantic if semantic is not None else "AD"
         self.concretize = concretize
         self.function = function
 
 
-
 def argumentParser():
-    '''
+    """
     Parses The Process Arguments 
-    @return -> ProgramArguments instance with the according arguments'''
-    parser = argparse.ArgumentParser(description="Parses an AF file and computes clustered AF. \nAuthor: Pasero Christian")
-    parser.add_argument("f", metavar="<function>", action="store", help="Defines the behaviour of the program. Choices: SETS (=calculates sets of semantic), CHECK (=determines if two AFs are faithful), CONCRETIZE (=concretizes a list of arguments)", choices=['SETS', 'CHECK', 'CONCRETIZE'])
+    @return -> ProgramArguments instance with the according arguments"""
+    parser = argparse.ArgumentParser(
+        description="Parses an AF file and computes clustered AF. \nAuthor: Pasero Christian")
+    parser.add_argument("f", metavar="<function>", action="store",
+                        help="Defines the behaviour of the program. Choices: SETS (=calculates sets of semantic), CHECK (=determines if two AFs are faithful), CONCRETIZE (=concretizes a list of arguments)",
+                        choices=['SETS', 'CHECK', 'CONCRETIZE'])
     parser.add_argument("i", metavar="<input_file>", action="store", help="Filename of input file")
-    parser.add_argument("-c", metavar="<input_file_2>", action="store", help="Filename of the second input file for which spuriousness should be checked", required=False)
-    parser.add_argument("-a", metavar="<algorithm>", action="store", help="Which algorithm should be used BFS or DFS. BFS is default.", required=False)
-    parser.add_argument("-s", metavar="<semantic>", action="store", help="Which semantic should be used CF, AD, ST. Default: AD", required=False)
-    parser.add_argument("-p", metavar="[list of arguments]", nargs='+', required=False, help="A space separated list of arguments which should be concrete")
+    parser.add_argument("-c", metavar="<input_file_2>", action="store",
+                        help="Filename of the second input file for which spuriousness should be checked",
+                        required=False)
+    parser.add_argument("-a", metavar="<algorithm>", action="store",
+                        help="Which algorithm should be used BFS or DFS. BFS is default.", required=False)
+    parser.add_argument("-s", metavar="<semantic>", action="store",
+                        help="Which semantic should be used CF, AD, ST. Default: AD", required=False)
+    parser.add_argument("-p", metavar="[list of arguments]", nargs='+', required=False,
+                        help="A space separated list of arguments which should be concrete")
 
     arguments = vars(parser.parse_args())
-    return ProgramArguments(arguments["i"], arguments["f"], arguments["c"], arguments["a"], arguments["s"], arguments["p"])
-
+    return ProgramArguments(arguments["i"], arguments["f"], arguments["c"], arguments["a"], arguments["s"],
+                            arguments["p"])
 
 
 def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
-    '''
+    """
     Compares 2 AFs from the passed files and decides if spurious of faithful
     @file1 -> filepath of the first AF which should be parsed and compared
     @file2 -> filepath of the second AF which should be parsed and compared
-    @algorithm -> Choose between BFS (=default) or DFS'''
+    @algorithm -> Choose between BFS (=default) or DFS"""
     af_main = ArgumentationFramework.ArgumentationFramework()
     af_main.parseFile(filepath=file2)
     Info.info(f"Input File Concrete {file2} parsed")
@@ -56,10 +65,9 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
     af_abstract.parseFile(filepath=file1)
     Info.info(f"Input File Abstracxt {file1} parsed")
 
-
     solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_main.arguments)
     solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_main.arguments)
-    
+
     if algorithm == "BFS":
         set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
@@ -72,16 +80,16 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
         else:
             Out.Faithful()
     else:
-        while (set_af_2 := solver_af_2.computeSets(1, algorithm=algorithm)) != False:
-            if (cmp:=solver_af_1.verifySet(set_af_2)) != True:
+        while set_af_2 := solver_af_2.computeSets(1, algorithm=algorithm):
+            if not (cmp := solver_af_1.verifySet(set_af_2)):
                 Out.Spurious(cmp[0])
                 break
         else:
             Out.Faithful()
 
 
-
-def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramework, concrete_af: ArgumentationFramework):
+def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramework,
+                      concrete_af: ArgumentationFramework):
     # check if valid concretize set
     for arg in set_to_concretize:
         if int(arg) < 1 or int(arg) > abstract_af.arg_amount:
@@ -96,13 +104,12 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
                 if arg in abstract_af.arguments[cluster].clustered_arguments:
                     arg_is_in_cluster = True
                     break
-        
+
         if not arg_is_in_cluster:
             Info.info(f"Argument {arg} in concretizer list is not in a cluster, being ignored")
             set_to_concretize.remove(arg)
             if len(set_to_concretize) == 0:
                 Error.emptyConcretizerList()
-
 
     # Create new concretize AF
     abstract_abstract_af = copy.deepcopy(abstract_af)
@@ -125,7 +132,6 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
                 # check if argument attacks argument in cluster
                 for arg_attack in concrete_af.arguments[arg].attacks:
                     if arg_attack in abstract_abstract_af.arguments[cluster].clustered_arguments:
-                        
                         abstract_abstract_af.arguments[arg].attacks.append(cluster)
                         abstract_abstract_af.arguments[cluster].defends.append(arg)
                 # check if argument is attacked by arguments in cluster
@@ -163,7 +169,7 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
                                     abstract_abstract_af.arguments[singleton].attacks.append(attacked_by_singleton)
                                 if singleton not in abstract_abstract_af.arguments[attacked_by_singleton].defends:
                                     abstract_abstract_af.arguments[attacked_by_singleton].defends.append(singleton)
-                    
+
                     singleton_is_not_attacked_by_cluster = True
                     if cluster in abstract_abstract_af.arguments[singleton].defends:
                         for cluster_singleton in abstract_abstract_af.arguments[cluster].clustered_arguments:
@@ -185,9 +191,10 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
             if cluster in abstract_abstract_af.arguments[cluster].attacks:
                 attacks_in_cluster = False
                 for singleton_in_cluster in abstract_abstract_af.arguments[cluster].clustered_arguments:
-                    if len(set(concrete_af.arguments[singleton_in_cluster].attacks) & set(abstract_abstract_af.arguments[cluster].clustered_arguments)) > 0:
+                    if len(set(concrete_af.arguments[singleton_in_cluster].attacks) & set(
+                            abstract_abstract_af.arguments[cluster].clustered_arguments)) > 0:
                         attacks_in_cluster = True
-                        break;
+                        break
                 if not attacks_in_cluster:
                     abstract_abstract_af.arguments[cluster].attacks.remove(cluster)
                     abstract_abstract_af.arguments[cluster].defends.remove(cluster)
@@ -199,12 +206,11 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
             if len(abstract_abstract_af.arguments[cluster].clustered_arguments) == 0:
                 Info.info(f"Removing Cluster {cluster}, because cluster is empty.")
                 cluster_to_pop.append(cluster)
-    
+
     [abstract_abstract_af.arguments.pop(cluster) for cluster in cluster_to_pop]
 
     # Check if spurious
     return abstract_abstract_af
-
 
 
 def computeSemanticSets(input_file: str, semantic: str):
@@ -216,13 +222,14 @@ def computeSemanticSets(input_file: str, semantic: str):
     Out.SolutionSets(semantic=semantic, sets=solutions)
     Info.info("Solution Sets Computed")
     Info.info("Visualizing Argumentation Framework")
-    Visualizer.show(af.arguments)
+    # Visualizer.show(af.arguments)
 
 
-def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str, semantic: str):
+def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str,
+                          semantic: str):
     solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_concrete.arguments)
     solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_concrete.arguments)
-    
+
     if algorithm == "BFS":
         set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
@@ -242,13 +249,13 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
             Out.Faithful()
             return True, None
     else:
-        while (set_af_2 := solver_af_2.computeSets(1, algorithm=algorithm)) != False:
-            if (cmp:=solver_af_1.verifySet(set_af_2)) != True:
+        while set_af_2 := solver_af_2.computeSets(1, algorithm=algorithm):
+            if not (cmp := solver_af_1.verifySet(set_af_2)):
                 Out.Spurious(cmp[0])
                 # filter problematic singletons which cause spuriousness
                 problem_sets = [set(p) for p in cmp]
                 problem_singletons = problem_sets[0]
-                for i in range(len(problem_sets)-1):
+                for i in range(len(problem_sets) - 1):
                     problem_singletons = problem_singletons & problem_sets[i]
                 return False, list(problem_singletons)
         else:
@@ -256,10 +263,10 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
             return True, None
 
 
-
-def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, problematic_singletons: list, concretizer_list: list):
+def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework,
+                          problematic_singletons: list):
     # TODO: also implement for more problematic singletons
-    
+
     # all combinations
     depth_2_single_view = list()
 
@@ -282,20 +289,20 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
             curr = list()
             # defender depth = 1 and 2
             for direct in af_concrete.arguments[prob].defends:
-                for i in range(len(af_concrete.arguments[direct].defends)+1):
+                for i in range(len(af_concrete.arguments[direct].defends) + 1):
                     curr.extend(itertools.combinations(af_concrete.arguments[direct].defends, i))
                 for i in range(len(curr)):
                     curr[i] = list(curr[i])
                     curr[i].extend(direct)
                     if prob not in curr[i]:
-                            curr[i].extend(prob)
+                        curr[i].extend(prob)
                     curr[i].sort()
             depth_2_single_view.extend(curr)
-            
+
             curr = list()
             # attacker depth = 1 and 2
             for direct in af_concrete.arguments[prob].attacks:
-                for i in range(len(af_concrete.arguments[direct].attacks)+1):
+                for i in range(len(af_concrete.arguments[direct].attacks) + 1):
                     curr.extend(itertools.combinations(af_concrete.arguments[direct].attacks, i))
                 for i in range(len(curr)):
                     curr[i] = list(curr[i])
@@ -306,9 +313,8 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
             depth_2_single_view.extend(curr)
 
     all_comb = list()
-    for i in range(1, len(depth_2_single_view)+1, 1):
+    for i in range(1, len(depth_2_single_view) + 1, 1):
         all_comb.extend(itertools.combinations(depth_2_single_view, i))
-
 
     depth_2_combinations = list()
     for combination in all_comb:
@@ -320,7 +326,7 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
             curr.sort()
             if curr not in depth_2_combinations:
                 depth_2_combinations.append(curr)
-        
+
     # TODO: potential bugs here
     # sort out singletons which are not in cluster
     for comb in depth_2_combinations:
@@ -331,7 +337,7 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     if arg in af_abstract.arguments[cluster].clustered_arguments:
                         arg_is_in_cluster = True
                         break
-            
+
             if not arg_is_in_cluster:
                 comb.remove(arg)
 
@@ -340,7 +346,6 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
         if comb not in deduplicated_list:
             deduplicated_list.append(comb)
 
-    
     return deduplicated_list
 
 
@@ -353,16 +358,15 @@ def main():
         computeSemanticSets(input_file=args.input_file, semantic=args.semantic)
 
     elif args.function == "CHECK":
-        if args.compare_input_file == None:
+        if args.compare_input_file is None:
             Error.programArgumentsInvalid("Function = CHECK, but second AF is missing.")
         compareTwoAFs(args.input_file, args.compare_input_file, args.algorithm, args.semantic)
 
-
     elif args.function == "CONCRETIZE":
-        if args.concretize == None:
+        if args.concretize is None:
             Error.programArgumentsInvalid("Function = CONCRETIZE, but concretize list is missing")
 
-        if args.compare_input_file == None:
+        if args.compare_input_file is None:
             Error.programArgumentsInvalid("Function = CONCRETIZE, but concrete AF is missing.")
 
         # read in concrete AF
@@ -371,27 +375,30 @@ def main():
         # read in abstract AF
         abstract_af = ArgumentationFramework.ArgumentationFramework()
         abstract_af.parseFile(filepath=args.input_file)
-        
-        concretized_af = concretizeCluster(set_to_concretize=args.concretize, abstract_af=abstract_af, concrete_af=concrete_af)
-        faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=args.algorithm, semantic=args.semantic)
-        Visualizer.show(concretized_af.arguments)
-        
-        if faithful[0] == False:
-            concretizer_list = createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=faithful[1], concretizer_list=args.concretize)
+
+        concretized_af = concretizeCluster(set_to_concretize=args.concretize, abstract_af=abstract_af,
+                                           concrete_af=concrete_af)
+        faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=args.algorithm,
+                                         semantic=args.semantic)
+        # Visualizer.show(concretized_af.arguments)
+
+        if not faithful[0]:
+            concretizer_list = createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
+                                                     problematic_singletons=faithful[1])
             Info.info(f"Problematic Singletons: {faithful[1]}, Further tests: {concretizer_list}")
             for maybe_sol in concretizer_list:
                 Info.info(f"Spurious, trying to concretize {maybe_sol}")
-                concretized_af = concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af, concrete_af=concrete_af)
-                faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=args.algorithm, semantic=args.semantic)
-                Visualizer.show(concretized_af.arguments)
-                
-                if faithful[0] == True:
-                    exit()
-                    
-    Info.info("Ending Program")
+                concretized_af = concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af,
+                                                   concrete_af=concrete_af)
+                faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
+                                                 algorithm=args.algorithm, semantic=args.semantic)
+                # Visualizer.show(concretized_af.arguments)
 
+                if faithful[0]:
+                    exit()
+
+    Info.info("Ending Program")
 
 
 if __name__ == '__main__':
     main()
-
