@@ -3,5 +3,4 @@ __pycache__
 .env.*
 .DS_Store
 test.py
-.fleet
 External Libraries

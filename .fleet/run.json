@@ -1,0 +1,34 @@
+//{
+//    "configurations": [
+//    {
+//        "type": "python",
+//        "name": "argumentation framework clustering",
+//        "file": "main.py",
+//        "arguments": ["SETS", "input/handcrafted/basic.af", "-s", "ST"],
+//    },
+//    ]
+//}
+
+
+{
+    "configurations": [
+    {
+        "type": "command",
+        "name": "Latex Bash Build",
+        "program": "bash",
+        "args": ["$PROJECT_DIR$/thesis/build.sh", "21"]
+    },
+    ]
+}
+
+
+//{
+//    "configurations": [
+//        {
+//            "type": "command",
+//            "name": "Latex Bash Clean",
+//            "program": "bash",
+//            "args": ["$PROJECT_DIR$/thesis/clean.sh"]
+//        },
+//    ]
+//}
