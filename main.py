@@ -299,7 +299,7 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     curr[i].sort()
             depth_2_single_view.extend(curr)
 
-            curr = list()
+            curr.clear()
             # attacker depth = 1 and 2
             for direct in af_concrete.arguments[prob].attacks:
                 for i in range(len(af_concrete.arguments[direct].attacks) + 1):
@@ -385,6 +385,9 @@ def main():
         if not faithful[0]:
             concretizer_list = createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
                                                      problematic_singletons=faithful[1])
+            # try few concretizer items first, then try more and more
+            concretizer_list.sort(key=len)
+
             Info.info(f"Problematic Singletons: {faithful[1]}, Further tests: {concretizer_list}")
             for maybe_sol in concretizer_list:
                 Info.info(f"Spurious, trying to concretize {maybe_sol}")
@@ -395,6 +398,7 @@ def main():
                 # Visualizer.show(concretized_af.arguments)
 
                 if faithful[0]:
+                    Visualizer.show(concretized_af.arguments)
                     exit()
 
     Info.info("Ending Program")

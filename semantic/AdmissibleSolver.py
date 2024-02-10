@@ -72,7 +72,8 @@ class AdmissibleSolver:
         clause = z3.And(clause_cf, clause_right)
         self.solver.add(clause)        
 
-
+        #TODO: Check refinement
+        return
         if self.AF_main == None:
             return
         
