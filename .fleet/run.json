@@ -16,7 +16,7 @@
         "type": "command",
         "name": "Latex Bash Build",
         "program": "bash",
-        "args": ["$PROJECT_DIR$/thesis/build.sh", "21"]
+        "args": ["$PROJECT_DIR$/thesis/build.sh", "22"]
     },
     ]
 }

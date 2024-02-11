@@ -222,7 +222,7 @@ def computeSemanticSets(input_file: str, semantic: str):
     Out.SolutionSets(semantic=semantic, sets=solutions)
     Info.info("Solution Sets Computed")
     Info.info("Visualizing Argumentation Framework")
-    # Visualizer.show(af.arguments)
+    Visualizer.show(af.arguments)
 
 
 def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str,
@@ -239,11 +239,6 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
 
         if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             Out.Spurious(cmp)
-            # filter problematic singletons which cause spuriousness
-            # problem_sets = [set(p) for p in cmp]
-            # problem_singletons = problem_sets[0]
-            # for i in range(len(problem_sets)-1):
-            #     problem_singletons = problem_singletons & problem_sets[i]
             return False, list(cmp)
         else:
             Out.Faithful()
@@ -264,12 +259,11 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
 
 
 def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework,
-                          problematic_singletons: list):
+                          problematic_singletons: list, concretizer_list: list):
     # TODO: also implement for more problematic singletons
 
     # all combinations
     depth_2_single_view = list()
-
     # Filter cluster out of problematic singletons
     filtered_problematic_singletons = list()
     for problem_sets in problematic_singletons:
@@ -283,7 +277,6 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
         if len(curr) > 0 and curr not in filtered_problematic_singletons:
             curr.sort()
             filtered_problematic_singletons.append(curr)
-
     for prob_set in filtered_problematic_singletons:
         for prob in prob_set:
             curr = list()
@@ -297,7 +290,26 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     if prob not in curr[i]:
                         curr[i].extend(prob)
                     curr[i].sort()
-            depth_2_single_view.extend(curr)
+
+            curr_with_concretizer = list()
+
+            for curr_sol in curr:
+                # filter arguments out, which are not in cluster
+                filtered_arguments = list()
+                for arg in curr_sol:
+                    for cluster in af_abstract.arguments:
+                        if not af_abstract.arguments[cluster].is_singleton:
+                            if arg in af_abstract.arguments[cluster].clustered_arguments:
+                                if arg not in filtered_arguments:
+                                    filtered_arguments.append(arg)
+                                continue
+
+                for conc in concretizer_list:
+                    if conc not in filtered_arguments:
+                        filtered_arguments.append(conc)
+                curr_with_concretizer.append(filtered_arguments)
+
+            depth_2_single_view.extend(curr_with_concretizer)
 
             curr.clear()
             # attacker depth = 1 and 2
@@ -310,8 +322,28 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     if prob not in curr[i]:
                         curr[i].extend(prob)
                     curr[i].sort()
-            depth_2_single_view.extend(curr)
 
+            curr_with_concretizer = list()
+            for curr_sol in curr:
+
+                # filter arguments out, which are not in cluster
+                filtered_arguments = list()
+                for arg in curr_sol:
+                    for cluster in af_abstract.arguments:
+                        if not af_abstract.arguments[cluster].is_singleton:
+                            if arg in af_abstract.arguments[cluster].clustered_arguments:
+                                if arg not in filtered_arguments:
+                                    filtered_arguments.append(arg)
+                                continue
+                for conc in concretizer_list:
+                    if conc not in filtered_arguments:
+                        filtered_arguments.append(conc)
+                curr_with_concretizer.append(filtered_arguments)
+
+            depth_2_single_view.extend(curr_with_concretizer)
+
+
+    # Create all sorts of combinations
     all_comb = list()
     for i in range(1, len(depth_2_single_view) + 1, 1):
         all_comb.extend(itertools.combinations(depth_2_single_view, i))
@@ -326,20 +358,6 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
             curr.sort()
             if curr not in depth_2_combinations:
                 depth_2_combinations.append(curr)
-
-    # TODO: potential bugs here
-    # sort out singletons which are not in cluster
-    for comb in depth_2_combinations:
-        for arg in comb:
-            arg_is_in_cluster = False
-            for cluster in af_abstract.arguments:
-                if not af_abstract.arguments[cluster].is_singleton:
-                    if arg in af_abstract.arguments[cluster].clustered_arguments:
-                        arg_is_in_cluster = True
-                        break
-
-            if not arg_is_in_cluster:
-                comb.remove(arg)
 
     deduplicated_list = list()
     for comb in depth_2_combinations:
@@ -381,10 +399,10 @@ def main():
         faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=args.algorithm,
                                          semantic=args.semantic)
         # Visualizer.show(concretized_af.arguments)
-
         if not faithful[0]:
             concretizer_list = createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
-                                                     problematic_singletons=faithful[1])
+                                                     problematic_singletons=faithful[1], concretizer_list = args.concretize)
+
             # try few concretizer items first, then try more and more
             concretizer_list.sort(key=len)
 

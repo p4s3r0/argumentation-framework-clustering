@@ -1,3 +1,3 @@
-cd ~/Desktop/thesis/
-pdflatex -halt-on-error main.tex
+cd ~/Desktop/argumentation-framework-clustering/thesis/
+latexmk -pdf main.tex
 evince main.pdf -i $1
