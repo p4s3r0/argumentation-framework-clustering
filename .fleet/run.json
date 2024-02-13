@@ -10,25 +10,25 @@
 //}
 
 
-{
-    "configurations": [
-    {
-        "type": "command",
-        "name": "Latex Bash Build",
-        "program": "bash",
-        "args": ["$PROJECT_DIR$/thesis/build.sh", "22"]
-    },
-    ]
-}
-
-
 //{
 //    "configurations": [
-//        {
-//            "type": "command",
-//            "name": "Latex Bash Clean",
-//            "program": "bash",
-//            "args": ["$PROJECT_DIR$/thesis/clean.sh"]
-//        },
+//    {
+//        "type": "command",
+//        "name": "Latex Bash Build",
+//        "program": "bash",
+//        "args": ["$PROJECT_DIR$/thesis/build.sh", "22"]
+//    },
 //    ]
 //}
+
+
+{
+    "configurations": [
+        {
+            "type": "command",
+            "name": "Latex Bash Clean",
+            "program": "bash",
+            "args": ["$PROJECT_DIR$/thesis/clean.sh"]
+        },
+    ]
+}
