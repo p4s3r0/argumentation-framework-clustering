@@ -39,7 +39,6 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
         Out.CurrSolution(k)
 
         sol = Solver.transformModelIntoArguments(arguments=current_solver.AF, model=model)
-        print(sol)
         current_solver.solution.append(sol)
 
 

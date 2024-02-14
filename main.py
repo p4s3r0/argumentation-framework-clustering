@@ -219,7 +219,6 @@ def computeSemanticSets(input_file: str, semantic: str):
     Info.info("Input File Parsed")
     solver = getSemanticSolver(semantic=semantic, AF=af.arguments)
     solutions = solver.computeSets()
-    print(solutions)
     Out.SolutionSets(semantic=semantic, sets=solutions)
     Info.info("Solution Sets Computed")
     Info.info("Visualizing Argumentation Framework")
