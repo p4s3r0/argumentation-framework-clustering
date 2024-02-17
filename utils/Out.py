@@ -4,7 +4,7 @@ OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
 
 def OUT(func):
     def wrapper(*args, **kwargs):
-        print(f"{OUT_MESSAGE}", end="")
+        #print(f"{OUT_MESSAGE}", end="")
         func(*args, **kwargs)
     return wrapper
 

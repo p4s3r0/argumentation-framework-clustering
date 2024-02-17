@@ -1,6 +1,7 @@
 import argparse
 import copy
 import itertools
+import os
 
 from utils import ArgumentationFramework
 from utils import Info
@@ -34,7 +35,7 @@ def argumentParser():
         description="Parses an AF file and computes clustered AF. \nAuthor: Pasero Christian")
     parser.add_argument("f", metavar="<function>", action="store",
                         help="Defines the behaviour of the program. Choices: SETS (=calculates sets of semantic), CHECK (=determines if two AFs are faithful), CONCRETIZE (=concretizes a list of arguments)",
-                        choices=['SETS', 'CHECK', 'CONCRETIZE'])
+                        choices=['SETS', 'CHECK', 'CONCRETIZE', 'TEMP'])
     parser.add_argument("i", metavar="<input_file>", action="store", help="Filename of input file")
     parser.add_argument("-c", metavar="<input_file_2>", action="store",
                         help="Filename of the second input file for which spuriousness should be checked",
@@ -92,9 +93,6 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
                       concrete_af: ArgumentationFramework):
     # check if valid concretize set
     for arg in set_to_concretize:
-        if int(arg) < 1 or int(arg) > abstract_af.arg_amount:
-            Error.concretizeCLIARgumentInvalid(arg)
-
         if arg in abstract_af.arguments and not abstract_af.arguments[arg].is_singleton:
             Error.concretizeOfCluster(arg)
 
@@ -176,6 +174,7 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
                             if singleton in concrete_af.arguments[cluster_singleton].attacks:
                                 singleton_is_not_attacked_by_cluster = False
                                 break
+
                         if singleton_is_not_attacked_by_cluster:
                             abstract_abstract_af.arguments[singleton].defends.remove(cluster)
                             abstract_abstract_af.arguments[cluster].attacks.remove(singleton)
@@ -344,7 +343,13 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
 
 
     # Create all sorts of combinations
+    #TODO: remove this
     all_comb = list()
+    if len(depth_2_single_view) >= 20:
+        return "too_many"
+    
+
+
     for i in range(1, len(depth_2_single_view) + 1, 1):
         all_comb.extend(itertools.combinations(depth_2_single_view, i))
 
@@ -365,6 +370,69 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
             deduplicated_list.append(comb)
 
     return deduplicated_list
+
+
+def createGroundedConcretizerList(af_concrete: Argument.Argument, af_abstract: Argument.Argument, problematic_singletons: list, concretizer_list: list):
+    # Filter cluster out of problematic singletons
+    filtered_problematic_singletons = list()
+    for problem_sets in problematic_singletons:
+        curr = list()
+        for arg in problem_sets:
+            if arg in af_abstract.arguments:
+                if af_abstract.arguments[arg].is_singleton:
+                    curr.append(arg)
+            else:
+                curr.append(arg)
+        if len(curr) > 0 and curr not in filtered_problematic_singletons:
+            curr.sort()
+            filtered_problematic_singletons.append(curr)
+
+    if len(filtered_problematic_singletons) == 0:
+        return -1
+
+    unique_singletons = list()
+    for curr_set in filtered_problematic_singletons:
+        for arg in curr_set:
+            if arg not in unique_singletons:
+                unique_singletons.append(arg)
+
+    attacker_defender = list()
+    for center in unique_singletons:
+        if center not in attacker_defender:
+            attacker_defender.extend(center)
+        # attacker
+        for direct_att in af_concrete.arguments[center].defends:
+            if direct_att not in attacker_defender: 
+                attacker_defender.extend(direct_att)
+            for depth_2_attacker in af_concrete.arguments[direct_att].defends:
+                if depth_2_attacker not in attacker_defender:
+                    attacker_defender.extend(depth_2_attacker)
+
+        # defender
+        for direct_def in af_concrete.arguments[center].attacks:
+            if direct_def not in attacker_defender: 
+                attacker_defender.extend(direct_def)
+            for depth_2_defender in af_concrete.arguments[direct_def].attacks:
+                if depth_2_defender not in attacker_defender:
+                    attacker_defender.extend(depth_2_defender)
+
+
+    # filter out cluster
+    ret = list()
+    for arg in attacker_defender:
+        for cluster in af_abstract.arguments:
+            if not af_abstract.arguments[cluster].is_singleton:
+                if arg in af_abstract.arguments[cluster].clustered_arguments:
+                    if arg not in ret:
+                        ret.append(arg)
+                continue
+
+    return ret
+
+        
+
+
+
 
 
 def main():
@@ -422,5 +490,69 @@ def main():
     Info.info("Ending Program")
 
 
+def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
+        # read in concrete AF
+        concrete_af = ArgumentationFramework.ArgumentationFramework()
+        concrete_af.parseFile(filepath=concrete_file)
+        # read in abstract AF
+        abstract_af = ArgumentationFramework.ArgumentationFramework()
+        abstract_af.parseFile(filepath=abstract_file)
+
+        faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=abstract_af, algorithm="BFS",
+                                         semantic=semantics)
+        
+        if not faithful[0] and faithful[1] != []:
+            spurious_sets = faithful[1]
+            concretizer_list_grounded = createGroundedConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
+                                                                    problematic_singletons=spurious_sets, concretizer_list = [])
+
+            if concretizer_list_grounded == -1:
+                return True
+            
+            concretized_af = concretizeCluster(set_to_concretize=concretizer_list_grounded, abstract_af=abstract_af,
+                                                concrete_af=concrete_af)
+            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
+                                                algorithm="BFS", semantic=semantics)
+            
+            if not faithful[0]: # subbis have to be spurious too
+                concretizer_list = createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
+                                                     problematic_singletons=spurious_sets, concretizer_list=[])
+                if concretizer_list == "too_many":
+                    return True
+
+                concretizer_list.sort(key=len)
+                for maybe_sol in concretizer_list:
+                    concretized_af = concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af,
+                                                    concrete_af=concrete_af)
+                    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
+                                                    algorithm="BFS", semantic=semantics)
+                    if faithful[0]:
+                        print("spurious set", spurious_sets)
+                        print("grounded", concretizer_list_grounded)
+                        print("combi", maybe_sol)
+                        return False
+                return True
+
+            else:
+                return True
+
+        else:
+            return True
+
+
+
+
 if __name__ == '__main__':
+    # directory = "dev_tools/temp/GEN_a6_r8/"
+    # tests_amount = 100
+    # for i in range(tests_amount):
+    #     concrete_file = directory+"concrete/concrete_"+str(i)+".af"
+    #     abstract_file = directory+"abstract/abstract_"+str(i)+".af"
+    #     if checkTheory(concrete_file=concrete_file, abstract_file=abstract_file, semantics="ST"):
+    #         print(f"Test {i} PASSED")
+    #     else:
+    #         print(f"Test {i} FAILED")
+    #         exit()
+
+    # exit()
     main()

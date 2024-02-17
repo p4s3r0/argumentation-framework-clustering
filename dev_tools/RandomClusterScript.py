@@ -1,4 +1,6 @@
 import sys
+import random
+import os
 '''
 Creates a Clustered AF from the input file. The Cluster Contains 
 <X> Singletons, where <X> is defined as command line argument.
@@ -10,10 +12,20 @@ input format: python3 RandomClusterScript.py <filename> <cluster_size>
 def readFile(filename: str):
     arg_amount= 0
     attacks=list()
+    attackless=list()
 
     with open(filename, "r") as f: 
         arg_amount = int(f.readline().split()[2])
+        attackless_check = False
         for attack in f:
+            if attack == "--attackless--\n":
+                attackless_check = True
+                continue
+
+            if attackless_check:
+                attackless.append(attack.split()[0])
+                continue
+
             if len(attack.split()) <= 0 or attack.split()[0] == '#':
                 continue
             
@@ -22,7 +34,7 @@ def readFile(filename: str):
 
             if attack.split() not in attacks:
                 attacks.append(attack.split())
-    return arg_amount, attacks
+    return arg_amount, attacks, attackless
 
 
 
@@ -45,8 +57,8 @@ def clusterAF(attacks: list, arg_amount: int, cluster_size: int):
 
 
 
-def generateFile(C_AF: list, inp_file: str, clustered_argument_amount: int, arg_amount: int):
-    with open(f"{inp_file[:-6]}_c{clustered_argument_amount}.af", "w") as f:
+def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_amount: int, arg_amount: int, attackless: list):
+    with open(f"{inp_folder}abstract/abstract_{inp_file[inp_file.find('_')+1:inp_file.find('.')]}.af", "w") as f:
         f.write(f"p af {arg_amount - clustered_argument_amount + 1}\n")
         f.write("# Clustered with Script\n")
         for attack in C_AF:
@@ -57,19 +69,33 @@ def generateFile(C_AF: list, inp_file: str, clustered_argument_amount: int, arg_
         for i in range(1, clustered_argument_amount + 1):
             f.write(f"{i} ")
 
+        attackless_final = list()
+        if len(attackless) > 0:
+            for arg in attackless:
+                if int(arg) > clustered_argument_amount + 1:
+                    attackless_final.append(arg)
+        
+        if len(attackless_final) > 0:
+            f.write("\n--attackless--\n")
+            for arg in attackless_final:
+                f.write(f"{arg}\n")
+
+
+        
+
 
 
 def main():
-    print("input format: <filename> <cluster_size>")
-    cluster_size = int(sys.argv[2])
-    filename=sys.argv[1]
-    arg_amount, attacks = readFile(filename)
-    if int(cluster_size) > int(arg_amount):
-        print("ERROR less arguments than cluster size")
+    for file in os.listdir(f"{sys.argv[1]}/concrete"):
+        arg_amount, attacks, attackless = readFile(sys.argv[1] + "concrete/" + file)
+        cluster_size = int(random.randint(1, arg_amount))
+        if int(cluster_size) > int(arg_amount):
+            print("ERROR less arguments than cluster size")
 
-    C_AF = clusterAF(attacks, arg_amount, cluster_size)
-    generateFile(C_AF, filename, cluster_size, arg_amount)
-    print("Generated new File Successful!")
+
+        C_AF = clusterAF(attacks, arg_amount, cluster_size)
+        generateFile(C_AF, file, sys.argv[1], cluster_size, arg_amount, attackless)
+    print("Created", len(os.listdir(f"{sys.argv[1]}/concrete")), "abstracts af")
 
 
 
