@@ -9,7 +9,11 @@
 \addbibresource{\jobname-example.bib}  % name of the bib-file
 \usepackage{hyperref}
 
+
+
+
 \begin{document}
+\include{helper/macros}
 
 %--- INFORMATION FOR TITLEPAGE -------------------------------------------------
 
@@ -42,6 +46,8 @@ Institute of Software Technology
 % Insert title page and affidavit
 
 \printthesistitle
+
+\include{docs/dev_notes}
 
 % Other front matter you may want to include
 
@@ -107,62 +113,7 @@ Deutsche Kurzfassung der Abschlussarbeit
 \end{table}
 
 
-% For 45° line -> center + 0.21
-% For 22.5° line -> center.x + 0.27 , center.y + 0.11
-% Cluster attacks -> cluster.y + 0.21 for top and - 0.21 for bottom
-\newcommand{\DrawSelfAttackLeftTopCluster}[2]{% X, Y
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#1, #2) 
-.. controls (#1 -0.35, #2 + 0.34) and (#1 - 0.75, #2 - 0.12) .. 
-(#1 - 0.13, #2 - 0.12);
-}
-
-\newcommand{\DrawAttackDiagonal}[5]{%Direction L.x L.y R.x R.y 
-% Direction -> N = Negative slope LR = Left to Right
-% Direction -> N = Negative slope RL = Right to Left
-% Direction -> P = Positive slope LR = Left to Right
-% Direction -> P = Positive slope RL = Right to Left
-% Direction -> H = not 45° but Halfed=22.5°
-\ifthenelse{\equal{#1}{NLR}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.21,#3 - 0.21) -- (#4 - 0.21 , #5 + 0.21);
-}{
-\ifthenelse{\equal{#1}{NRL}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 - 0.21,#3 + 0.21) -- (#4 + 0.21 , #5 - 0.21);
-}{
-\ifthenelse{\equal{#1}{PLR}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.21,#3 + 0.21) -- (#4 - 0.21 , #5 - 0.21);
-}{
-\ifthenelse{\equal{#1}{PRL}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.21 , #3 - 0.21) -- (#4 + 0.21,#5 + 0.21);
-}{}}}}}
-
-\newcommand{\DrawAttackHorizontal}[5]{%Direction L.x L.y R.x R.y 
-% R = Right to Left
-% L = Left to Right
-\ifthenelse{\equal{#1}{R}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.3,#3) -- (#4 - 0.3 , #5);
-}{
-\ifthenelse{\equal{#1}{L}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.3,#3) -- (#4 + 0.3 , #5);
-}{}}}
-
-
-\newcommand{\DrawAttackVertical}[5]{%Direction L.x L.y R.x R.y 
-% U = Down to Top
-% D = Top to Down
-% B = Double Attack
-\ifthenelse{\equal{#1}{U}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2,#3 + 0.3) -- (#4, #5 - 0.3);
-}{
-\ifthenelse{\equal{#1}{D}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2,#3 - 0.3) -- (#4, #5 + 0.3);
-}{
-\ifthenelse{\equal{#1}{B}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.08, #3 - 0.3) -- (#4 + 0.08, #5 + 0.3);
-\draw[{To[length=4, width=5]}-, line width=0.3mm] (#2 - 0.08, #3 - 0.3) -- (#4 - 0.08, #5 + 0.3);
-
-}{}}}}
-
-
+\include{docs/Concretizing}
 
 
 

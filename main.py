@@ -123,6 +123,7 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
                 if concretize_arg in abstract_abstract_af.arguments[arg].clustered_arguments:
                     abstract_abstract_af.arguments[arg].clustered_arguments.remove(concretize_arg)
 
+    # create new attacks cluster -> concretized singleton and concretized singleton -> cluster
     for arg in set_to_concretize:
         # iterate over all clusters
         for cluster in abstract_af.arguments.keys():
@@ -458,12 +459,18 @@ def main():
         # read in concrete AF
         concrete_af = ArgumentationFramework.ArgumentationFramework()
         concrete_af.parseFile(filepath=args.compare_input_file)
+        Visualizer.show(concrete_af.arguments)
         # read in abstract AF
         abstract_af = ArgumentationFramework.ArgumentationFramework()
         abstract_af.parseFile(filepath=args.input_file)
+        Visualizer.show(abstract_af.arguments)
+
 
         concretized_af = concretizeCluster(set_to_concretize=args.concretize, abstract_af=abstract_af,
                                            concrete_af=concrete_af)
+        Visualizer.show(concretized_af.arguments)
+        exit()
+
         faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=args.algorithm,
                                          semantic=args.semantic)
         # Visualizer.show(concretized_af.arguments)

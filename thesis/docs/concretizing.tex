@@ -1,0 +1,25 @@
+\chapter{Implementation}
+
+\section{Concretizing Arguments}
+Concretizing a list of arguments is done iteratively by deep copying the abstract AF $F'$ to create a new AF $F''$ and mutating it. The mutation is guided by five steps considering the unchanged abstract AF $F'$ and the concrete AF $F$. 
+
+\paragraph{Step 1:} Each argument needing concretization is first removed from the parent cluster and added as a singleton in $F''$. 
+If an argument is not part of a cluster or, in other words, is not valid, we remove it and continue with the filtered valid list.
+We do not consider attacks or defenses in this step since they depend on the concrete- and abstract AFs.
+
+\paragraph{Step 2:} We add the new attacks and defenses from all concretized arguments to the remaining clusters. We must do this after
+removing the arguments from the clusters because if an argument $a$ attacks argument $b$ in the concrete AF, and $b$ is part of the cluster $F'$ in the abstract AF,
+by concretizing $b$, the attack $(a,F')$ would not be valid anymore.
+
+\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $F'$ are still valid in $F''$. If an attack is not valid
+anymore through the concretization, we remove it in $F''$. An attack is not valid anymore; if we remove one of the arguments being attacked or attacked by argument $a$ from the cluster $f$ and no other attack exists, s.t. $a$ is attacked from/attacking an argument within $f$.
+
+\paragraph{Step 4:} Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from 
+which the arguments are concretized. If an attack within the cluster is now pulled out, we need to inspect if the cluster is still attacking itself.
+If not, we will remove the self-attack.
+
+\paragraph{Step 5:} The last step is to clean up the argumentation framework $F''$ by removing all empty clusters and mutating the clusters with exactly
+one singleton to the mentioned singleton. 
+
+
+
