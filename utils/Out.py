@@ -1,7 +1,7 @@
 from colorama import Fore, Back, Style
 
 OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
-
+debug = False
 def OUT(func):
     def wrapper(*args, **kwargs):
         #print(f"{OUT_MESSAGE}", end="")
@@ -11,6 +11,7 @@ def OUT(func):
 
 @OUT
 def Spurious(set: list) -> None:
+    if not debug: return;
     print(f"{Style.BRIGHT + Back.RED + Fore.BLACK} SPURIOUS! {Style.RESET_ALL} Because Set {Fore.CYAN}", end="") 
     print(set, end="")
     print(f"{Style.RESET_ALL} is spurious.")
@@ -18,12 +19,13 @@ def Spurious(set: list) -> None:
 
 @OUT
 def Faithful() -> None:
+    if not debug: return;
     print(f"{Style.BRIGHT + Back.GREEN + Fore.BLACK} FAITHFUL! {Style.RESET_ALL}")
 
 
 @OUT
 def SolutionSets(semantic: str, sets: list, name: str = "") -> None:
-
+    if not debug: return;
     semantic_text = ""
     if semantic == "AD":
         semantic_text = "ADMISSIBLE"
@@ -42,4 +44,5 @@ def SolutionSets(semantic: str, sets: list, name: str = "") -> None:
 
 @OUT
 def CurrSolution(amount: int) -> None:
+    if not debug: return;
     print(f"Current Solutions Found {Fore.CYAN + Style.BRIGHT}{amount}{Style.RESET_ALL}", end="\r")

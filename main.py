@@ -209,6 +209,48 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
 
     [abstract_abstract_af.arguments.pop(cluster) for cluster in cluster_to_pop]
 
+
+    # exchange cluster with 1 singleton to the according singleton
+    for cluster in abstract_af.arguments:
+        if cluster not in abstract_abstract_af.arguments: continue
+        if not abstract_abstract_af.arguments[cluster].is_singleton:
+            if len(abstract_abstract_af.arguments[cluster].clustered_arguments) == 1:
+                # create singleton
+                new_singleton = Argument.Argument(abstract_abstract_af.arguments[cluster].clustered_arguments[0])
+                abstract_abstract_af.arguments[new_singleton.name] = new_singleton
+                abstract_abstract_af.arguments[new_singleton.name].attacks = copy.deepcopy(abstract_abstract_af.arguments[cluster].attacks)
+                # check for selfattack of cluster -> make self attack of singleton
+                for i, att in enumerate(abstract_abstract_af.arguments[new_singleton.name].attacks):
+                    if att == cluster:
+                        abstract_abstract_af.arguments[new_singleton.name].attacks[i] = new_singleton.name
+                        # selfattack is also present in defender
+                        for i, defend in enumerate(abstract_abstract_af.arguments[new_singleton.name].defends):
+                            if defend == cluster:
+                                abstract_abstract_af.arguments[new_singleton.name].defends[i] = new_singleton.name
+
+
+                abstract_abstract_af.arguments[new_singleton.name].defends = copy.deepcopy(abstract_abstract_af.arguments[cluster].defends)
+
+                # check for selfdefense of cluster -> make self attack of singleton
+                for i, att in enumerate(abstract_abstract_af.arguments[new_singleton.name].attacks):
+                    if att == cluster:
+                        abstract_abstract_af.arguments[new_singleton.name].attacks[i] = new_singleton.name
+
+                # adjust pointer from attacker
+                for attacker in abstract_abstract_af.arguments[cluster].defends:
+                    for j, attacker_of_attacker in enumerate(abstract_abstract_af.arguments[attacker].attacks):
+                        if attacker_of_attacker == cluster:
+                            abstract_abstract_af.arguments[attacker].attacks[j] = new_singleton.name
+
+                 # adjust pointer from defender
+                for defender in abstract_abstract_af.arguments[cluster].attacks:
+                    for j, defender_of_defender in enumerate(abstract_abstract_af.arguments[defender].defends):
+                        if defender_of_defender == cluster:
+                            abstract_abstract_af.arguments[defender].defends[j] = new_singleton.name
+                
+                # remove cluster from af
+                abstract_abstract_af.arguments.pop(cluster)
+                
     # Check if spurious
     return abstract_abstract_af
 
@@ -227,6 +269,7 @@ def computeSemanticSets(input_file: str, semantic: str):
 
 def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str,
                           semantic: str):
+    
     solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_concrete.arguments)
     solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_concrete.arguments)
 
@@ -468,8 +511,6 @@ def main():
 
         concretized_af = concretizeCluster(set_to_concretize=args.concretize, abstract_af=abstract_af,
                                            concrete_af=concrete_af)
-        Visualizer.show(concretized_af.arguments)
-        exit()
 
         faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=args.algorithm,
                                          semantic=args.semantic)
@@ -499,6 +540,7 @@ def main():
 
 def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
         # read in concrete AF
+
         concrete_af = ArgumentationFramework.ArgumentationFramework()
         concrete_af.parseFile(filepath=concrete_file)
         # read in abstract AF
@@ -516,11 +558,11 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
             if concretizer_list_grounded == -1:
                 return True
             
-            concretized_af = concretizeCluster(set_to_concretize=concretizer_list_grounded, abstract_af=abstract_af,
-                                                concrete_af=concrete_af)
+            concretized_af = concretizeCluster(set_to_concretize=concretizer_list_grounded, abstract_af=abstract_af, concrete_af=concrete_af)
+            
+
             faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
                                                 algorithm="BFS", semantic=semantics)
-            
             if not faithful[0]: # subbis have to be spurious too
                 concretizer_list = createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
                                                      problematic_singletons=spurious_sets, concretizer_list=[])
@@ -550,16 +592,16 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
 
 
 if __name__ == '__main__':
-    # directory = "dev_tools/temp/GEN_a6_r8/"
-    # tests_amount = 100
-    # for i in range(tests_amount):
-    #     concrete_file = directory+"concrete/concrete_"+str(i)+".af"
-    #     abstract_file = directory+"abstract/abstract_"+str(i)+".af"
-    #     if checkTheory(concrete_file=concrete_file, abstract_file=abstract_file, semantics="ST"):
-    #         print(f"Test {i} PASSED")
-    #     else:
-    #         print(f"Test {i} FAILED")
-    #         exit()
+    directory = "dev_tools/temp/GEN_a6_r8/"
+    tests_amount = 100
+    for i in range(tests_amount):
+        concrete_file = directory+"concrete/concrete_"+str(i)+".af"
+        abstract_file = directory+"abstract/abstract_"+str(i)+".af"
+        if checkTheory(concrete_file=concrete_file, abstract_file=abstract_file, semantics="ST"):
+            print(f"Test {i} PASSED")
+        else:
+            print(f"Test {i} FAILED")
+            exit()
 
-    # exit()
-    main()
+    exit()
+    #main()
