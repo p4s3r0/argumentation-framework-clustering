@@ -112,6 +112,7 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
     faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=algorithm,
                                         semantic=semantic)
     if not faithful[0]:
+
         concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
                                                     problematic_singletons=faithful[1], concretizer_list = concretize)
 
@@ -161,15 +162,17 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
             if not faithful[0]: # subbis have to be spurious too
                 concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
                                                      problematic_singletons=spurious_sets, concretizer_list=[])
-                if concretizer_list == "too_many":
-                    return True
 
+                if concretizer_list == "too_many":
+                    return "DirectFaithful"
+                
                 concretizer_list.sort(key=len)
                 for maybe_sol in concretizer_list:
                     concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af,
                                                     concrete_af=concrete_af)
                     faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
                                                     algorithm="BFS", semantic=semantics)
+                    
                     if faithful[0]:
                         print("spurious set", spurious_sets)
                         print("grounded", concretizer_list_grounded)
@@ -178,9 +181,9 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
                 return True
 
             else:
-                return True
+                return "ConcretizedSpurious"
 
         else:
-            return True
+            return "DirectFaithful"
 
 

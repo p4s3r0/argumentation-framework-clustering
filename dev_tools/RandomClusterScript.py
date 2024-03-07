@@ -61,24 +61,38 @@ def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_
     with open(f"{inp_folder}abstract/abstract_{inp_file[inp_file.find('_')+1:inp_file.find('.')]}.af", "w") as f:
         f.write(f"p af {arg_amount - clustered_argument_amount + 1}\n")
         f.write("# Clustered with Script\n")
+
+        cluster_has_attack = False
         for attack in C_AF:
+            if attack[0] == arg_amount + 10 or attack[1] == arg_amount + 10:
+                cluster_has_attack = True
             f.write(f"{attack[0]} {attack[1]}\n")
+
+
+        attackless_final = list()
+        if not cluster_has_attack:
+            attackless_final.append(arg_amount + 10)
+
+
+        if len(attackless) > 0:
+            for arg in attackless:
+                if int(arg) > clustered_argument_amount + 1:
+                    attackless_final.append(arg)
+
+
+        if len(attackless_final) > 0:
+            f.write("--attackless--\n")
+            for arg in attackless_final:
+                f.write(f"{arg}\n")
+
 
         f.write("--cluster--\n")
         f.write(f"{arg_amount + 10} <- ")
         for i in range(1, clustered_argument_amount + 1):
             f.write(f"{i} ")
 
-        attackless_final = list()
-        if len(attackless) > 0:
-            for arg in attackless:
-                if int(arg) > clustered_argument_amount + 1:
-                    attackless_final.append(arg)
-        
-        if len(attackless_final) > 0:
-            f.write("\n--attackless--\n")
-            for arg in attackless_final:
-                f.write(f"{arg}\n")
+
+
 
 
         
@@ -86,16 +100,17 @@ def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_
 
 
 def main():
-    for file in os.listdir(f"{sys.argv[1]}/concrete"):
-        arg_amount, attacks, attackless = readFile(sys.argv[1] + "concrete/" + file)
+    dir = sys.argv[1]
+    for file in os.listdir(f"{dir}/concrete"):
+        arg_amount, attacks, attackless = readFile(dir + "concrete/" + file)
         cluster_size = int(random.randint(1, arg_amount))
         if int(cluster_size) > int(arg_amount):
             print("ERROR less arguments than cluster size")
 
 
         C_AF = clusterAF(attacks, arg_amount, cluster_size)
-        generateFile(C_AF, file, sys.argv[1], cluster_size, arg_amount, attackless)
-    print("Created", len(os.listdir(f"{sys.argv[1]}/concrete")), "abstracts af")
+        generateFile(C_AF, file, dir, cluster_size, arg_amount, attackless)
+    print("Created", len(os.listdir(f"{dir}/concrete")), "abstracts af")
 
 
 

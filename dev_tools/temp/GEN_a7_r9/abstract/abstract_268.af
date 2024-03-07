@@ -1,0 +1,12 @@
+p af 5
+# Clustered with Script
+5 17
+17 17
+5 5
+17 7
+7 17
+17 4
+--cluster--
+17 <- 1 2 3 
+--attackless--
+6

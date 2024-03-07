@@ -1,0 +1,11 @@
+p af 5
+# Clustered with Script
+4 15
+5 5
+15 2
+4 5
+2 5
+5 15
+15 3
+--cluster--
+15 <- 1 

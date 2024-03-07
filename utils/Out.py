@@ -1,7 +1,7 @@
 from colorama import Fore, Back, Style
 
 OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
-debug = False
+debug = True
 def OUT(func):
     def wrapper(*args, **kwargs):
         #print(f"{OUT_MESSAGE}", end="")

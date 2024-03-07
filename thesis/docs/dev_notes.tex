@@ -7,12 +7,11 @@
 
 \begin{center}
 	\begin{tikzpicture}
-		\def \ax{2.0} \def \ay{-1.0}
-		\def \bx{0.0} \def \by{-1.0}
-		\def \cx{1.0} \def \cy{-1.0}
-		\def \dx{3.0} \def \dy{-1.0}
-		\def \ex{1.0} \def \ey{0}
-		\def \fx{2.0} \def \fy{0}
+		\def \ax{0.0} \def \ay{-1.0}
+		\def \bx{1.0} \def \by{0.0}
+		\def \cx{2.0} \def \cy{-1.0}
+		\def \dx{1.0} \def \dy{-1.0}
+		\def \ex{0.0} \def \ey{0.0}
   
         % Singletons
         \draw[line width=0.3mm] (\ax,\ay)  circle (0.3) node[anchor=center]{$a$};
@@ -20,98 +19,93 @@
         \draw[line width=0.3mm] (\cx,\cy)  circle (0.3) node[anchor=center]{$c$};
         \draw[line width=0.3mm] (\dx,\dy)  circle (0.3) node[anchor=center]{$d$};
         \draw[line width=0.3mm] (\ex,\ey)  circle (0.3) node[anchor=center]{$e$};
-        \draw[line width=0.3mm] (\fx,\fy)  circle (0.3) node[anchor=center]{$f$};
 		% Attacks
-		\DrawAttackHorizontal{L}{\cx}{\cy+0.08}{\bx}{\by+0.08}
-		\DrawAttackHorizontal{R}{\bx}{\by-0.08}{\cx}{\cy-0.08}
-		\DrawAttackHorizontal{R}{\cx}{\cy}{\ax}{\ay}
-		\DrawAttackHorizontal{R}{\ax}{\ay}{\dx}{\dy}
-		\DrawAttackHorizontal{R}{\ex}{\ey}{\fx}{\fy}
-		\DrawSelfAttackLeftTopCluster{\ex-0.1}{\ey + 0.3}
+		\DrawAttackHorizontal{R}{\ex}{\ey}{\bx}{\by}
+		\DrawAttackHorizontal{L}{\dx}{\dy}{\ax}{\ay}
+		\DrawAttackHorizontal{R}{\dx}{\dy}{\cx}{\cy}
+
+		\DrawAttackVertical{B}{\bx}{\by}{\dx}{\dy}
+		\DrawSelfAttackRightSingleton{\bx}{\by}
+		\DrawSelfAttackRightSingleton{\cx}{\cy}
         
-		\DrawAttackDiagonal{PLR}{\bx}{\by}{\ex}{\ey}
-        \DrawAttackVertical{D}{\fx}{\fy}{\ax}{\ay}
 	\end{tikzpicture}
 \end{center}
-\textbf{Stable Sets:} $\{ b, d, f\}$
+\textbf{Stable Sets:} $\{ d, e\}$
 
 \subsection{Abstract AF}
 \begin{center}
 	\begin{tikzpicture}
-		\def \fx{1.0} \def \fy{ 0.0}
-		\def \gx{1.0} \def \gy{-1.0}
+		\def \ex{0.0} \def \ey{ 0.0}
+		\def \fx{0.0} \def \fy{-1.0}
         % Clusters
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c,d,e$};
-		\node at (1, -1.5) {$g'$};
+        \node[rectangle, draw, line width=0.3mm] at (\fx, \fy) {$a,b,c,d$};
+		\node at (1, -0.5) {$f'$};
         % Singletons
-        \draw[line width=0.3mm] (\fx,\fy)  circle (0.3) node[anchor=center]{$f$};
+        \draw[line width=0.3mm] (\ex,\ey)  circle (0.3) node[anchor=center]{$e$};
 		% Attacks
-		\DrawAttackVertical{B}{\fx}{\fy}{\gx}{\gy}
-		\DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy + 0.3}
+		\DrawAttackVertical{U}{\fx}{\fy}{\ex}{\ey}
+		\DrawSelfAttackLeftTopCluster{\fx-0.63}{\fy + 0.3}
 	\end{tikzpicture}
 \end{center}
-\textbf{Stable Sets:} $\{ g'\}$, $\{ f, g'\}$, $\{ f\}$
+\textbf{Stable Sets:} $\{ f', e\}$, $\{ e\}$
 
-Abstract AF is \textbf{spurious} to concrete AF because sets $\{ g'\}$ and $\{ f\}$.
+Abstract AF is \textbf{spurious} to concrete AF because set $\{ e\}$.
 
 
 
-\subsection{Concretized AF (a,b,d,e)}
+\subsection{Concretized AF (b,d) Grounded}
 \begin{center}
 	\begin{tikzpicture}
-		\def \ax{2.0} \def \ay{-1.0}
-		\def \bx{0.0} \def \by{-1.0}
-		\def \gx{1.0} \def \gy{-1.0}
-		\def \dx{3.0} \def \dy{-1.0}
-		\def \ex{1.0} \def \ey{0}
-		\def \fx{2.0} \def \fy{0}
+		\def \bx{1.0} \def \by{0.0}
+		\def \dx{0.0} \def \dy{0.0}
+		\def \ex{2.0} \def \ey{0}
+		\def \fx{0.0} \def \fy{-1.0}
         % Clusters
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$c$};
-		\node at (1, -1.5) {$g'$};
+        \node[rectangle, draw, line width=0.3mm] at (\fx, \fy) {$\phantom{d}a, c\phantom{d}$};
+		\node at (0.8, -1.5) {$f'$};
         % Singletons
-        \draw[line width=0.3mm] (\ax,\ay)  circle (0.3) node[anchor=center]{$a$};
         \draw[line width=0.3mm] (\bx,\by)  circle (0.3) node[anchor=center]{$b$};
         \draw[line width=0.3mm] (\dx,\dy)  circle (0.3) node[anchor=center]{$d$};
         \draw[line width=0.3mm] (\ex,\ey)  circle (0.3) node[anchor=center]{$e$};
-        \draw[line width=0.3mm] (\fx,\fy)  circle (0.3) node[anchor=center]{$f$};
 		% Attacks
-		\DrawAttackHorizontal{L}{\gx+0.1}{\gy+0.08}{\bx}{\by+0.08}
-		\DrawAttackHorizontal{R}{\bx}{\by-0.08}{\gx+0.1}{\gy-0.08}
-		\DrawAttackHorizontal{R}{\gx-0.1}{\gy}{\ax}{\ay}
-		\DrawAttackHorizontal{R}{\ax}{\ay}{\dx}{\dy}
-		\DrawAttackHorizontal{R}{\ex}{\ey}{\fx}{\fy}
-		\DrawSelfAttackLeftTopCluster{\ex-0.1}{\ey + 0.3}
+		\DrawAttackHorizontal{B}{\bx}{\by}{\dx}{\dy}
+		\DrawAttackHorizontal{R}{\bx}{\by}{\ex}{\ey}
+
+		\DrawAttackVertical{D}{\dx}{\dy}{\fx}{\fy}
+
+		\DrawSelfAttackRightSingleton{\bx}{\by}
+
+		\DrawSelfAttackLeftTopCluster{\fx-0.45}{\fy + 0.3}
         
-		\DrawAttackDiagonal{PLR}{\bx}{\by}{\ex}{\ey}
-        \DrawAttackVertical{D}{\fx}{\fy}{\ax}{\ay}
 	\end{tikzpicture}
 \end{center}
-\textbf{Stable Sets:} $\{ b, d, f\}$, $\{ b, d, f, g'\}$
+\textbf{Stable Sets:} $\{ d, e\}$, $\{ d, e, f'\}$
 
-Concretized AF (a,c,d,e) is \textbf{spurious} to concrete AF because set $\{ b, d, f, g'\}$.
+Concretized AF (b, d) is \textbf{spurious} to concrete AF because set $\{ d, e, f'\}$.
 
 
-\subsection{Concretized AF (e)}
+\subsection{Concretized AF (b)}
 \begin{center}
 	\begin{tikzpicture}
-		\def \fx{0.5} \def \fy{ 0.0}
-		\def \ex{1.5} \def \ey{ 0.0}
-		\def \gx{1.0} \def \gy{-1.0}
+		\def \bx{0.0} \def \by{ 0.0}
+		\def \ex{1.0} \def \ey{ 0.0}
+		\def \fx{0.0} \def \fy{-1.0}
         % Clusters
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c,d$};
-		\node at (1, -1.5) {$g'$};
+        \node[rectangle, draw, line width=0.3mm] at (\fx, \fy) {$a,c,d$};
+		\node at (0.8, -1.5) {$f'$};
         % Singletons
-        \draw[line width=0.3mm] (\fx,\fy)  circle (0.3) node[anchor=center]{$f$};
+        \draw[line width=0.3mm] (\bx,\by)  circle (0.3) node[anchor=center]{$b$};
         \draw[line width=0.3mm] (\ex,\ey)  circle (0.3) node[anchor=center]{$e$};
 		% Attacks
-		\DrawAttackVertical{D}{\fx}{\fy}{\gx-0.5}{\gy}
-		\DrawAttackVertical{U}{\gx+0.5}{\gy}{\ex}{\ey}
-        \DrawAttackHorizontal{L}{\ex}{\ey}{\fx}{\fy}
-		\DrawSelfAttackLeftTopCluster{\gx-0.7}{\gy + 0.3}
-		\DrawSelfAttackLeftTopCluster{\ex-0.1}{\ey + 0.3}
+		\DrawAttackHorizontal{L}{\ex}{\ey}{\bx}{\by}
+		\DrawAttackVertical{B}{\bx}{\by}{\fx}{\fy}
+
+		\DrawSelfAttackRightSingleton{\bx}{\by}
+
+		\DrawSelfAttackLeftTopCluster{\fx-0.45}{\fy + 0.3}
 	\end{tikzpicture}
 \end{center}
-\textbf{Stable Sets:} $\{ g', f\}$
+\textbf{Stable Sets:} $\{ f', e\}$
 
 Concretized AF (e) is \textbf{faithful} to concrete AF.
 
