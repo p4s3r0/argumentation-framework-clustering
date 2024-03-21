@@ -1,15 +1,11 @@
-p af 6
+p af 5
 # Clustered with Script
+4 3
+3 16
+6 16
 4 16
-2 4
-6 2
-3 4
-6 4
-16 3
-6 3
-2 6
-16 16
+4 5
+4 4
+6 5
 --cluster--
-16 <- 1 
---attackless--
-5
+16 <- 1 2 

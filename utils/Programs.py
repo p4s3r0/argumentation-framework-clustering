@@ -174,9 +174,9 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
                                                     algorithm="BFS", semantic=semantics)
                     
                     if faithful[0]:
-                        print("spurious set", spurious_sets)
-                        print("grounded", concretizer_list_grounded)
-                        print("combi", maybe_sol)
+                        # print("spurious set", spurious_sets)
+                        # print("grounded", concretizer_list_grounded)
+                        # print("combi", maybe_sol)
                         return False
                 return True
 

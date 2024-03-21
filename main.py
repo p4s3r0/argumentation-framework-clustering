@@ -71,13 +71,12 @@ def main():
 
 
 def checkTheory():
-    directory = "dev_tools/temp/GEN_a5_r8/"
+    directory = "dev_tools/temp/GEN_a6_r9/"
     tests_amount = 500
     passed = 0
     failed = 0
 
     for i in range(tests_amount):
-        i = 150
         concrete_file = directory+"concrete/concrete_"+str(i)+".af"
         abstract_file = directory+"abstract/abstract_"+str(i)+".af"
 
@@ -96,7 +95,6 @@ def checkTheory():
         elif ret == False:
             failed += 1
             print(f"Test {i:3} [" + Fore.RED + Style.BRIGHT + "FAILED " + Fore.WHITE + Style.RESET_ALL + "]")
-        exit()
 
     print("-------------------------------------------------")
     print(f"Amount: {Fore.BLUE + Style.BRIGHT}{tests_amount}{Style.RESET_ALL}")
@@ -105,5 +103,5 @@ def checkTheory():
     exit()
 
 if __name__ == '__main__':
-    #checkTheory()
-    main()
+    checkTheory()
+    #main()

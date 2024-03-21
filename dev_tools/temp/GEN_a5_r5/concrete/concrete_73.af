@@ -1,0 +1,10 @@
+p af 5
+# Generated with createGraph.py script.
+# Amount attacks: 5
+2 4
+3 5
+4 4
+2 3
+4 3
+--attackless--
+1
