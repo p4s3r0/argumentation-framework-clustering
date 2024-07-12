@@ -1,6 +1,7 @@
-\chapter{Implementation}
+\chapter{Algorithm}
 
-\section{Concretizing Arguments}
+
+\section{Concretizing Singletons}
 Concretizing a list of arguments is done iteratively by deep copying the abstract AF $F'$ to create a new AF $F''$ and mutating it. The mutation is guided by five steps considering the unchanged abstract AF $F'$ and the concrete AF $F$. To improve the understanding of each step, we accompany the explanation with the example depicted in \ref{example:concretizationOfArguments}, where we concretize the arguments $a$ and $b$.
 
 \vspace{0.3cm}
@@ -43,7 +44,7 @@ Concretizing a list of arguments is done iteratively by deep copying the abstrac
 
             \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
             % Cluster
-        
+
             \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c$};
             \node at (\gx + 0.1, \gy+0.5) {$\hat{g}$};
 
@@ -66,8 +67,8 @@ Concretizing a list of arguments is done iteratively by deep copying the abstrac
 
 \vspace{-0.2cm}
 
-\paragraph{Step 1:} Each argument needing concretization is first removed from the parent cluster and added as a singleton in $F''$. 
-If an argument is not part of a cluster or is invalid, we remove it and continue with the filtered valid list.
+\paragraph{Step 1:} Each argument needing concretization is first removed from the parent cluster and added as a singleton in $F''$.
+If an argument is not part of a cluster, we remove it and continue with the filtered list.
 We do not consider attacks in this step since they depend on the concrete- and abstract AFs.
 
 
@@ -105,7 +106,7 @@ We do not consider attacks in this step since they depend on the concrete- and a
 
 
 \paragraph{Step 2:} We add the new attacks from all concretized arguments to the remaining clusters. We must do this after
-removing the arguments from the clusters because if an argument $a$ attacks argument $b$ in the concrete AF, and $b$ is part of the cluster $F'$ in the abstract AF, by concretizing $b$, the attack $(a,F')$ would not be valid anymore.
+removing the arguments from the clusters because if an argument $a$ attacks argument $b$ in the concrete AF, and $b$ is part of the cluster $F'$ in the abstract AF, by concretizing $b$, the attack $(a,F')$ would not be persistent anymore.
 
 
 \vspace{0.3cm}
@@ -144,8 +145,7 @@ removing the arguments from the clusters because if an argument $a$ attacks argu
 \vspace{-0.2cm}
 
 
-\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $F'$ are still valid in $F''$. If an attack is not valid
-anymore through the concretization, we remove it in $F''$. An attack is not valid anymore; if we remove one of the arguments being attacked or attacked by argument $a$ from the cluster $f$ and no other attack exists, s.t. $a$ is attacked from/attacking an argument within $f$. Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from which the arguments are concretized. 
+\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $F'$ are still persistent in $F''$. If an attack does not persist through the concretization, we remove it in $F''$. An attack is not persistent anymore; if we remove one of the arguments being attacked or attacked by argument $a$ from the cluster $f$ and no other attack exists, s.t. $a$ is attacked from/attacking an argument within $f$. Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from which the arguments are concretized.
 
 
 \vspace{0.3cm}
@@ -180,7 +180,7 @@ anymore through the concretization, we remove it in $F''$. An attack is not vali
 \vspace{-0.2cm}
 
 
-\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $F'$, we only have to take into consideration the attacks from or to the concretized singletons. So instead of iterating over all singletons of the AF, we can limit the attack creation to the concretized singletons. 
+\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $F'$, we only have to take into consideration the attacks from or to the concretized singletons. So instead of iterating over all singletons of the AF, we can limit the attack creation to the concretized singletons.
 
 
 \vspace{0.3cm}
@@ -218,7 +218,7 @@ anymore through the concretization, we remove it in $F''$. An attack is not vali
 
 
 \paragraph{Step 5:} The last step is to clean up the argumentation framework $F''$ by removing all empty clusters and mutating the clusters with exactly
-one singleton to the mentioned singleton. 
+one singleton to the mentioned singleton.
 
 
 \vspace{0.3cm}
@@ -252,3 +252,11 @@ one singleton to the mentioned singleton.
 \vspace{-0.2cm}
 
 \restoregeometry
+
+
+
+\section{Algorithmic Approach to Compute Faifthul Clusterings}
+\textit{TODO: Concretize singletons of clustered AF algorithm}
+
+\section{Heuristics and Refinements}
+\textit{TODO: Define every Heuristic and refinement we used for each semantic}

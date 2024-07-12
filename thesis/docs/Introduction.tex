@@ -1,0 +1,44 @@
+\chapter{Introduction}
+% Argumentation in general and in research.
+We all encounter arguments in our lives frequently. When talking to friends, listening to political discussions, or even making decisions in our head. These arguments can get heated and complex since humans have different beliefs and motivations. Finding a common ground or a "correct" conclusion is complicated and sometimes impossible. However, these imperfections are what make us humans. \ac{AI}, conversely, needs to act precisely and logically \cite{DBLP:journals/frai/DietzKM24}. That is why much research is being done on knowledge representation and reasoning \cite{DBLP:journals/dagstuhl-manifestos/DelgrandeG0TW24} \cite{DBLP:journals/inffus/PopescuD23}. 
+
+% Abstraction of Argumentation -> premises and conclusions, attacks
+When observing arguments objectively, we can distinguish between facts and premises. A fact represents a particular aspect of the argument, and the premises link the different facts together by supporting one another or contradicting. When stating two opposing facts (f.e. \emph{the square $x$ is red} and \emph{the square $x$ is blue}), they are contradicting each other. While proving the correctness of facts is very important, refuting facts is even more critical in an argument. 
+
+% Abstract Models of argumentation. Graphs.
+Thus, when modeling arguments, the premises are counterarguments of the linked facts. If a fact or, i.e., an argument $a$ is a counterargument of another argument $b$, we can say that $a$ attacks $b$. With this generalization, we can abstract our model with directed graphs. The arguments are represented as nodes, and the attacks as directed edges \cite{DUNG1995321}. With this abstraction, we can define \acp{AF} and use them to evaluate conclusions \cite{DBLP:conf/fapr/Geffner96}. Drawing a conclusion from the \ac{AF} can be challenging and tears down to the definition of semantics. 
+
+% Semantics with AFs
+% Computation, complexity classes of computing sets
+A semantic defines a subset of argument sets that satisfy the semantic-specific rules. The specific rules can be defined via a boolean formula. They can be used to encode the \acp{AF} to be solvable with different boolean solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete to decide whether an argument is acceptable under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}.
+
+\textit{TODO: Explain abstract faithful AF generation complex}
+
+% Clustering of AFs
+One of the first papers describing the concept was written by Dung \cite{Dung1995-DUNOTA-2} in 1995. Since then, there has been more and more interest in \acp{AF} due to the artificial intelligence community. The argumentation systems and semantics have been modified and improved over the years, and another abstraction layer has been added. This specific abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. Clustering is a technique to reduce the number of arguments without changing the conclusion, which in this instance would be the sets produced by a specific semantic. When producing a clustered (\emph{abstract}) \ac{AF}, which produces the same semantic sets as the non-clustered (\emph{concrete}) \ac{AF}, the abstract \ac{AF} is defined to be \emph{faithful}. While each concrete semantic set has a directly mapped abstract semantic set, not every abstract semantic set has to have a directly mapped concrete semantic set. If we create an abstract \ac{AF} that produces a semantic set that cannot be mapped to a concrete semantic set, we call it \emph{spurious}.
+
+% What we want to show in this paper
+% Main contributions in this paper
+Creating abstract, faithful \acp{AF} can be challenging and is the main focus of this paper. We created one of the first tools \cite{Pasero2024-AFClustering-Repo} to produce an abstract \acp{AF} based on a concrete \acp{AF}. We cover different setups and usages, including different semantics and base functionalities:
+
+\begin{itemize}
+    \item Generate semantic sets of a concrete- or abstract \ac{AF}. The sets calculated iteratively or all at once. The covered semantics are \ac{cf}, \ac{adm}, and \ac{stb}, which can be selected throughout the project independently by a parameter in the command line.
+
+    \item Determine faithfulness or spuriousness by providing two \acp{AF}. We provide two approaches, \ac{BFS} and \ac{DFS}, which alter the procedure. While \ac{BFS} calculates all the semantic sets of the two \acp{AF} first and then compares them, \ac{DFS} calculates iteratively a semantic set of the abstract \ac{AF} and then verifies it with the concrete \ac{AF}. The algorithm selection is done via a command line parameter.
+
+    \item Concretize a set of arguments (i.e., pull out arguments from the cluster) given the concrete \ac{AF} and an abstract \ac{AF} (faithful or spurious), and provide faithfulness (by concretizing other arguments not specified in the concretize list as well). The user provides the concretized arguments via a command line parameter.
+    
+    \item $\cdots$
+\end{itemize}
+
+\noindent
+
+\textit{TODO: Further contributions}
+
+\textit{TODO: give pointers to why are non-trivial to obtain}
+
+\textit{TODO: Choice of methods to obtain results}
+
+\textit{TODO: How big AFs are still feasible to solve}
+
+
