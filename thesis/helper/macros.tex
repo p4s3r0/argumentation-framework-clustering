@@ -30,17 +30,26 @@
 % Direction -> P = Positive slope RL = Right to Left
 % Direction -> H = not 45° but Halfed=22.5°
 \ifthenelse{\equal{#1}{NLR}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.21,#3 - 0.21) -- (#4 - 0.21 , #5 + 0.21);
+    \draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.21,#3 - 0.21) -- (#4 - 0.21 , #5 + 0.21);
 }{
 \ifthenelse{\equal{#1}{NRL}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 - 0.21,#3 + 0.21) -- (#4 + 0.21 , #5 - 0.21);
+    \draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 - 0.21,#3 + 0.21) -- (#4 + 0.21 , #5 - 0.21);
+}{
+\ifthenelse{\equal{#1}{NB}}{
+    \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 + 0.21 + 0.08 , #3 - 0.21 + 0.08) -- (#4 - 0.21,#5 + 0.21);
+    \draw[{To[length=4, width=5]}-, line width=0.3mm]  (#2 + 0.21 - 0.01, #3 - 0.22) -- (#4 - 0.21 - 0.08,#5 + 0.1);
 }{
 \ifthenelse{\equal{#1}{PLR}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.21,#3 + 0.21) -- (#4 - 0.21 , #5 - 0.21);
+    \draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.21,#3 + 0.21) -- (#4 - 0.21 , #5 - 0.21);
 }{
 \ifthenelse{\equal{#1}{PRL}}{
-\draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.21 , #3 - 0.21) -- (#4 + 0.21,#5 + 0.21);
-}{}}}}}
+    \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.21 , #3 - 0.21) -- (#4 + 0.21,#5 + 0.21);
+}{
+\ifthenelse{\equal{#1}{PB}}{
+    \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.21 - 0.08 , #3 - 0.21 + 0.08) -- (#4 + 0.21,#5 + 0.21);
+    \draw[{To[length=4, width=5]}-, line width=0.3mm]  (#2 - 0.21 + 0.01, #3 - 0.22) -- (#4 + 0.21 + 0.08,#5 + 0.1);
+}
+{}}}}}}}
 
 \newcommand{\DrawAttackHorizontal}[5]{%Direction L.x L.y R.x R.y 
 % R = Right to Left

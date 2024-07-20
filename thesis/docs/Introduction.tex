@@ -1,26 +1,75 @@
 \chapter{Introduction}
 % Argumentation in general and in research.
-We all encounter arguments in our lives frequently. When talking to friends, listening to political discussions, or even making decisions in our head. These arguments can get heated and complex since humans have different beliefs and motivations. Finding a common ground or a "correct" conclusion is complicated and sometimes impossible. However, these imperfections are what make us humans. \ac{AI}, conversely, needs to act precisely and logically \cite{DBLP:journals/frai/DietzKM24}. That is why much research is being done on knowledge representation and reasoning \cite{DBLP:journals/dagstuhl-manifestos/DelgrandeG0TW24} \cite{DBLP:journals/inffus/PopescuD23}.
+We all encounter arguments in our lives frequently. When talking to friends, listening to political discussions, or even making decisions in our head. These arguments can get heated and complex since humans have different beliefs and motivations. Finding a common ground or a "correct" conclusion is complicated and sometimes impossible. However, these imperfections are what make us humans. \ac{AI}, conversely, needs to act precisely and logically \cite{DBLP:journals/frai/DietzKM24}. That is why much research is being done on knowledge representation and reasoning \cite{DBLP:journals/dagstuhl-manifestos/DelgrandeG0TW24, DBLP:journals/inffus/PopescuD23}.
 
 % Abstraction of Argumentation -> promises and conclusions, attacks
 When observing arguments objectively, we can distinguish between facts and conclusions. A fact represents a specific state in the real world. A conclusion on the other hand is a fact claimed by the logical relation of the promises. The relations are opposing facts (f.e. \emph{the square $x$ is red} and \emph{the square $x$ is blue}), which are contradicting each other. While accepting the correctness of facts is very important, refuting facts is even more critical in an argument.
 
 % Abstract Models of argumentation. Graphs.
-If a fact or, i.e., an argument $a$ is a counterargument of another argument $b$, we can say that $a$ attacks $b$. With this generalization, we can abstract our model with directed graphs. The arguments are represented as nodes, and the attacks as directed edges \cite{DUNG1995321}. With this abstraction, we can define \acp{AF} and use them to evaluate conclusions \cite{DBLP:conf/fapr/Geffner96}. Drawing a conclusion from the \ac{AF} can be challenging and tears down to the definition of semantics.
+If a fact or, i.e., an argument $a$ is a counterargument of another argument $b$, we can say that $a$ attacks $b$. With this generalization, we can abstract our model with directed graphs. The arguments are represented as nodes, and the attacks as directed edges \cite{DUNG1995321}. With this abstraction, we can define \acp{AF} and use them to evaluate conclusions \cite{DBLP:conf/fapr/Geffner96}. Most of the time, we do not operate on real-world cases, but on abstract examples. This means, that we do not care about the argument which is represented by a specific node. But drawing a conclusion from an \ac{AF} can be challenging and tears down to the definition of semantics.
 
 % Semantics with AFs
 % Computation, complexity classes of computing sets
-A semantic defines a subset of argument sets that satisfy the semantic-specific rules. The specific rules can be defined via a boolean formula. They can be used to encode the \acp{AF} to be solvable with different boolean solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete to decide whether an argument is acceptable under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}.
+A semantic defines a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like \textit{conflict-free}, \textit{admissible} and \textit{stable}. According to Dungs definitions, a set \textit{S} is \textit{conflict-free} if there are no attacks between the arguments in \textit{S}. The \textit{conflict-free} set is mainly a building block for the other semantics, which means that the \textit{conflict-free} set is always a superset of \textit{admissible} and \textit{stable}. 
+A \textit{stable} set, is a \textit{conflict-free} set, if for every argument, which is not in \textit{S}, has an attacker which is in \textit{S}. 
+Finally, an \textit{admissible} set is a \textit{conflict-free} set, where each argument in \textit{S} has a defender in \textit{S}. 
+The specific rules can be defined via a boolean formula. They can be used to encode the \acp{AF} to be solvable with different boolean solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be beyond NP to decide whether an argument is acceptable under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}. In fact, the complexity of proofing faithfulness or spuriousness of an \ac{AF} is $\prod_2^P$ \cite{DBLP:conf/kr/SaribaturW21}. This means, that to obtain a result, multiple instances or calls of a SAT-Solver need to be invoked. 
 
-\textit{TODO: Explain abstract faithful AF generation complex}
+
+% Example
+For instance, let us consider a real-world example like the weather. We can define arguments like argument $a$: \textit{The sky is blue} and support it with:
+\begin{itemize}
+    \item $b$: The atmosphere scatters the sunlights and makes the sky appear blue. 
+    \item $c$: When observing the sky, it appears blue. 
+    \item $d$: There exist photographs of a blue sky. 
+\end{itemize}
+
+and oppose it with:
+\begin{itemize}
+    \item $e$: the sky is dark. 
+    \item $f$: At sunset the sky appears to be orange. 
+    \item $g$: At sunrise the sky appears to be orange. 
+\end{itemize}
+
+With this knowledge basis, we can create the \ac{AF} $A(a, r)$. Here we abstract the arguments into nodes and transform the opposing statement into attacks.
+
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}     \def \ay{-1}
+        \def \bx{0}     \def \by{0}
+        \def \cx{2}     \def \cy{0}
+        \def \dx{2}     \def \dy{-1}
+        \def \ex{1}   \def \ey{-1}
+        \def \fx{1}   \def \fy{0}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+
+        % Attacks
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\ax}{\ay}
+        \DrawAttackVertical{B}{\fx}{\fy}{\ex}{\ey}
+        \DrawAttackDiagonal{PB}{\cx}{\cy}{\ex}{\ey}
+        \DrawAttackDiagonal{NB}{\bx}{\by}{\ex}{\ey}
+    \end{tikzpicture}
+    \caption{Sky is blue \ac{AF}}
+\end{figure}
+
 
 % Clustering of AFs
-One of the first papers describing the concept was written by Dung \cite{Dung1995-DUNOTA-2} in 1995. Since then, there has been more and more interest in \acp{AF} due to the artificial intelligence community. The argumentation systems and semantics have been modified and improved over the years, and another abstraction layer has been added. This specific abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. Clustering is a technique to reduce the number of arguments without changing the conclusion, which in this instance would be the sets produced by a specific semantic. When producing a clustered (\emph{abstract}) \ac{AF}, which produces the same semantic sets as the non-clustered (\emph{concrete}) \ac{AF}, the abstract \ac{AF} is defined to be \emph{faithful}. While each concrete semantic set has a directly mapped abstract semantic set, not every abstract semantic set has to have a directly mapped concrete semantic set. If we create an abstract \ac{AF} that produces a semantic set that cannot be mapped to a concrete semantic set, we call it \emph{spurious}.
+One of the first papers describing the concept was written by Dung \cite{Dung1995-DUNOTA-2} in 1995. Since then, there has been more and more interest in \acp{AF} due to the artificial intelligence community \cite{DBLP:books/ox/22/CocarascuC0T22}. The argumentation systems and semantics have been modified and improved over the years, and another abstraction layer has been added. This specific abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. Clustering is a technique to reduce the number of arguments without changing the conclusion, which in this instance would be the sets produced by a specific semantic. When producing a clustered (\emph{abstract}) \ac{AF}, which produces the same semantic sets as the non-clustered (\emph{concrete}) \ac{AF}, the abstract \ac{AF} is defined to be \emph{faithful}. While each concrete semantic set has a directly mapped abstract semantic set, not every abstract semantic set has to have a directly mapped concrete semantic set. If we create an abstract \ac{AF} that produces a semantic set that cannot be mapped to a concrete semantic set, we call it \emph{spurious}.
 
 % Importance of creating faithful abstract AFs
 When reducing the amount of arguments with clustering we have to pay attention to not abstract crucial facts, and thus, falsify accepted sets from the concrete \ac{AF} or accept refuted ones. This would lead to a spurious abstraction and the abstract \ac{AF} would not represent the concrete \ac{AF} anymore. To preserve the representation of the concrete \ac{AF}, we need to show faithfulness.
 
 % Importance of concretizing single arguments
+When producing an \ac{AF} with multiple layer of abstractions, the concrete problem can be hard to map. To still have an understanding of the structure to some extend, extracting single arguments of the cluster by concretizing them can be helpful. This also allows the user to have a direct impact to the outcome and produce customized faithful \acp{AF}.  
 
 
 % What we want to show in this paper

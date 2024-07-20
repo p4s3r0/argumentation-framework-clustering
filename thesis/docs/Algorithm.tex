@@ -253,6 +253,44 @@ one singleton to the mentioned singleton.
 
 \restoregeometry
 
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode}\label{alg:concretizingSingletons}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $C: AF(a_2, r_2)$ \Comment{Abstract Concrete AF}
+        \Require $e: list(Arguments)$ \Comment{concretizer list}
+        \For{$e_i$ in $e$}
+            \If{$e_i$ not in $C$ $\lor$ $e_i$ not in $A_{C}$} \Comment{$A_C$ = Cluster in $A$}
+                \State $e$.remove($e_i$)
+            \EndIf
+        \EndFor
+        \State $N$ $\gets$ $A$ \Comment{$N$ = Concretized Cluster}
+        \State $N$.addSingletons($e$) \Comment{Step 1}
+        \State $N_C$.removeArguments($e$)
+        \For{$e_i$ in $e$} \Comment{Step 2}
+            \For{$e_i$ attacks $A_c$}
+                \State $N[e_i].attacks.append(A_c)$
+            \EndFor
+        \EndFor
+        \For{$r_i$ in $A_r$} \Comment{Step 3}
+            \If{$r_i$ not persists in $C$}
+                \State $A_r.remove(r_i)$
+            \EndIf
+        \EndFor
+        \For{$e_i$ in $e$} \Comment{Step 4}
+            \For{$e_i$ attacks $C_a$}
+                \State $N[e_i].attacks.append(C_a)$
+            \EndFor
+        \EndFor
+        \For{$c_i$ in $N_c$} \Comment{Step 5}
+            \If{$c_i.argAmount == 1$}
+                \State $c_i \gets Singleton$
+            \ElsIf{$c_i.argAmount == 0$}
+                \State $N_c.remove(c_i)$
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
 
 
 \section{Algorithmic Approach to Compute Faifthul Clusterings}
