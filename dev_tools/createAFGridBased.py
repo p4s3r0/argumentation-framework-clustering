@@ -101,7 +101,7 @@ class Grid:
                         print(" ", end="")
 
 
-                print(f"{int(el.name): 3} ", end="")
+                print(f"{int(el.name)+1: 3} ", end="")
 
                 # not at first row and item below exists
                 if in_top_col and int(el.name) + self.size < self.amount:
@@ -142,7 +142,7 @@ def writeGridToAFFile(filename, grid, p):
         for row in grid.data:
             for s in row:
                 for a in s.attacks:
-                    f.write(f"{s.name} {a}\n")
+                    f.write(f"{int(s.name)+1} {int(a)+1}\n")
 
 
 

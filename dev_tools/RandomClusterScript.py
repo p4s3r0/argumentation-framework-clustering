@@ -57,8 +57,14 @@ def clusterAF(attacks: list, arg_amount: int, cluster_size: int):
 
 
 
-def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_amount: int, arg_amount: int, attackless: list):
-    with open(f"{inp_folder}abstract/abstract_{inp_file[inp_file.find('_')+1:inp_file.find('.')]}.af", "w") as f:
+def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_amount: int, arg_amount: int, attackless: list, typeOfFile: str = "MULTIPLE"):
+    file = ""
+    if typeOfFile == "MULTIPLE":
+        file = f"{inp_folder}abstract/abstract_{inp_file[inp_file.find('_')+1:inp_file.find('.')]}.af"
+    else:
+        file = f"{inp_file[inp_file.find('_')+1:inp_file.find('.')]}_abstract.af"
+
+    with open(file, "w") as f:
         f.write(f"p af {arg_amount - clustered_argument_amount + 1}\n")
         f.write("# Clustered with Script\n")
 
@@ -100,17 +106,29 @@ def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_
 
 
 def main():
-    dir = sys.argv[1]
-    for file in os.listdir(f"{dir}/concrete"):
-        arg_amount, attacks, attackless = readFile(dir + "concrete/" + file)
+    if not "MULTIPLE_FILES":
+        dir = sys.argv[1]
+        for file in os.listdir(f"{dir}/concrete"):
+            arg_amount, attacks, attackless = readFile(dir + "concrete/" + file)
+            cluster_size = int(random.randint(1, arg_amount))
+            if int(cluster_size) > int(arg_amount):
+                print("ERROR less arguments than cluster size")
+
+
+            C_AF = clusterAF(attacks, arg_amount, cluster_size)
+            generateFile(C_AF, file, dir, cluster_size, arg_amount, attackless)
+        print("Created", len(os.listdir(f"{dir}/concrete")), "abstracts af")
+    else:
+        dir = sys.argv[1]
+        arg_amount, attacks, attackless = readFile(dir)
         cluster_size = int(random.randint(1, arg_amount))
         if int(cluster_size) > int(arg_amount):
             print("ERROR less arguments than cluster size")
 
 
         C_AF = clusterAF(attacks, arg_amount, cluster_size)
-        generateFile(C_AF, file, dir, cluster_size, arg_amount, attackless)
-    print("Created", len(os.listdir(f"{dir}/concrete")), "abstracts af")
+        generateFile(C_AF, dir, dir, cluster_size, arg_amount, attackless, "SINGLE")
+        print("Created abstract af")
 
 
 

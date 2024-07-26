@@ -66,8 +66,6 @@ def createGroundedConcretizerList(af_concrete: Argument.Argument, af_abstract: A
 
 
 def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework,
-
-
                           problematic_singletons: list, concretizer_list: list):
     # TODO: also implement for more problematic singletons
 
@@ -86,6 +84,8 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
         if len(curr) > 0 and curr not in filtered_problematic_singletons:
             curr.sort()
             filtered_problematic_singletons.append(curr)
+
+
     for prob_set in filtered_problematic_singletons:
         for prob in prob_set:
             curr = list()
@@ -99,20 +99,16 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     if prob not in curr[i]:
                         curr[i].extend(prob)
                     curr[i].sort()
+                print("FOR", prob, curr)
 
             curr_with_concretizer = list()
 
             for curr_sol in curr:
-                # filter arguments out, which are not in cluster
+                # add concretizer arguments with problematic singletons
                 filtered_arguments = list()
                 for arg in curr_sol:
-                    for cluster in af_abstract.arguments:
-                        if not af_abstract.arguments[cluster].is_singleton:
-                            if arg in af_abstract.arguments[cluster].clustered_arguments:
-                                if arg not in filtered_arguments:
-                                    filtered_arguments.append(arg)
-                                continue
-
+                    filtered_arguments.append(arg)
+            
                 for conc in concretizer_list:
                     if conc not in filtered_arguments:
                         filtered_arguments.append(conc)
@@ -155,13 +151,27 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
     # Create all sorts of combinations
     #TODO: remove this
     all_comb = list()
-    if len(depth_2_single_view) >= 20:
-        return "too_many"
+
+    pre_deduplication_str = list()
+    pre_deduplication = list()
+
+    print(problematic_singletons)
+
+    for s in depth_2_single_view:
+        curr_str = "-".join(s)
+        if curr_str not in pre_deduplication_str:
+            pre_deduplication_str.append(curr_str)
+            pre_deduplication.append(s)
+            
+
+    if len(pre_deduplication) >= 20:
+        [print(i) for i in pre_deduplication]
+        #return "too_many"
     
 
 
-    for i in range(1, len(depth_2_single_view) + 1, 1):
-        all_comb.extend(itertools.combinations(depth_2_single_view, i))
+    for i in range(1, len(pre_deduplication) + 1, 1):
+        all_comb.extend(itertools.combinations(pre_deduplication, i))
 
     depth_2_combinations = list()
     for combination in all_comb:
@@ -285,6 +295,7 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
             if cluster in abstract_abstract_af.arguments[cluster].attacks:
                 attacks_in_cluster = False
                 for singleton_in_cluster in abstract_abstract_af.arguments[cluster].clustered_arguments:
+                    print(singleton_in_cluster)
                     if len(set(concrete_af.arguments[singleton_in_cluster].attacks) & set(
                             abstract_abstract_af.arguments[cluster].clustered_arguments)) > 0:
                         attacks_in_cluster = True

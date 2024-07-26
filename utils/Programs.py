@@ -117,6 +117,10 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
                                                     problematic_singletons=faithful[1], concretizer_list = concretize)
 
         # try few concretizer items first, then try more and more
+        print("Conni list", concretizer_list)
+        if concretizer_list == "too_many":
+            Out.ConcretizeNOTFoundSolution("because Problematic set to big")
+            return
         concretizer_list.sort(key=len)
 
         Info.info(f"Problematic Singletons: {faithful[1]}, Further tests: {concretizer_list}")
@@ -127,9 +131,17 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
             faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
                                                 algorithm=algorithm, semantic=semantic)
 
+
             if faithful[0]:
+                Out.ConcretizeFoundSolution()
                 Visualizer.show(concretized_af.arguments)
-                exit()
+                return
+        else:
+            Out.ConcretizeNOTFoundSolution()
+    else:
+        Out.ConcretizeFoundSolution()
+        Visualizer.show(concretized_af.arguments)
+
     Info.info("Ending Program")
 
 

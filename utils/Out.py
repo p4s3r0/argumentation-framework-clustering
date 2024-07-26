@@ -1,10 +1,14 @@
 from colorama import Fore, Back, Style
 
 OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
+
 debug = False
+sol_print = True
+
 def OUT(func):
     def wrapper(*args, **kwargs):
-        #print(f"{OUT_MESSAGE}", end="")
+        if not debug: return
+        print(f"{OUT_MESSAGE}", end="")
         func(*args, **kwargs)
     return wrapper
 
@@ -46,3 +50,13 @@ def SolutionSets(semantic: str, sets: list, name: str = "") -> None:
 def CurrSolution(amount: int) -> None:
     if not debug: return;
     print(f"Current Solutions Found {Fore.CYAN + Style.BRIGHT}{amount}{Style.RESET_ALL}", end="\r")
+
+
+
+def ConcretizeFoundSolution() -> None:
+    if not sol_print: return;
+    print(f"{OUT_MESSAGE}Concretizing Algorithm found Solution")
+
+def ConcretizeNOTFoundSolution(reason: str= "") -> None:
+    if not sol_print: return;
+    print(f"{OUT_MESSAGE}Concretizing Algorithm DIDNT find Solution {reason}")

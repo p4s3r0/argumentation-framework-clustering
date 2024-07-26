@@ -103,5 +103,5 @@ def checkTheory():
     exit()
 
 if __name__ == '__main__':
-    checkTheory()
-    #main()
+    #checkTheory()
+    main()

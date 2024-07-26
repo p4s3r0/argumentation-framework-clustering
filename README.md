@@ -52,7 +52,7 @@ $$\overline{con}(F) = \bigvee_{a \in A} \big( \big( a \bigwedge_{b:(b,a)\in R} \
 ---
 
 # References and Other Works
-[Checking the acceptability of a set of arguments](https://www.pims.math.ca/science/2004/NMR/papers/paper08.pdf)
+[Checking the acceptability of a set of arguments](https://www.researchgate.net/publication/221535800_Checking_the_acceptability_of_a_set_of_arguments)
 
 [Existential Abstraction on Argumentation Frameworks via Clustering](https://proceedings.kr.org/2021/52/kr2021-0052-saribatur-et-al.pdf)
 
