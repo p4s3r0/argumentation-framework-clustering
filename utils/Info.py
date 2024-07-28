@@ -8,6 +8,11 @@ def info(info: str) -> None:
     print(f"{INFO}{info}")
 
 
+def progress(val: str) -> None:
+    print(f"{INFO}{val}", end="\r")
+
+def progress_end() -> None:
+    print()
 
 
 

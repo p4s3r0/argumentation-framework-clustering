@@ -117,7 +117,6 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
                                                     problematic_singletons=faithful[1], concretizer_list = concretize)
 
         # try few concretizer items first, then try more and more
-        print("Conni list", concretizer_list)
         if concretizer_list == "too_many":
             Out.ConcretizeNOTFoundSolution("because Problematic set to big")
             return

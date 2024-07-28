@@ -65,12 +65,29 @@ def createGroundedConcretizerList(af_concrete: Argument.Argument, af_abstract: A
 
 
 
+def filterDuplicates(l: list) -> list:
+    # filter duplicates for list in l
+    filtered_l = list()
+    for s in l:
+        if (a := list(set(s))) not in filtered_l:
+            filtered_l.append(a)
+
+    
+    # filter duplicates in l
+    ret_string = list()
+    ret = list()
+    for s in filtered_l:
+        s.sort()
+        curr_str = "-".join(s)
+        if curr_str not in ret_string:
+            ret_string.append(curr_str)
+            ret.append(s)    
+    return ret
+            
+
+
 def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework,
                           problematic_singletons: list, concretizer_list: list):
-    # TODO: also implement for more problematic singletons
-
-    # all combinations
-    depth_2_single_view = list()
     # Filter cluster out of problematic singletons
     filtered_problematic_singletons = list()
     for problem_sets in problematic_singletons:
@@ -85,26 +102,33 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
             curr.sort()
             filtered_problematic_singletons.append(curr)
 
-
+    depth_2_single_view = list()
     for prob_set in filtered_problematic_singletons:
         for prob in prob_set:
             curr = list()
-            # defender depth = 1 and 2
+            # get combinations of def -> depth 2
             for direct in af_concrete.arguments[prob].defends:
+                # def def
                 for i in range(len(af_concrete.arguments[direct].defends) + 1):
                     curr.extend(itertools.combinations(af_concrete.arguments[direct].defends, i))
+                # def att
+                for i in range(len(af_concrete.arguments[direct].attacks) + 1):
+                    curr.extend(itertools.combinations(af_concrete.arguments[direct].attacks, i))
+                
+                curr = filterDuplicates(curr)
+
+                # add direct defender, sort, and deduplicate
                 for i in range(len(curr)):
                     curr[i] = list(curr[i])
                     curr[i].extend(direct)
                     if prob not in curr[i]:
                         curr[i].extend(prob)
                     curr[i].sort()
-                print("FOR", prob, curr)
+                curr = filterDuplicates(curr)
 
+            # add concretizer arguments (they have to be there by force)
             curr_with_concretizer = list()
-
             for curr_sol in curr:
-                # add concretizer arguments with problematic singletons
                 filtered_arguments = list()
                 for arg in curr_sol:
                     filtered_arguments.append(arg)
@@ -113,24 +137,49 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     if conc not in filtered_arguments:
                         filtered_arguments.append(conc)
                 curr_with_concretizer.append(filtered_arguments)
+            
 
             depth_2_single_view.extend(curr_with_concretizer)
-
             curr.clear()
-            # attacker depth = 1 and 2
+            
+            # get combinations of att -> depth 2
             for direct in af_concrete.arguments[prob].attacks:
+                # att def
                 for i in range(len(af_concrete.arguments[direct].attacks) + 1):
                     curr.extend(itertools.combinations(af_concrete.arguments[direct].attacks, i))
+                # att att
+                for i in range(len(af_concrete.arguments[direct].defends) + 1):
+                    curr.extend(itertools.combinations(af_concrete.arguments[direct].attacks, i))
+
+                curr = filterDuplicates(curr)
+
+                # add direct attacker, sort, and deduplicate
                 for i in range(len(curr)):
                     curr[i] = list(curr[i])
                     curr[i].extend(direct)
                     if prob not in curr[i]:
                         curr[i].extend(prob)
                     curr[i].sort()
+                curr = filterDuplicates(curr)
+                
+            # add concretizer arguments (they have to be there by force)
+            curr_with_concretizer = list()
+            for curr_sol in curr:
+                filtered_arguments = list()
+                for arg in curr_sol:
+                    filtered_arguments.append(arg)
+            
+                for conc in concretizer_list:
+                    if conc not in filtered_arguments:
+                        filtered_arguments.append(conc)
+                curr_with_concretizer.append(filtered_arguments)
+            
+            depth_2_single_view.extend(curr_with_concretizer)
+
+
 
             curr_with_concretizer = list()
             for curr_sol in curr:
-
                 # filter arguments out, which are not in cluster
                 filtered_arguments = list()
                 for arg in curr_sol:
@@ -149,29 +198,21 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
 
 
     # Create all sorts of combinations
-    #TODO: remove this
     all_comb = list()
+    pre_deduplication = filterDuplicates(depth_2_single_view)
 
-    pre_deduplication_str = list()
-    pre_deduplication = list()
-
-    print(problematic_singletons)
-
-    for s in depth_2_single_view:
-        curr_str = "-".join(s)
-        if curr_str not in pre_deduplication_str:
-            pre_deduplication_str.append(curr_str)
-            pre_deduplication.append(s)
-            
-
-    if len(pre_deduplication) >= 20:
-        [print(i) for i in pre_deduplication]
-        #return "too_many"
+    if len(pre_deduplication) >= 30:
+        #TODO: Do something here
+        [print("TOO MANY", i) for i in pre_deduplication]
+        return "too_many"
     
 
 
+    Info.info(f"MAX iterations: {len(pre_deduplication)}")
     for i in range(1, len(pre_deduplication) + 1, 1):
         all_comb.extend(itertools.combinations(pre_deduplication, i))
+        Info.progress(f"iteration: {i}")
+    Info.progress_end()
 
     depth_2_combinations = list()
     for combination in all_comb:
@@ -295,7 +336,6 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
             if cluster in abstract_abstract_af.arguments[cluster].attacks:
                 attacks_in_cluster = False
                 for singleton_in_cluster in abstract_abstract_af.arguments[cluster].clustered_arguments:
-                    print(singleton_in_cluster)
                     if len(set(concrete_af.arguments[singleton_in_cluster].attacks) & set(
                             abstract_abstract_af.arguments[cluster].clustered_arguments)) > 0:
                         attacks_in_cluster = True
