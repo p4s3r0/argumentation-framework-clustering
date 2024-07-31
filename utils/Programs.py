@@ -122,6 +122,8 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
             return
         concretizer_list.sort(key=len)
 
+
+
         Info.info(f"Problematic Singletons: {faithful[1]}, Further tests: {concretizer_list}")
         for maybe_sol in concretizer_list:
             Info.info(f"Spurious, trying to concretize {maybe_sol}")

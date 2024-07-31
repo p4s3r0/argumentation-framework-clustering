@@ -2,7 +2,7 @@ from colorama import Fore, Back, Style
 
 OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
 
-debug = False
+debug = True
 sol_print = True
 
 def OUT(func):

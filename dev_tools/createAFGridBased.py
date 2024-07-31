@@ -156,7 +156,7 @@ def main():
     grid.addAttacks(float(sys.argv[2]))
     grid.print()
 
-    writeGridToAFFile("test.af", grid, sys.argv[2])
+    writeGridToAFFile("concrete.af", grid, sys.argv[2])
 
 
 

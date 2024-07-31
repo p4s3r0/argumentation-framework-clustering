@@ -11,3 +11,6 @@ rm ~/Desktop/argumentation-framework-clustering/thesis/main.blg
 rm ~/Desktop/argumentation-framework-clustering/thesis/main.fdb_latexmk
 rm ~/Desktop/argumentation-framework-clustering/thesis/main.fls
 rm ~/Desktop/argumentation-framework-clustering/thesis/main.out
+rm ~/Desktop/argumentation-framework-clustering/thesis/main.bcf
+rm ~/Desktop/argumentation-framework-clustering/thesis/helper/*.aux
+rm ~/Desktop/argumentation-framework-clustering/thesis/docs/*.aux

@@ -89,18 +89,28 @@ def filterDuplicates(l: list) -> list:
 def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework,
                           problematic_singletons: list, concretizer_list: list):
     # Filter cluster out of problematic singletons
+
+
+    print(problematic_singletons)
+    # Problematic Singletons list of list -> 1D list
+    p_singletons = list()
+    for problem_set in problematic_singletons:
+        for arg in problem_set:
+            if arg not in p_singletons:
+                p_singletons.append(arg)
+
     filtered_problematic_singletons = list()
-    for problem_sets in problematic_singletons:
-        curr = list()
-        for arg in problem_sets:
-            if arg in af_abstract.arguments:
-                if af_abstract.arguments[arg].is_singleton:
-                    curr.append(arg)
-            else:
+    curr = list()
+    for arg in p_singletons:
+        if arg in af_abstract.arguments:
+            if af_abstract.arguments[arg].is_singleton:
                 curr.append(arg)
-        if len(curr) > 0 and curr not in filtered_problematic_singletons:
-            curr.sort()
-            filtered_problematic_singletons.append(curr)
+        else:
+            curr.append(arg)
+    if len(curr) > 0 and curr not in filtered_problematic_singletons:
+        curr.sort()
+        filtered_problematic_singletons.append(curr)
+
 
     depth_2_single_view = list()
     for prob_set in filtered_problematic_singletons:
@@ -200,22 +210,25 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
     # Create all sorts of combinations
     all_comb = list()
     pre_deduplication = filterDuplicates(depth_2_single_view)
-
-    if len(pre_deduplication) >= 30:
+    print("JJJ", pre_deduplication)
+    if len(pre_deduplication) >= 25:
         #TODO: Do something here
+
+        print("problematic-sing:", p_singletons, "mix:", len(pre_deduplication))
         [print("TOO MANY", i) for i in pre_deduplication]
         return "too_many"
     
 
 
-    Info.info(f"MAX iterations: {len(pre_deduplication)}")
     for i in range(1, len(pre_deduplication) + 1, 1):
         all_comb.extend(itertools.combinations(pre_deduplication, i))
-        Info.progress(f"iteration: {i}")
+        Info.progress(f"combination iteration: {i}/{len(pre_deduplication)}")
     Info.progress_end()
 
+    # deduplicate combinations 
     depth_2_combinations = list()
-    for combination in all_comb:
+    for i, combination in enumerate(all_comb):
+        if i % 100 == 0: Info.progress(f"filter iteration: {i}/{len(all_comb)-(len(all_comb) % 100)}")
         curr = list()
         for comb in combination:
             for single in comb:
@@ -224,13 +237,9 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
             curr.sort()
             if curr not in depth_2_combinations:
                 depth_2_combinations.append(curr)
+    Info.progress_end()
 
-    deduplicated_list = list()
-    for comb in depth_2_combinations:
-        if comb not in deduplicated_list:
-            deduplicated_list.append(comb)
-
-    return deduplicated_list
+    return depth_2_combinations
 
 
 

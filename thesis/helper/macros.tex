@@ -36,8 +36,8 @@
     \draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 - 0.21,#3 + 0.21) -- (#4 + 0.21 , #5 - 0.21);
 }{
 \ifthenelse{\equal{#1}{NB}}{
-    \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 + 0.21 + 0.08 , #3 - 0.21 + 0.08) -- (#4 - 0.21,#5 + 0.21);
-    \draw[{To[length=4, width=5]}-, line width=0.3mm]  (#2 + 0.21 - 0.01, #3 - 0.22) -- (#4 - 0.21 - 0.08,#5 + 0.1);
+    \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 + 0.21 + 0.08 , #3 - 0.21 + 0.08) -- (#4 - 0.21 + 0.08,#5 + 0.21+0.05);
+    \draw[{To[length=4, width=5]}-, line width=0.3mm]  (#2 + 0.21 - 0.01, #3 - 0.22) -- (#4 - 0.21 - 0.08 + 0.05,#5 + 0.1 + 0.05);
 }{
 \ifthenelse{\equal{#1}{PLR}}{
     \draw[-{To[length=4, width=5]}, line width=0.3mm] (#2 + 0.21,#3 + 0.21) -- (#4 - 0.21 , #5 - 0.21);
@@ -46,8 +46,8 @@
     \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.21 , #3 - 0.21) -- (#4 + 0.21,#5 + 0.21);
 }{
 \ifthenelse{\equal{#1}{PB}}{
-    \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.21 - 0.08 , #3 - 0.21 + 0.08) -- (#4 + 0.21,#5 + 0.21);
-    \draw[{To[length=4, width=5]}-, line width=0.3mm]  (#2 - 0.21 + 0.01, #3 - 0.22) -- (#4 + 0.21 + 0.08,#5 + 0.1);
+    \draw[-{To[length=4, width=5]}, line width=0.3mm]  (#2 - 0.28, #3 - 0.11) -- (#4 + 0.15,#5+0.25);
+    \draw[{To[length=4, width=5]}-, line width=0.3mm]  (#2 - 0.21 + 0.01, #3 - 0.22) -- (#4 + 0.21 + 0.08 - 0.05,#5 + 0.16);
 }
 {}}}}}}}
 

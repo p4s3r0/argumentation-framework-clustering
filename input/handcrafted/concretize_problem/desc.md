@@ -1,1 +1,0 @@
-# Example in Paper Dev Notes Problematic Combinations
