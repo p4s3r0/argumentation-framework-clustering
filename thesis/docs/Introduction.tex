@@ -10,15 +10,19 @@ If a fact or, i.e., an argument $a$ is a counterargument of another argument $b$
 
 % Semantics with AFs
 % Computation, complexity classes of computing sets
-A semantic defines a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like \ac{cf}, \ac{adm} and \ac{stb}. According to Dungs definitions, a set \textit{S} is \ac{cf} if there are no attacks between the arguments in \textit{S}. The \ac{cf} set is mainly a building block for the other semantics, which means that the \ac{cf} set is always a superset of \ac{adm} and \ac{stb}. 
-A \ac{stb} set, is a \ac{cf} set, if for every argument, which is not in \textit{S}, has an attacker which is in \textit{S}. 
-Finally, an \ac{adm} set is a \ac{cf} set, where each argument in \textit{S} has a defender in \textit{S}. 
+A semantic defines a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like \ac{cf}, \ac{adm} and \ac{stb}. According to Dungs definitions, a set \textit{S} is \ac{cf} if there are no attacks between the arguments in \textit{S}. The conflict-free set is mainly a building block for the other semantics, which means that the conflict-free set is always a superset of admissible and stable. 
+A stable set, is a conflict-free set, if for every argument, which is not in \textit{S}, has an attacker which is in \textit{S}. 
+Finally, an admissible set is a conflict-free set, where each argument in \textit{S} has a defender in \textit{S}. 
 The specific rules can be defined via a boolean formula. They can be used to encode the \acp{AF} to be solvable with different boolean solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be beyond NP to decide whether an argument is acceptable under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}. In fact, the complexity of proofing faithfulness or spuriousness of an \ac{AF} is $\prod_2^P$ \cite{DBLP:conf/kr/SaribaturW21}. This means, that to obtain a result, multiple instances or calls of a SAT-Solver need to be invoked. 
 
 
 % Clustering of AFs
 One of the first papers describing the concept was written by Dung \cite{Dung1995-DUNOTA-2} in 1995. Since then, there has been more and more interest in \acp{AF} due to the artificial intelligence community \cite{DBLP:books/ox/22/CocarascuC0T22}. The argumentation systems and semantics have been modified and improved over the years, and another abstraction layer has been added. This specific abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. Clustering is a technique to reduce the number of arguments without changing the conclusion, which in this instance would be the sets produced by a specific semantic. When producing a clustered (\emph{abstract}) \ac{AF}, which produces the same semantic sets as the non-clustered (\emph{concrete}) \ac{AF}, the abstract \ac{AF} is defined to be \emph{faithful}. While each concrete semantic set has a directly mapped abstract semantic set, not every abstract semantic set has to have a directly mapped concrete semantic set. If we create an abstract \ac{AF} that produces a semantic set that cannot be mapped to a concrete semantic set, we call it \emph{spurious}.
 
+
+
+% Importance of creating faithful abstract AFs
+When reducing the amount of arguments with clustering we have to pay attention to not abstract crucial facts, and thus, falsify accepted sets from the concrete \ac{AF} or accept refuted ones. This would lead to a spurious abstraction and the abstract \ac{AF} would not represent the concrete \ac{AF} anymore. To preserve the representation of the concrete \ac{AF}, we need to show faithfulness.
 
 
 % Example
@@ -33,7 +37,7 @@ For instance, let us consider a real-world example like the weather. We can defi
     \item $f$: Observations can alter, depending on the time.
 \end{itemize}
 
-With this knowledge basis, we can create a concrete \ac{AF} $A(a, r)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \ref{af:introExample1}. If we apply another layer of abstraction, we obtain, f.e. the abstract \ac{AF} defined in \ref{af:introExample2}. Here we created a single Cluster consisting of the singletons \texttt{\{a, b, c, e, f\}}.
+With this knowledge basis, we can create a concrete \ac{AF} $G = (A, R)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \ref{af:introExample1}. If we apply another layer of abstraction, we obtain, f.e. the abstract \ac{AF} $G' = (A', R')$ defined in \ref{af:introExample2}. Here we created a single Cluster consisting of the singletons \texttt{\{a, b, c, e, f\}}.
 
 
 
@@ -66,7 +70,7 @@ With this knowledge basis, we can create a concrete \ac{AF} $A(a, r)$. Where we 
         \DrawAttackDiagonal{PB}{\fx}{\fy}{\ex}{\ey}
         \DrawAttackDiagonal{NB}{\ax}{\ay}{\ex}{\ey}
     \end{tikzpicture}
-    \caption{\ac{AF} concrete}
+    \caption{\ac{AF} G concrete}
     \label{af:introExample1}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
@@ -84,7 +88,7 @@ With this knowledge basis, we can create a concrete \ac{AF} $A(a, r)$. Where we 
         \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy + 0.3}
         \DrawAttackVertical{D}{\dx}{\dy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{\ac{AF} spurious abstract}
+    \caption{\ac{AF} G' abstract}
     \label{af:introExample2}
 \end{minipage}
 \end{figure}
@@ -92,11 +96,11 @@ With this knowledge basis, we can create a concrete \ac{AF} $A(a, r)$. Where we 
 
 
 
-Now we can compute the sets of the according semantic (\ac{cf}, \ac{adm}, \ac{stb}). To reduce cluttering, we keep this example to the stable semantic. The stable sets of the \ac{AF} defined in \ref{af:introExample1} are \texttt{stb=[\{d, e\}, \{b, d, f\}]}.
+Now we can compute the sets of the according semantic (\ac{cf}, \ac{adm}, \ac{stb}). To reduce cluttering, we keep this example to the stable semantic. The stable sets of the \ac{AF} $G$ defined in \ref{af:introExample1} are \texttt{stb=[\{d, e\}, \{b, d, f\}]}.
 
-By computing the stable semantic sets of the abstract \ac{AF} \texttt{stb=[\{d\}, \{d, g'\}]}, we can observe that it is spurious due to the extension \texttt{\{d\}}, since it cannot be mapped to one of the concrete stable extensions. 
+By computing the stable semantic sets of the abstract \ac{AF} $G'$ \texttt{stb=[\{d\}, \{d, g'\}]}, we can observe that it is spurious due to the extension \texttt{\{d\}}, since it cannot be mapped to one of the concrete stable extensions. 
 
-When concretizing the argument \texttt{c}, we create a new \ac{AF} \ref{af:introExample3}
+When concretizing the argument \texttt{\{c\}}, we create a new \ac{AF} $G'' = (A'', R'')$ \ref{af:introExample3}, which has the following stable extensions: \texttt{stb=[\{g', d\}]}. This Extension can be mapped to both stable extensions of the concrete \ac{AF} $G$, by expanding the cluster \texttt{g'} with \texttt{\{e\}} or \texttt{\{b, f\}}. Thus, we created a faithful abstract \ac{AF}.
 
 \begin{figure}[h]
     \centering
@@ -106,26 +110,20 @@ When concretizing the argument \texttt{c}, we create a new \ac{AF} \ref{af:intro
         \def \dx{1}     \def \dy{0}
         \def \cx{0}     \def \cy{0}
 
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c,e,f$};
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,e,f$};
         \node at (1, -0.5) {$g'$};
         \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
         \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
 
         % Attacks
-        \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy + 0.3}
+        \DrawSelfAttackLeftTopCluster{\gx-0.65}{\gy + 0.3}
         \DrawAttackHorizontal{L}{\dx}{\dy}{\cx}{\cy}
         \DrawAttackVertical{B}{\cx}{\cy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{\ac{AF} concrete}
+    \caption{\ac{AF} G''}
     \label{af:introExample3}
 \end{figure}
 
-\textit{TODO: finish example}
-\vspace{1cm}
-
-
-% Importance of creating faithful abstract AFs
-When reducing the amount of arguments with clustering we have to pay attention to not abstract crucial facts, and thus, falsify accepted sets from the concrete \ac{AF} or accept refuted ones. This would lead to a spurious abstraction and the abstract \ac{AF} would not represent the concrete \ac{AF} anymore. To preserve the representation of the concrete \ac{AF}, we need to show faithfulness.
 
 % Importance of concretizing single arguments
 When producing an \ac{AF} with multiple layer of abstractions, the concrete problem can be hard to map. To still have an understanding of the structure to some extend, extracting single arguments of the cluster by concretizing them can be helpful. This also allows the user to have a direct impact to the outcome and produce customized faithful \acp{AF}.  
