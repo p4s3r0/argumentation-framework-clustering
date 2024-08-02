@@ -43,10 +43,31 @@ AFs are represented by directed graph, where the nodes are an abstraction of the
     \label{af:backgroundAFexample1}
 \end{figure}
 
-To be able to conclude something, out of an abstract AF, we need to define semantics. A semantic defines a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like \ac{cf}, \ac{adm} and \ac{stb}. According to Dungs definitions, a set \textit{S} is \ac{cf} if there are no attacks between the arguments in \textit{S}. The conflict-free set is mainly a building block for the other semantics, which means that the conflict-free set is always a superset of admissible and stable. 
-A stable set, is a conflict-free set, if for every argument, which is not in \textit{S}, has an attacker which is in \textit{S}. 
-Finally, an admissible set is a conflict-free set, where each argument in \textit{S} has a defender in \textit{S}. 
+To be able to conclude something, out of an abstract AF, we need to define semantics. A semantic defines a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like \ac{cf}, \ac{adm} and \ac{stb}. According to Dungs definitions, a set \textit{S} is \ac{cf} if there are no attacks between the arguments in \textit{S}. The conflict-free set is mainly a building block for the other semantics, which means that the conflict-free set is always a superset of admissible and stable. In the example \ref{af:backgroundAFexample1} the $conflict-free$ sets are:
+\texttt{\{a\}},
+\texttt{\{c\}},
+\texttt{\{d\}},
+\texttt{\{e\}},
+\texttt{\{a, d\}},
+\texttt{\{a, e\}},
+\texttt{\{c, e\}},
+
+
+An admissible set is a conflict-free set, where each argument in \textit{S} has a defender in \textit{S}. In the example \ref{af:backgroundAFexample1} the $admissible$ sets are:
+\texttt{\{a\}},
+\texttt{\{c\}},
+\texttt{\{e\}},
+\texttt{\{a, d\}},
+\texttt{\{a, e\}},
+\texttt{\{c, e\}},
+
+Finally, a stable set is a conflict-free set, if for every argument, which is not in \textit{S}, has an attacker which is in \textit{S}. In the example \ref{af:backgroundAFexample1} the $stable$ sets are:
+\texttt{\{a, d\}},
+\texttt{\{a, e\}},
+
+
 The specific rules can be defined via a boolean formula. They can be used to encode the \acp{AF} to be solvable with different boolean solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be beyond NP to decide whether an argument is acceptable under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}.
+
 
 
 \section{Clustering of Argumentation Frameworks}
