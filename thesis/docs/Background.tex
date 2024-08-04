@@ -72,6 +72,9 @@ The specific rules can be defined via a boolean formula. They can be used to enc
 
 \section{Clustering of Argumentation Frameworks}
 
+When talking about AFs in general, we already have an abstraction layer due to the arguments abstraction. By clustering, we add another layer of abstraction where we combine different arguments into one or multiple so called \textit{clusters}. By definition, a cluster is a single entity (composed of multiple arguments) which can be integrated in an AF to reduce the complexity. While reducing the overall complexity of the AF with clusters, we add a new computation layer: Computing \textit{faithful} clustered AFs. The term \textit{faithful} describes the property of a clustered AF, that every abstract semantic extension can be mapped to a concrete semantic extension. If the clustered AF creates a semantic set which cannot be mapped to a concrete set, we call it \textit{spurious}. 
+
+
 \textit{TODO: What are clusters}
 
 \textit{TODO: Why do we need clusters}
