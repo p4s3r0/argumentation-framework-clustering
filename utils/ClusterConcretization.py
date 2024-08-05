@@ -89,9 +89,6 @@ def filterDuplicates(l: list) -> list:
 def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework,
                           problematic_singletons: list, concretizer_list: list):
     # Filter cluster out of problematic singletons
-
-
-    print(problematic_singletons)
     # Problematic Singletons list of list -> 1D list
     p_singletons = list()
     for problem_set in problematic_singletons:
@@ -210,7 +207,6 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
     # Create all sorts of combinations
     all_comb = list()
     pre_deduplication = filterDuplicates(depth_2_single_view)
-    print("JJJ", pre_deduplication)
     if len(pre_deduplication) >= 25:
         #TODO: Do something here
 
@@ -266,6 +262,7 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
     # Create new concretize AF
     abstract_abstract_af = copy.deepcopy(abstract_af)
 
+
     # add concretized arguments
     for arg in set_to_concretize:
         abstract_abstract_af.arguments[arg] = Argument.Argument(name=str(arg))
@@ -276,6 +273,22 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
             for concretize_arg in set_to_concretize:
                 if concretize_arg in abstract_abstract_af.arguments[arg].clustered_arguments:
                     abstract_abstract_af.arguments[arg].clustered_arguments.remove(concretize_arg)
+
+
+    # add attack concretized singleton -> singleton
+    for arg in abstract_abstract_af.arguments.keys():
+        if not abstract_abstract_af.arguments[arg].is_singleton: continue
+        # check attacker
+        for attacker in concrete_af.arguments[arg].attacks:
+            if attacker in abstract_abstract_af.arguments:
+                if attacker in abstract_abstract_af.arguments[arg].attacks: continue
+                abstract_abstract_af.arguments[arg].attacks.append(attacker)
+        # check defender
+        for defender in concrete_af.arguments[arg].defends:
+            if defender in abstract_abstract_af.arguments:
+                if defender in abstract_abstract_af.arguments[arg].defends: continue
+                abstract_abstract_af.arguments[arg].defends.append(defender)
+            
 
     # create new attacks cluster -> concretized singleton and concretized singleton -> cluster
     for arg in set_to_concretize:
@@ -405,5 +418,5 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
                 # remove cluster from af
                 abstract_abstract_af.arguments.pop(cluster)
                 
-    # Check if spurious
+    
     return abstract_abstract_af
