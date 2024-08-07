@@ -17,7 +17,7 @@ $\mathtt{(c,d),}$
 $\mathtt{(d,e),}$
 $\mathtt{(e,d)]}.$
 
-With the arguments and attacks, we can create a directed graph \ref{af:backgroundAFexample1}
+With the arguments and attacks, we can create a directed graph \ref{af:backgroundAFexample1}.
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}
@@ -45,9 +45,9 @@ With the arguments and attacks, we can create a directed graph \ref{af:backgroun
     \label{af:backgroundAFexample1}
 \end{figure}
 
-To be able to conclude something, out of an abstract AF, we need to define semantics. A semantic defines a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like \ac{cf}, \ac{adm} and \ac{stb}. 
+To be able to conclude something, out of an abstract AF, we need to define semantics. A semantic defines a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free, admissible and stable.
 
-\paragraph{conflict-free:} According to Dungs definitions, a set \textit{S} is \ac{cf} if there are no attacks between the arguments in \textit{S}. Or, formally:
+\paragraph{conflict-free:} According to Dungs definitions, a set \textit{S} is conflict-free if there are no attacks between the arguments in \textit{S}. Or, formally:
 
 \begin{center}
     \begin{tabular}{c}
@@ -261,7 +261,7 @@ With this defintion we can build the abstract clustered graph $\mathtt{\hat{H}}$
         \DrawSelfAttackLeftTopCluster{\hx-0.65}{\hy + 0.3}
         \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.5}{\hy}
     \end{tikzpicture}
-    \caption{\ac{AF} $\hat{G}$ clustered}
+    \caption{\ac{AF} $\hat{H}$ clustered}
     \label{af:backgroundClusterExample2}
 \end{minipage}
 \end{figure}
@@ -292,23 +292,72 @@ With this defintion we can build the concretized abstract graph $\mathtt{\hat{I}
         \DrawAttackHorizontal{R}{\hx+0.5}{\hy}{\dx}{\dy}
         \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
     \end{tikzpicture}
-    \caption{\ac{AF} $\hat{H}$ clustered}
+    \caption{\ac{AF} $\hat{I}$ clustered}
     \label{af:backgroundClusterExample3}
 \end{figure}
 
-Every stable set in \ref{af:backgroundClusterExample3} (e.g. $\mathtt{\{d, \hat{h}\}, \{e, \hat{h}\}})$ can be mapped to one of concrete stable sets of $G$, which means that the clustered AF $\hat{H}$ is faithful.
-
-
-
-
-%\textit{TODO: Complexity}
+Every stable set in \ref{af:backgroundClusterExample3} (e.g. $\mathtt{\{d, \hat{h}\}, \{e, \hat{h}\}})$ can be mapped to one of concrete stable sets of $G$, which means that the clustered AF $\hat{I}$ is faithful.
 
 
 \section{SAT-Solver}
+A SAT-Solver is used to compute boolean formulas in a rather efficient way. The main purpose is to determine, if a formula is satisfiable (e.g. the variables of the formula can be set to \textit{true} or \textit{false} s.t. the expression evaluates to \textit{true}). If no combination of setting the variables to \textit{true} or \textit{false} s.t. the formula evaluates to \textit{true} is found, we call the boolean expression unsatisfiable. Most of the SAT-Solvers do also provide a model, if a boolean expression is satisfiable.
 
-\textit{TODO: What are SAT-Solvers}
+SAT-Solvers do find there applications in various domains, f.e. in verification and validation of software and hardware \cite{DBLP:conf/dagstuhl/Gogolla09, DBLP:books/daglib/0045943}. But also in AI and machine learning \cite{DBLP:phd/basesearch/Liang18a} and even in security \cite{Pasero2022-SATHashFunctions-Repo, DBLP:journals/iacr/LinYXTS24}.
 
-\textit{TODO: Complexity of SAT-Problems}
+%\textit{TODO: Complexity of SAT-Problems}
+The complexity class of SAT-Solvers lays in NP-complete, and it was the first problem proven to be in in this class. Thus, a lot of other problems could be proven to be in NP-complete due to a reduction to SAT.
 
-\textit{TODO: Where and how do we use SAT-Solvers in the research}
 
+Each year further optimizations of the current SAT-Solvers are applied. There are several competitions which are being ran in different classes \cite{SAT-Solver-Competition}. Meanwhile, SAT-Solvers are so specialized, that there is no overall best SAT-Solver, but it is dependent on the application field. An overall good performing and easy to implement SAT-Solver, which we also used in this paper is the z3 SAT-Solver \cite{z3-SAT-Solver}.
+
+
+We encoded the semantic rules into boolean formula and used the SAT-Solver to evaluate them. To cover all possibilities of AFs, we generalized the formulas and used short notation to concatinate the variables. Let us have a look at a concrete example with an abstract clustered AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ defined in \ref{af:backgroundSATExample1}.
+
+
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \cx{1}     \def \cy{0}
+        \def \dx{2}     \def \dy{0}
+        \def \ex{1}     \def \ey{-1}
+        \def \hx{0}     \def \hy{0}
+
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a,b$};
+        \node at (0, 0.55) {$\hat{h}$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+
+        % Attacks
+        \DrawAttackHorizontal{R}{\hx+0.1}{\hy}{\cx}{\cy}
+        \DrawSelfAttackRightSingleton{\cx}{\cy}
+        \DrawAttackHorizontal{R}{\cx}{\cy}{\dx}{\dy}
+        \DrawAttackVertical{D}{\cx}{\cy}{\ex}{\ey}
+        \DrawAttackDiagonal{PB}{\dx}{\dy}{\ex}{\ey}
+    \end{tikzpicture}
+    \caption{\ac{AF} $\hat{G}$ clustered}
+    \label{af:backgroundSATExample1}
+\end{figure}
+
+\paragraph{For-OR:} To concatinate all the singletons of the AF $\hat{G}$, we can use the following notation:
+
+$$
+\bigvee_{a \in \hat{G}_{\!S\!I\!N\!G\!L\!E}} a = c \lor d \lor e
+$$
+
+\paragraph{For-AND:} To concatinate all the singletons of the AF $\hat{G}$, we can use the following notation:
+
+$$
+\bigwedge_{a \in \hat{G}_{\!S\!I\!N\!G\!L\!E}} a = c \land d \land e
+$$
+
+\paragraph{For-Attacks: } To iterate over the attacks $\hat{R}$ we can extract it from the AF as tuple and address the attacker $a$ and defender $b$:
+
+$$
+\bigwedge_{(a, b) \in \hat{R}, a\in \hat{G}_{\!S\!I\!N\!G\!L\!E}} \big( a \lor b \big) = (c \lor c) \land
+(c \lor d) \land (c \lor e) \land (e \lor d) \land (d \lor e)
+$$
+
+%\textit{TODO: Where and how do we use SAT-Solvers in the research}
