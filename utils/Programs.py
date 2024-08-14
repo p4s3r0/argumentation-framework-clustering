@@ -41,10 +41,10 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
         else:
             Out.Faithful()
             return True, None
-        
 
 
-def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
+
+def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visualize: bool):
     """
     Compares 2 AFs from the passed files and decides if spurious of faithful
     @file1 -> filepath of the first AF which should be parsed and compared
@@ -82,7 +82,7 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str):
 
 
 
-def computeSemanticSets(input_file: str, semantic: str):
+def computeSemanticSets(input_file: str, semantic: str, visualize: bool):
     af = ArgumentationFramework.ArgumentationFramework()
     af.parseFile(input_file)
     Info.info("Input File Parsed")
@@ -90,20 +90,21 @@ def computeSemanticSets(input_file: str, semantic: str):
     solutions = solver.computeSets()
     Out.SolutionSets(semantic=semantic, sets=solutions)
     Info.info("Solution Sets Computed")
-    Info.info("Visualizing Argumentation Framework")
-    Visualizer.show(af.arguments)
+    if visualize:
+        Info.info("Visualizing Argumentation Framework")
+        Visualizer.show(af.arguments)
 
 
 
-def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, concretize: list):
+def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, concretize: list, visualize: bool):
      # read in concrete AF
     concrete_af = ArgumentationFramework.ArgumentationFramework()
     concrete_af.parseFile(filepath=concrete_file)
-    Visualizer.show(concrete_af.arguments)
+    if visualize: Visualizer.show(concrete_af.arguments)
     # read in abstract AF
     abstract_af = ArgumentationFramework.ArgumentationFramework()
     abstract_af.parseFile(filepath=abstract_file)
-    Visualizer.show(abstract_af.arguments)
+    if visualize: Visualizer.show(abstract_af.arguments)
 
 
     concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=concretize, abstract_af=abstract_af,
@@ -135,13 +136,13 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
 
             if faithful[0]:
                 Out.ConcretizeFoundSolution()
-                Visualizer.show(concretized_af.arguments)
+                if visualize: Visualizer.show(concretized_af.arguments)
                 return
         else:
             Out.ConcretizeNOTFoundSolution()
     else:
         Out.ConcretizeFoundSolution()
-        Visualizer.show(concretized_af.arguments)
+        if visualize: Visualizer.show(concretized_af.arguments)
 
     Info.info("Ending Program")
 

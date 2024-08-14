@@ -296,6 +296,144 @@ one singleton to the mentioned singleton.
 \section{Computation of Concretizer List}
 \textit{TODO: Explain how concretizer list is computed}
 
+%CONCRETE
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{1}   \def \cy{-1}
+        \def \dx{2}   \def \dy{0}
+        \def \ex{3}   \def \ey{0}
+        \def \fx{3}   \def \fy{-1}
+        \def \gx{4}   \def \gy{0}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawAttackHorizontal{B}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackHorizontal{R}{\bx}{\by}{\dx}{\dy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
+        \DrawAttackHorizontal{R}{\ex}{\ey}{\gx}{\gy}
+        \DrawAttackVertical{B}{\bx}{\by}{\cx}{\cy}
+        \DrawAttackVertical{D}{\ex}{\ey}{\fx}{\fy}
+        \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
+    \end{tikzpicture}
+    \caption{Concrete AF $G$}
+\end{figure}
+\vspace{-0.2cm}
+
+% ABSTRACT
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \bx{0}   \def \by{0}
+        \def \hx{2}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a, c, d, e, f, g$};
+        \node at (\hx + 0.1, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawAttackHorizontal{B}{\hx-0.85}{\hy}{\bx}{\by}
+        \DrawSelfAttackRightTopCluster{\hx+1}{\hy+0.29}
+
+    \end{tikzpicture}
+    \caption{Abstract AF $\hat{G}$}
+\end{figure}
+\vspace{-0.2cm}
+
+
+%Depth 2 Attacker
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{1}   \def \cy{-1}
+        \def \dx{2}   \def \dy{0}
+        \def \ex{3}   \def \ey{0}
+        \def \fx{3}   \def \fy{-1}
+        \def \gx{4}   \def \gy{0}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[cYellow] (\ax,\ay) circle (0.4);
+        \node[text=cYellow] at (\ax+0.33, \ay+0.45) {\footnotesize 1};
+
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[cRed] (\bx,\by) circle (0.4);
+        \node[text=cRed] at (\bx+0.33, \by+0.45) {\footnotesize 0};
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[cYellow] (\cx,\cy) circle (0.4);
+        \node[text=cYellow] at (\cx+0.65, \cy) {\footnotesize 1,2};
+
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[cBlue] (\dx,\dy) circle (0.4);
+        \node[text=cBlue] at (\dx+0.33, \dy+0.45) {\footnotesize 1};
+
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[cBlue] (\ex,\ey) circle (0.4);
+        \node[text=cBlue] at (\ex+0.33, \ey+0.45) {\footnotesize 2};
+
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \node at (\fx+0.45, \fy) {\footnotesize 3};
+
+        \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+        \node at (\gx+0.33, \gy+0.45) {\footnotesize 3};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawSelfAttackLeftSingleton{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackHorizontal{R}{\bx}{\by}{\dx}{\dy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
+        \DrawAttackHorizontal{R}{\ex}{\ey}{\gx}{\gy}
+        \DrawAttackVertical{B}{\bx}{\by}{\cx}{\cy}
+        \DrawAttackVertical{D}{\ex}{\ey}{\fx}{\fy}
+        \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
+    \end{tikzpicture}
+    \caption{Singletons depth with $b$ as viewpoint}
+\end{figure}
+\vspace{-0.2cm}
+% Input: spurious set
+
+% Filter Cluster out of spurious set, because we cant concretize cluster
+
+% Get combination as attacker depth 2
+
+% Get combination as defender depth 2
+
+% Add concretizer list defined by the user
+
+% Create combinations out of attacker depth 2 and defender depth 2
+
+% deduplicate
+
+% Filter singletons which are not in cluster, because cant concretize singletons
+
+% deduplicate
+
+% Create combinations of attacker-defender
+
+% deduplicate
+
+% return list
+
 \section{Algorithmic Approach to Compute Faifthul Clusterings}
 \textit{TODO: Concretize singletons of clustered AF algorithm}
 
