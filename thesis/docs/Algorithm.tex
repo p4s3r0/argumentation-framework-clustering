@@ -293,12 +293,21 @@ one singleton to the mentioned singleton.
 \end{algorithm}
 
 
+\newpage
 \section{Computation of Concretizer List}
-\textit{TODO: Explain how concretizer list is computed}
+% What is concretizer list
+The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependend on the size of the set. Usually, a minimal deviation of the abstract AF is desired, so small concretizer sets are tried first.
 
-%CONCRETE
+% Input: spurious set
+The input to the computation of the concretizer list is a set of the arguments of all the spurious semantic extensions. The size and computation intensity of the concretizer list is highly dependent on the amount of attacks, each argument of the input set and its neighbours with depth 2 have. This is also the critical part of the faithful AF computation and makes some AFs infeasible to solve.
+
+% Example base
+Let us have a look at an example to demonstrate how the concretizer list is computed. The concrete AF $G$ is defined in \ref{af:algorithmConcretizer1} and the according abstract AF in \ref{af:algorithmConcretizer2}.
+
+
 \vspace{0.3cm}
-\begin{figure}[h!]
+\begin{figure}[h]
+\begin{minipage}{.5\textwidth}
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -329,12 +338,9 @@ one singleton to the mentioned singleton.
         \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
     \end{tikzpicture}
     \caption{Concrete AF $G$}
-\end{figure}
-\vspace{-0.2cm}
-
-% ABSTRACT
-\vspace{0.3cm}
-\begin{figure}[h!]
+    \label{af:algorithmConcretizer1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -352,12 +358,24 @@ one singleton to the mentioned singleton.
 
     \end{tikzpicture}
     \caption{Abstract AF $\hat{G}$}
+    \label{af:algorithmConcretizer2}
+\end{minipage}
 \end{figure}
-\vspace{-0.2cm}
+\vspace{0.3cm}
 
+If we have a look at the stable extensions of the concrete AF $G$, e.g. $\mathtt{stb=[\{b, c\}]}$ and at the stable extensions of the abstract AF $\hat{G}$, e.g. $\mathtt{stb=[\{b, \hat{h}\}, \{\hat{h}\}, \{b\}]}$, we can see that stable extensions $\mathtt{\{\hat{h}\}}$ and $\mathtt{\{b\}}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\mathtt{\{b, \hat{h}\}}$.
+
+% Filter Cluster out of spurious set, because we cant concretize cluster
+The first step is to filter out the clusters of the input, since clusters are not present in the concrete AF and therefore do not attack any singletons and are not being attacked. So we reduce the concretizer list from $\mathtt{\{b, \hat{h}\}}$ to $\mathtt{\{b\}}$.
+
+% Get combination as attacker depth 2
+% Get combination as defender depth 2
+Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked of an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the direct arguments, which are being attacked of the argument. A depth $2$ argument is an argument, which has some attack relation (e.g. attacks the argument or is attacked by the argument) with a depth $1$ argument.
+
+We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \ref{af:algorithmConcretizer3} depicted in yellow and the attacker with the same depth, depicted in blue. Some arguments can have multiple depths (f.e. argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), than the lower depth is chosen as the representative.
 
 %Depth 2 Attacker
-\vspace{0.3cm}
+\vspace{0.1cm}
 \begin{figure}[h!]
     \centering
     \begin{tikzpicture}
@@ -380,7 +398,7 @@ one singleton to the mentioned singleton.
 
         \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
         \draw[cYellow] (\cx,\cy) circle (0.4);
-        \node[text=cYellow] at (\cx+0.65, \cy) {\footnotesize 1,2};
+        \node[text=cYellow] at (\cx+0.55, \cy) {\footnotesize 1};
 
         \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
         \draw[cBlue] (\dx,\dy) circle (0.4);
@@ -408,31 +426,72 @@ one singleton to the mentioned singleton.
         \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
     \end{tikzpicture}
     \caption{Singletons depth with $b$ as viewpoint}
+    \label{af:algorithmConcretizer3}
 \end{figure}
 \vspace{-0.2cm}
-% Input: spurious set
 
-% Filter Cluster out of spurious set, because we cant concretize cluster
+Now the concretizer list is expanded with all the possible combinations of the neighbours. The neighbours of the current example are $\mathtt{\{a, c, d, e\}}$. When building the combinations, we create the table in \ref{table:algorithmConcretizer1}.
 
-% Get combination as attacker depth 2
+\vspace{0.2cm}
+\begin{center}
+    \begin{tabular}{ |c|c|c|c| }
+     \hline
+     size $1$ & size $2$ & size $3$ & size $4$\\
+     \hline
+     \hline
+     $\mathtt{\{a\}}$ & $\mathtt{\{a, c\}}$ & $\mathtt{\{a, c, d\}}$ &$\mathtt{\{a, c, d, e\}}$ \\
+     \hline
+     $\mathtt{\{c\}}$ & $\mathtt{\{a, d\}}$ & $\mathtt{\{a, c, e\}}$ & \\
+     \hline
+     $\mathtt{\{d\}}$ & $\mathtt{\{a, e\}}$ & $\mathtt{\{a, d, e\}}$ & \\
+     \hline
+     $\mathtt{\{e\}}$ & $\mathtt{\{c, d\}}$ & $\mathtt{\{c, d, e\}}$ & \\
+     \hline
+       & $\mathtt{\{c, e\}}$ &  & \\
+     \hline
+       & $\mathtt{\{d, e\}}$ &  & \\
+     \hline
+    \end{tabular}
+    \label{table:algorithmConcretizer1}
+\end{center}
+\vspace{0.2cm}
 
-% Get combination as defender depth 2
+The combination table grows exponentially to the base of 2. Therefore, the size of the neighbours is crucial. If we have to many neighbours, the computation would need to much memory and turns infeasible to compute.
 
 % Add concretizer list defined by the user
-
-% Create combinations out of attacker depth 2 and defender depth 2
-
 % deduplicate
+If the user has provided arguments which have to be concretized as program argument, we add them to each combination set. After adding them, we filter for duplicates to keep the concretizer list size to a minimum.
 
 % Filter singletons which are not in cluster, because cant concretize singletons
-
 % deduplicate
+Next, we need to filter out the arguments, which are not in clusters, since singletons cannot be concretized. This filtering could lead to some duplicates again, which we need to remove once again to minimize the memory consumption and reduce the faitfhul calls.
 
-% Create combinations of attacker-defender
+Finally, we sort the list by the set size and return it. In the current example we would simply return the whole table, because no concretizer arguments were provided by the user. So the concretizer list would be
+$\mathtt{[\{a\}}$
+$\mathtt{\{b\}}$
+$\mathtt{\{c\}}$
+$\mathtt{\{d\}}$
+$\mathtt{\{a, c\}}$
+$\mathtt{\{a, d\}}$
+$\mathtt{\{a, e\}}$
+$\mathtt{\{c, d\}}$
+$\mathtt{\{c, e\}}$
+$\mathtt{\{d, e\}}$
+$\mathtt{\{a, c, d\}}$
+$\mathtt{\{a, c, e\}}$
+$\mathtt{\{a, d, e\}}$
+$\mathtt{\{c, d, e\}}$
+$\mathtt{\{a, c, d, e\}]}$.
 
-% deduplicate
+
 
 % return list
+
+
+
+
+
+
 
 \section{Algorithmic Approach to Compute Faifthul Clusterings}
 \textit{TODO: Concretize singletons of clustered AF algorithm}
