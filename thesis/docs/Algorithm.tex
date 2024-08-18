@@ -251,7 +251,7 @@ one singleton to the mentioned singleton.
 \end{figure}
 \vspace{-0.2cm}
 
-\restoregeometry
+The pseudo code is listed in \ref{alg:concretizingSingletons}.
 
 \begin{algorithm}[H]
     \caption{Concretizing Singletons Pseudocode}\label{alg:concretizingSingletons}
@@ -296,13 +296,13 @@ one singleton to the mentioned singleton.
 \newpage
 \section{Computation of Concretizer List}
 % What is concretizer list
-The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependend on the size of the set. Usually, a minimal deviation of the abstract AF is desired, so small concretizer sets are tried first.
+The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependend on the size of the set. Usually, a minimal deviation of the abstract AF is desired, so small concretizer sets are checked first.
 
 % Input: spurious set
 The input to the computation of the concretizer list is a set of the arguments of all the spurious semantic extensions. The size and computation intensity of the concretizer list is highly dependent on the amount of attacks, each argument of the input set and its neighbours with depth 2 have. This is also the critical part of the faithful AF computation and makes some AFs infeasible to solve.
 
 % Example base
-Let us have a look at an example to demonstrate how the concretizer list is computed. The concrete AF $G$ is defined in \ref{af:algorithmConcretizer1} and the according abstract AF in \ref{af:algorithmConcretizer2}.
+Let us have a look at an example to demonstrate how the concretizer list is computed. The concrete AF $G$ is defined in \ref{af:algorithmConcretizer1} and the according abstract AF $\hat{G}$ in \ref{af:algorithmConcretizer2}.
 
 
 \vspace{0.3cm}
@@ -370,7 +370,7 @@ The first step is to filter out the clusters of the input, since clusters are no
 
 % Get combination as attacker depth 2
 % Get combination as defender depth 2
-Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked of an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the direct arguments, which are being attacked of the argument. A depth $2$ argument is an argument, which has some attack relation (e.g. attacks the argument or is attacked by the argument) with a depth $1$ argument.
+Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked by an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the direct arguments, which are being attacked by the argument. A depth $2$ argument is an argument, which has some attack relation (e.g. attacks the argument or is attacked by the argument) with a depth $1$ argument.
 
 We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \ref{af:algorithmConcretizer3} depicted in yellow and the attacker with the same depth, depicted in blue. Some arguments can have multiple depths (f.e. argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), than the lower depth is chosen as the representative.
 
@@ -432,8 +432,8 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
 
 Now the concretizer list is expanded with all the possible combinations of the neighbours. The neighbours of the current example are $\mathtt{\{a, c, d, e\}}$. When building the combinations, we create the table in \ref{table:algorithmConcretizer1}.
 
-\vspace{0.2cm}
-\begin{center}
+\begin{table}[htb]
+    \centering
     \begin{tabular}{ |c|c|c|c| }
      \hline
      size $1$ & size $2$ & size $3$ & size $4$\\
@@ -452,9 +452,10 @@ Now the concretizer list is expanded with all the possible combinations of the n
        & $\mathtt{\{d, e\}}$ &  & \\
      \hline
     \end{tabular}
-    \label{table:algorithmConcretizer1}
-\end{center}
-\vspace{0.2cm}
+\caption{Combinations of $\mathtt{\{a, c, d, e\}}$}
+\label{table:algorithmConcretizer1}
+
+\end{table}
 
 The combination table grows exponentially to the base of 2. Therefore, the size of the neighbours is crucial. If we have to many neighbours, the computation would need to much memory and turns infeasible to compute.
 
@@ -464,9 +465,9 @@ If the user has provided arguments which have to be concretized as program argum
 
 % Filter singletons which are not in cluster, because cant concretize singletons
 % deduplicate
-Next, we need to filter out the arguments, which are not in clusters, since singletons cannot be concretized. This filtering could lead to some duplicates again, which we need to remove once again to minimize the memory consumption and reduce the faitfhul calls.
+Next, we need to filter out the arguments, which are not in clusters, since singletons are already concrete. This filtering could lead to some duplicates again, which we need to remove once again to minimize the memory consumption and reduce the amount of faitfhul checks.
 
-Finally, we sort the list by the set size and return it. In the current example we would simply return the whole table, because no concretizer arguments were provided by the user. So the concretizer list would be
+Finally, we sort the list by the set size and return it. In the current example we would return the whole table, because no concretizer arguments were provided by the user. So the concretizer list would be
 $\mathtt{[\{a\}}$
 $\mathtt{\{b\}}$
 $\mathtt{\{c\}}$
@@ -483,6 +484,92 @@ $\mathtt{\{a, d, e\}}$
 $\mathtt{\{c, d, e\}}$
 $\mathtt{\{a, c, d, e\}]}$.
 
+When concretizing the list, we find a set which leads to a faithful AF: $\mathtt{\{a, c, d\}}$ depicted in \ref{af:algorithmConcretizer4}. The pseudo code of the computation is listed in \ref{alg:concretizerList}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{1}   \def \cy{-1}
+        \def \dx{2}   \def \dy{0}
+        \def \hx{3.5}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e, f, g$};
+        \node at (\hx + 0.1, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawAttackHorizontal{B}{\hx-0.3}{\hy}{\dx}{\dy}
+        \DrawAttackHorizontal{B}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackHorizontal{R}{\bx}{\by}{\dx}{\dy}
+        \DrawAttackVertical{B}{\bx}{\by}{\cx}{\cy}
+        \DrawSelfAttackRightTopCluster{\hx+0.45}{\hy+0.29}
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+
+    \end{tikzpicture}
+    \caption{Faithful AF $\hat{G}'$}
+    \label{af:algorithmConcretizer4}
+\end{figure}
+
+
+
+\begin{algorithm}
+    \caption{Computation of Concretizer list Algorithm}\label{alg:concretizerList}
+    \begin{algorithmic}[1]
+        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
+        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
+        \Require $s: list(Arguments)$ \Comment{spurious arguments}
+        \Require $ca: list(Arguments)$ \Comment{Concretize arguments parameter}
+        \For{$s_i$ in $s$}
+            \If{$s_i$ in $\hat{G}$ is cluster}
+                \State $s$.remove($s_i$)
+            \EndIf
+        \EndFor
+        \State $N$ $\gets$ $[]$ \Comment{$N$ = list of neighbours}
+        \For{$s_i$ in $s$} \Comment{Get neighbours}
+            \For{$n(1)_i$ attacks $s_i$} \Comment{depth 1 attacker}
+                \For{$n(2)_i$ attacks $n(1)_i$} \Comment{depth 2 attacker}
+                    \State $N.append(n(2)_i$)
+                \EndFor
+                \For{$n(2)_i$ defends $n(1)_i$} \Comment{depth 2 defender}
+                    \State $N.append(n(2)_i$)
+                \EndFor
+            \EndFor
+
+            \For{$n(1)_i$ defends $s_i$} \Comment{depth 1 defender}
+                \For{$n(2)_i$ attacks $n(1)_i$} \Comment{depth 2 attacker}
+                    \State $N.append(n(2)_i$)
+                \EndFor
+                \For{$n(2)_i$ defends $n(1)_i$} \Comment{depth 2 defender}
+                    \State $N.append(n(2)_i$)
+                \EndFor
+            \EndFor
+        \EndFor
+        \State $C \gets$ combinations of N with $range(1, len(N)-1)$ \Comment{Combination List}
+
+        \For{$ca_i$ in $ca$} \Comment{Parameter Arguments to be concretized}
+            \For{$c_i$ in $C$}
+                \State $c_i.append(ca_i)$
+            \EndFor
+        \EndFor
+        \State $C.deduplicate()$
+        
+        \For{$s_i$ in $C$} \Comment{Remove clusters}
+            \For{$a_i$ in $s_i$}
+                \If{$\hat{G}[a_i]$ is cluster}
+                    \State $s_i.remove(a_i)$
+                \EndIf
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
 
 
 % return list
@@ -492,7 +579,7 @@ $\mathtt{\{a, c, d, e\}]}$.
 
 
 
-
+\newpage
 \section{Algorithmic Approach to Compute Faifthul Clusterings}
 \textit{TODO: Concretize singletons of clustered AF algorithm}
 
