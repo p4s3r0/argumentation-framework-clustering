@@ -221,9 +221,7 @@ $\mathtt{(e,d)\}}$.
 This AF can be represented as a directed graph as shown in Figure \textit{G} in \ref{af:backgroundClusterExample1}.
 
 Now we can group the arguments $\mathtt{\{a, b, c, d\}}$ together into one single cluster $\mathtt{\hat{h}}$. The arguments for the abstract AF $\mathtt{\hat{H} = (\hat{B}, \hat{S})}$ would then be $\mathtt{\hat{B}=\{e, \hat{h}\}}$ with the according attacks:
-$\mathtt{\hat{S}=\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\}}$.
-
-This AF can be represented as a directed graph $\mathtt{\hat{H}}$ as shown in Figure \ref{af:backgroundClusterExample2}.
+$\mathtt{\hat{S}=\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\}}$. The attacks are directly derived from the concrete AF. If an argument is clustered, the cluster inherits the attacks from the argument. The emerging AF can be represented as a directed graph $\mathtt{\hat{H}}$ as shown in Figure \ref{af:backgroundClusterExample2}.
 
 
 \vspace{0.3cm}
@@ -274,7 +272,8 @@ This AF can be represented as a directed graph $\mathtt{\hat{H}}$ as shown in Fi
 \end{minipage}
 \end{figure}
 
-If we compare the stable sets of the concrete AF $G$ (e.g. $\mathtt{stb=\{\{a, e\}, \{a, d\}\}}$) with the stable sets of the abstract clustered AF $\hat{H}$ (e.g. $\mathtt{\hat{stb}=\{\{\hat{h}\}, \{e\}, \{e, \hat{h}\}\}}$), we see that it is spurious due to the stable set $\mathtt{\{e\}}$ which cannot be mapped to one of the concrete stable sets. To create a faithful clustered AF, we can concretize one or more arguments of the cluster. By concretizing the argument $\mathtt{\{d\}}$, we obtain a new AF $\hat{I}=(\hat{B}, \hat{T})$ with the arguments $\mathtt{\hat{B}=\{d, e, \hat{h}\}}$ and the attacks $\mathtt{\hat{T}=\{(d, \hat{h}),}$
+If we compare the stable sets of the concrete AF $G$ (e.g. $\mathtt{stb=\{\{a, e\}, \{a, d\}\}}$) with the stable sets of the abstract clustered AF $\hat{H}$ (e.g. $\mathtt{\hat{stb}=\{\{\hat{h}\}, \{e\}, \{e, \hat{h}\}\}}$), we see that it is spurious due to the stable set $\mathtt{\{e\}}$ which cannot be mapped to one of the concrete stable sets. The mapping of semantic extensions with clustered AFs is done the same way as for concrete AFs, except that clusters can mutate to every possible combination of the clustered Arguments. In our example, the cluster $\mathtt{\hat{h}}$ can mutate to $\mathtt{\{a\}}$, $\mathtt{\{b\}}$, $\mathtt{\{c\}}$, $\mathtt{\{d\}}$, $\mathtt{\{a, b\}}$, $\mathtt{\{a, c\}}$, $\mathtt{\{a, d\}}$, $\mathtt{\{b, c\}}$, $\mathtt{\{b, d\}}$, $\mathtt{\{c, d\}}$, $\mathtt{\{a, b, c\}}$, $\mathtt{\{a, b, d\}}$, $\mathtt{\{a, c, d\}}$, $\mathtt{\{b, c, d\}}$, $\mathtt{\{a, b, c, d\}}$.
+To create a faithful clustered AF, we can concretize one or more arguments of the cluster. By concretizing the argument $\mathtt{\{d\}}$, we obtain a new AF $\hat{I}=(\hat{B}, \hat{T})$ with the arguments $\mathtt{\hat{B}=\{d, e, \hat{h}\}}$ and the attacks $\mathtt{\hat{T}=\{(d, \hat{h}),}$
 $\mathtt{(d, e),}$
 $\mathtt{(e, d),}$
 $\mathtt{(\hat{h}, \hat{h})\}}$.
