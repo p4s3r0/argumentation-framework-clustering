@@ -1,15 +1,17 @@
 \chapter{Background}
-In this chapter we will discuss the background of the thesis. We will start with the basic definition of Argumentation Frameworks (AFs) \ref{sec:ArgumentationFrameworks}. Next we will treat the clustering of AFs \ref{sec:ClusteringOfArgumentationFrameworks} and finally we will have a look at SAT-Solver \ref{sec:BooleanSatisfiability}.
+In this chapter we will discuss the background of the thesis. We will start with the basic definition of Argumentation Frameworks (AFs) in \cref{sec:ArgumentationFrameworks}. Next we will treat the clustering of AFs in \cref{sec:ClusteringOfArgumentationFrameworks} and finally we will have a look at SAT-Solver in \cref{sec:BooleanSatisfiability}.
+
+\textit{TODO: update when adding sections}
 
 
 \section{Argumentation Frameworks}
 \label{sec:ArgumentationFrameworks}
 
-Argumentation frameworks were first formally described by Dung in 1995 \cite{DUNG1995321}. They represent an information state, where various conclusions can be drawn from. An AF $G = (A, R)$ consists of two parameters: a set of arguments $A$, and a collection of relations $R$, called attacks which describe the conflicts between the arguments.
+Argumentation frameworks were first formally described by Dung in 1995 \cite{DUNG1995321}. They represent an information state, where various conclusions can be drawn from. An AF $\mathtt{G = (A, R)}$ consists of two parameters: a set of arguments $\mathtt{A}$, and a collection of relations $\mathtt{R}$, called attacks which describe the conflicts between the arguments.
 
 They are mostly used in the fields of Artificial Intelligence (AI), e.g. in automated reasoning and logic programming \cite{AFINAIARLP, AFINAIARLPexample}. But do also find their applications in other fields like Natural Language Processing \cite{AFINNLP}, Trust and Reputation Systems \cite{AFINTaRS}, Legal and Medical Reasoning \cite{legalAndMedicalReasoning}, and even in Game Theory and Strategic Reasoning \cite{AFinGames}.
 
-AFs are represented by directed graph, where the nodes are an abstraction of the arguments $A$, and the arrows represent the attacks $R$. Let us define an AF $G = (A, R)$ with the arguments
+AFs are represented by directed graph, where the nodes are an abstraction of the arguments $\mathtt{A}$, and the arrows represent the attacks $\mathtt{R}$. Let us define an AF $\mathtt{G = (A, R)}$ with the arguments
 $\mathtt{A=\{a, b, c, d, e\}}$ and the attacks
 $\mathtt{R=\{(a,b),}$
 $\mathtt{(b,b),}$
@@ -19,7 +21,7 @@ $\mathtt{(c,d),}$
 $\mathtt{(d,e),}$
 $\mathtt{(e,d)\}}.$
 
-This AF can be represented as a directed graph as shown in Figure \ref{af:backgroundAFexample1}.
+This AF can be represented as a directed graph as shown in \cref{af:backgroundAFexample1}.
 \begin{figure}[h]
     \centering
     \begin{tikzpicture}
@@ -49,7 +51,7 @@ This AF can be represented as a directed graph as shown in Figure \ref{af:backgr
 
 To be able to conclude something, out of an abstract AF, we need to define semantics. Semantics define a subset of argument sets that satisfy the semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free, admissible and stable.
 
-\paragraph{Conflict-Free} Let $G=(A,R)$ be an AF. According to Dung's definitions, a set $S \subseteq A$ is conflict-free in \textit{G} if there are no attacks between the arguments in \textit{S}. Or, formally:
+\paragraph{Conflict-Free} Let $\mathtt{G=(A,R)}$ be an AF. According to Dung's definitions, a set $S \subseteq A$ is conflict-free in \textit{G} if there are no attacks between the arguments in \textit{S}. Or, formally:
 
 \begin{center}
     \begin{tabular}{c}
@@ -59,7 +61,7 @@ To be able to conclude something, out of an abstract AF, we need to define seman
 
 A conflict-free set is mainly a building block for the other semantics, which means here that each admissible set or stable extension is conflict-free.
 
-In the Example \ref{af:backgroundAFexample1} the conflict-free sets are:
+In the Example \cref{af:backgroundAFexample1} the \emph{conflict-free} sets are:
 $\mathtt{\{\}},$
 $\mathtt{\{a\}},$
 $\mathtt{\{c\}},$
@@ -69,7 +71,7 @@ $\mathtt{\{a, d\}},$
 $\mathtt{\{a, e\}},$
 $\mathtt{\{c, e\}}$.
 
-\paragraph{Admissible} Let $G=(A,R)$ be an AF. According to Dung's definitions, a set $S \subseteq A$ is admissible in \textit{G}, if each argument in \textit{S} has a defender in \textit{S}. Or, formally:
+\paragraph{Admissible} Let $\mathtt{G=(A,R)}$ be an AF. According to Dung's definitions, a set $S \subseteq A$ is admissible in \textit{G}, if each argument in \textit{S} has a defender in \textit{S}. Or, formally:
 
 \begin{center}
     \begin{tabular}{c}
@@ -81,7 +83,7 @@ $\mathtt{\{c, e\}}$.
     \end{tabular}
 \end{center}
 
-In the example \ref{af:backgroundAFexample1} the $admissible$ sets are:
+In the example \cref{af:backgroundAFexample1} the \emph{admissible} sets are:
 $\mathtt{\{\}},$
 $\mathtt{\{a\}},$
 $\mathtt{\{c\}},$
@@ -91,7 +93,7 @@ $\mathtt{\{a, e\}},$
 $\mathtt{\{c, e\}}$.
 
 
-\paragraph{Stable} A stable set is a conflict-free set, if for every argument, which is not in \textit{S}, there exists an attacker in \textit{S}. Or, formally:
+\paragraph{Stable} Let $\mathtt{G=(A,R)}$ be an AF. According to Dung's definitions, a set $S \subseteq A$ is stable in \textit{G}, if it is conflict-free, and if for every argument, which is not in \textit{S}, there exists an attacker in \textit{S}. Or, formally:
 
 \begin{center}
     \begin{tabular}{c}
@@ -106,7 +108,7 @@ $\mathtt{\{c, e\}}$.
 \end{center}
 
 
- In the example \ref{af:backgroundAFexample1} the $stable$ sets are:
+In the example \cref{af:backgroundAFexample1} the \emph{stable} sets are:
 $\mathtt{\{a, d\}},$
 $\mathtt{\{a, e\}}$.
 
@@ -122,7 +124,7 @@ The specific semantics rules can also be defined via a Boolean formula. Which th
 When talking about AFs in general, we already have an abstraction layer. By clustering, we add another layer of abstraction where we combine different arguments into one or multiple so called \textit{clusters}. The arguments which are not clustered are called \textit{singletons}.
 By definition, a cluster is a single entity (composed of multiple arguments) which can be integrated in an AF to reduce the complexity. While reducing the overall complexity of the AF with clusters, we add a new computation layer: computing \textit{faithful} clustered AFs. The term \textit{faithful} describes the property of a clustered AF, that every abstract semantics extension can be mapped to a concrete semantics extension. If the clustered AF creates a semantic set which cannot be mapped to a concrete set, we call it \textit{spurious}.
 
-Clustered abstract AFs can also be modelled with graphs. One can represent each singleton argument as a node, attacks as arrows, and each cluster can be represeented by a rectangle with every clustered argument inside of it. Let us have a look at an example and define AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ with the arguments $\mathtt{\hat{A}=\{d, e, \hat{h}\}}$, the cluster $\mathtt{\hat{h}}$ containing the arguments $\mathtt{\{a, b, c, d\}}$ and the attacks $\mathtt{\{(\hat{h}, d), (d, e), (e, d), (\hat{h}, \hat{h})\}}$.  This AF can be represented as a directed graph as shown in Figure \ref{af:backgroundExampleClusterSpurious}.
+Clustered abstract AFs can also be modelled with graphs. One can represent each singleton argument as a node, attacks as arrows, and each cluster can be represeented by a rectangle with every clustered argument inside of it. Let us have a look at an example and define AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ with the arguments $\mathtt{\hat{A}=\{d, e, \hat{h}\}}$, the cluster $\mathtt{\hat{h}}$ containing the arguments $\mathtt{\{a, b, c, d\}}$ and the attacks $\mathtt{\{(\hat{h}, d), (d, e), (e, d), (\hat{h}, \hat{h})\}}$.  This AF can be represented as a directed graph as shown in \cref{af:backgroundExampleClusterSpurious}.
 
 
 \begin{figure}[h]
@@ -159,7 +161,7 @@ Since clusters can not be treated the exact same way as an argument, we need to 
     \end{tabular}
 \end{center}
 
-In the example \ref{af:backgroundExampleClusterSpurious} the conflict-free sets are:
+In the example \cref{af:backgroundExampleClusterSpurious} the conflict-free sets are:
 $\mathtt{\{\}},$
 $\mathtt{\{d}\}$,
 $\mathtt{\{e}\}$,
@@ -169,7 +171,7 @@ $\mathtt{\{d, \hat{h}}\}$.
 
 
 
-\paragraph{Admissible} A set of arguments is abstract admissible, if it is conflict-free and if every singleton which is being attacked, has a defender. Or, formally, as specified in \cite{DBLP:conf/kr/SaribaturW21}:
+\paragraph{Admissible} A set of arguments is abstractly admissible, if it is conflict-free and if every singleton which is being attacked, has a defender. Or, formally, as specified in \cite{DBLP:conf/kr/SaribaturW21}:
 
 \begin{center}
     \begin{tabular}{c}
@@ -181,7 +183,7 @@ $\mathtt{\{d, \hat{h}}\}$.
     \end{tabular}
 \end{center}
 
-In the example \ref{af:backgroundExampleClusterSpurious} the admissible sets are:
+In the example \cref{af:backgroundExampleClusterSpurious} the admissible sets are:
 $\mathtt{\{\}},$
 $\mathtt{\{e}\}$,
 $\mathtt{\{\hat{h}}\}$,
@@ -190,7 +192,7 @@ $\mathtt{\{d, \hat{h}}\}$.
 
 
 
-\paragraph{Stable} A set of arguments is abstract stable, if it is conflict-free and if an argument is not in the stable set, it implies that an argument in the stable set is attacking it. Furthermore if the stable set is not attacking an argument, then every singleton attacking the argument is not in the stable set. Or, formally, as specified in \cite{DBLP:conf/kr/SaribaturW21}:
+\paragraph{Stable} A set of arguments is abstractly stable, if it is conflict-free and if an argument is not in the stable set, it implies that an argument in the stable set is attacking it. Furthermore if the stable set is not attacking an argument, then every singleton attacking the argument is not in the stable set. Or, formally, as specified in \cite{DBLP:conf/kr/SaribaturW21}:
 \begin{center}
     \begin{tabular}{c}
         $\hat{S} \in \hat{stb}(\hat{G})$ \textit{iff} $\hat{S} \in \hat{cf}(\hat{G}),  \hat{b} \not\in \hat{S}$ \textit{implies}\\
@@ -203,13 +205,13 @@ $\mathtt{\{d, \hat{h}}\}$.
     \end{tabular}
 \end{center}
 
-In the example \ref{af:backgroundExampleClusterSpurious} the stable sets are:
+In the example \cref{af:backgroundExampleClusterSpurious} the stable sets are:
 $\mathtt{\{e, \hat{h}}\}$,
 $\mathtt{\{d, \hat{h}}\}$.
 
 \vspace{0.5cm}
 \noindent
-Let us have a look at a concrete example to explain faithfulness. The concrete AF $G = (A, R)$ has the following arguments $\mathtt{A=\{a, b, c, d, e\}}$ with these attacks:
+Let us have a look at a concrete example to explain faithfulness. The concrete AF $\mathtt{G=(A, R)}$ has the following arguments $\mathtt{A=\{a, b, c, d, e\}}$ with these attacks:
 $\mathtt{R=\{(a,b),}$
 $\mathtt{(b,b),}$
 $\mathtt{(a,c),}$
@@ -218,10 +220,10 @@ $\mathtt{(c,d),}$
 $\mathtt{(d,e),}$
 $\mathtt{(e,d)\}}$.
 
-This AF can be represented as a directed graph as shown in Figure \textit{G} in \ref{af:backgroundClusterExample1}.
+This AF can be represented as a directed graph shown in \cref{af:backgroundClusterExample1}.
 
-Now we can group the arguments $\mathtt{\{a, b, c, d\}}$ together into one single cluster $\mathtt{\hat{h}}$. The arguments for the abstract AF $\mathtt{\hat{H} = (\hat{B}, \hat{S})}$ would then be $\mathtt{\hat{B}=\{e, \hat{h}\}}$ with the according attacks:
-$\mathtt{\hat{S}=\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\}}$. The attacks are directly derived from the concrete AF. If an argument is clustered, the cluster inherits the attacks from the argument. The emerging AF can be represented as a directed graph $\mathtt{\hat{H}}$ as shown in Figure \ref{af:backgroundClusterExample2}.
+Now we can group the arguments $\mathtt{\{a, b, c, d\}}$ together into one single cluster $\mathtt{\hat{h}}$. The arguments for the abstract AF $\mathtt{\hat{G} = (\hat{A}, \hat{R})}$ would then be $\mathtt{\hat{A}=\{e, \hat{h}\}}$ with the according attacks:
+$\mathtt{\hat{R}=\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\}}$. The attacks are directly derived from the concrete AF. If an argument is clustered, the cluster inherits the attacks from the argument. The emerging AF can be represented as a directed graph shown in \cref{af:backgroundClusterExample2}.
 
 
 \vspace{0.3cm}
@@ -249,7 +251,7 @@ $\mathtt{\hat{S}=\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\}}$. The attac
         \DrawAttackDiagonal{PLR}{\cx}{\cy}{\dx}{\dy}
         \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
     \end{tikzpicture}
-    \caption{\ac{AF} G}
+    \caption{Concrete AF $\mathtt{G}$}
     \label{af:backgroundClusterExample1}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
@@ -267,18 +269,18 @@ $\mathtt{\hat{S}=\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\}}$. The attac
         \DrawSelfAttackLeftTopCluster{\hx-0.65}{\hy + 0.3}
         \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.5}{\hy}
     \end{tikzpicture}
-    \caption{\ac{AF} $\hat{H}$ clustered}
+    \caption{Abstract AF $\mathtt{\hat{G}}$}
     \label{af:backgroundClusterExample2}
 \end{minipage}
 \end{figure}
 
-If we compare the stable sets of the concrete AF $G$ (e.g. $\mathtt{stb=\{\{a, e\}, \{a, d\}\}}$) with the stable sets of the abstract clustered AF $\hat{H}$ (e.g. $\mathtt{\hat{stb}=\{\{\hat{h}\}, \{e\}, \{e, \hat{h}\}\}}$), we see that it is spurious due to the stable set $\mathtt{\{e\}}$ which cannot be mapped to one of the concrete stable sets. The mapping of semantic extensions with clustered AFs is done the same way as for concrete AFs, except that clusters can mutate to every possible combination of the clustered Arguments. In our example, the cluster $\mathtt{\hat{h}}$ can mutate to $\mathtt{\{a\}}$, $\mathtt{\{b\}}$, $\mathtt{\{c\}}$, $\mathtt{\{d\}}$, $\mathtt{\{a, b\}}$, $\mathtt{\{a, c\}}$, $\mathtt{\{a, d\}}$, $\mathtt{\{b, c\}}$, $\mathtt{\{b, d\}}$, $\mathtt{\{c, d\}}$, $\mathtt{\{a, b, c\}}$, $\mathtt{\{a, b, d\}}$, $\mathtt{\{a, c, d\}}$, $\mathtt{\{b, c, d\}}$, $\mathtt{\{a, b, c, d\}}$.
-To create a faithful clustered AF, we can concretize one or more arguments of the cluster. By concretizing the argument $\mathtt{\{d\}}$, we obtain a new AF $\hat{I}=(\hat{B}, \hat{T})$ with the arguments $\mathtt{\hat{B}=\{d, e, \hat{h}\}}$ and the attacks $\mathtt{\hat{T}=\{(d, \hat{h}),}$
+If we compare the stable sets of the concrete AF $\mathtt{G}$ (e.g. $\mathtt{stb=\{\{a, e\}, \{a, d\}\}}$) with the stable sets of the abstract clustered AF $\mathtt{\hat{G}}$ (e.g. $\mathtt{\hat{stb}=\{\{\hat{h}\}, \{e\}, \{e, \hat{h}\}\}}$), we see that it is spurious due to the stable set $\mathtt{\{e\}}$ which cannot be mapped to one of the concrete stable sets. The mapping of semantic extensions with clustered AFs is done the same way as for concrete AFs, except that clusters can mutate to every possible combination of the clustered Arguments. In our example, the cluster $\mathtt{\hat{h}}$ can mutate to $\mathtt{\{a\}}$, $\mathtt{\{b\}}$, $\mathtt{\{c\}}$, $\mathtt{\{d\}}$, $\mathtt{\{a, b\}}$, $\mathtt{\{a, c\}}$, $\mathtt{\{a, d\}}$, $\mathtt{\{b, c\}}$, $\mathtt{\{b, d\}}$, $\mathtt{\{c, d\}}$, $\mathtt{\{a, b, c\}}$, $\mathtt{\{a, b, d\}}$, $\mathtt{\{a, c, d\}}$, $\mathtt{\{b, c, d\}}$, $\mathtt{\{a, b, c, d\}}$.
+To create a faithful clustered AF, we can concretize one or more arguments of the cluster. By concretizing the argument $\mathtt{\{d\}}$, we obtain a new AF $\mathtt{\hat{G}'=(\hat{A}', \hat{R}')}$ with the arguments $\mathtt{\hat{A}'=\{d, e, \hat{h}\}}$ and the attacks $\mathtt{\hat{R}'=\{(d, \hat{h}),}$
 $\mathtt{(d, e),}$
 $\mathtt{(e, d),}$
 $\mathtt{(\hat{h}, \hat{h})\}}$.
 
-With this defintion we can build the concretized abstract graph $\mathtt{\hat{I}}$ in Figure \ref{af:backgroundClusterExample3}.
+With this defintion we can build the concretized abstract graph $\mathtt{\hat{G}'}$ in \cref{af:backgroundClusterExample3}.
 
 
 \begin{figure}[h]
@@ -299,11 +301,11 @@ With this defintion we can build the concretized abstract graph $\mathtt{\hat{I}
         \DrawAttackHorizontal{R}{\hx+0.5}{\hy}{\dx}{\dy}
         \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
     \end{tikzpicture}
-    \caption{\ac{AF} $\hat{I}$ clustered}
+    \caption{Concretized AF $\mathtt{\hat{G}'}$}
     \label{af:backgroundClusterExample3}
 \end{figure}
 
-Every stable set in \ref{af:backgroundClusterExample3} (e.g. $\mathtt{\{d, \hat{h}\}, \{e, \hat{h}\}})$ can be mapped to one of concrete stable sets of $G$, which means that the clustered AF $\hat{I}$ is faithful.
+Every stable set in \cref{af:backgroundClusterExample3} (e.g. $\mathtt{\{d, \hat{h}\}, \{e, \hat{h}\}})$ can be mapped to one of concrete stable sets of $\mathtt{G}$, which means that the clustered AF $\mathtt{\hat{G}'}$ is faithful.
 
 
 \section{Boolean Satisfiability}
@@ -311,7 +313,7 @@ Every stable set in \ref{af:backgroundClusterExample3} (e.g. $\mathtt{\{d, \hat{
 
 A SAT(isfability)-Solver is used to compute Boolean formulas in a rather efficient way \cite{Biere2009}. The main purpose is to determine, if a formula is satisfiable (e.g. the variables of the formula can be set to \textit{true} or \textit{false} s.t. the expression evaluates to \textit{true}). If no combination of setting the variables to \textit{true} or \textit{false} s.t. the formula evaluates to \textit{true} is found, we call the Boolean expression unsatisfiable. Most of the SAT-Solvers do also provide a model, if a Boolean expression is satisfiable.
 
-SAT-Solvers do find there applications in various domains, f.e. in verification and validation of software and hardware \cite{DBLP:conf/dagstuhl/Gogolla09, DBLP:books/daglib/0045943}. But also in AI and machine learning \cite{DBLP:phd/basesearch/Liang18a} and even in security \cite{Pasero2022-SATHashFunctions-Repo, DBLP:journals/iacr/LinYXTS24}.
+SAT-Solvers do find there applications in various domains, f.e. in verification and validation of software and hardware \cite{DBLP:conf/dagstuhl/Gogolla09, DBLP:books/daglib/0045943}. But also in AI and machine learning \cite{DBLP:phd/basesearch/Liang18a} and even in security~\cite{Pasero2022-SATHashFunctions-Repo, DBLP:journals/iacr/LinYXTS24}.
 
 %\textit{TODO: Complexity of SAT-Problems}
 The decision problem of deciding whether a Boolean formula is satisfiable (SAT) is NP-complete, and it was the first problem to be shown to be NP-complete \cite{Cook71}. Subsequently, many other problems were shown to be NP-hard, due to a reduction from SAT.
@@ -320,7 +322,7 @@ The decision problem of deciding whether a Boolean formula is satisfiable (SAT) 
 Each year further optimizations of SAT-solvers are developed. There are several competitions which are being ran in different classes \cite{SAT-Solver-Competition}. Meanwhile, SAT-Solvers are so specialized, that there is no overall best SAT-Solver, but it is dependent on the application field. An overall good performing and easy to implement SAT-Solver, which we also used in this thesis is the z3 SAT-Solver \cite{z3-SAT-Solver}.
 
 
-We encoded the semantics rules into Boolean formula and used the SAT-Solver to evaluate them. To cover all possibilities of AFs, we generalized the formulas and used short notation to concatinate the variables. Let us have a look at a concrete example with an abstract clustered AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ defined in \ref{af:backgroundSATExample1}.
+We encoded the semantics rules into Boolean formula and used the SAT-Solver to evaluate them. To cover all possibilities of AFs, we generalized the formulas and used short notation to concatinate the variables. Let us have a look at a concrete example with an abstract clustered AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ defined in \cref{af:backgroundSATExample1}.
 
 
 
@@ -346,7 +348,7 @@ We encoded the semantics rules into Boolean formula and used the SAT-Solver to e
         \DrawAttackVertical{D}{\cx}{\cy}{\ex}{\ey}
         \DrawAttackDiagonal{PB}{\dx}{\dy}{\ex}{\ey}
     \end{tikzpicture}
-    \caption{\ac{AF} $\hat{G}$ clustered}
+    \caption{Abstract AF $\mathtt{\hat{G}}$}
     \label{af:backgroundSATExample1}
 \end{figure}
 

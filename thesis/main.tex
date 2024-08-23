@@ -20,8 +20,13 @@
 \usepackage{hyperref}
 \usepackage{caption}
 \usepackage[printonlyused]{acronym}
-\usepackage{subcaption} % Add this in the preamble
-
+\usepackage{subcaption}
+\usepackage{cleveref}
+% for references "Figure x.x" instead of "x.x"
+\crefname{figure}{Figure}{Figures}
+\crefname{section}{Section}{Sections}
+\crefname{algorithm}{Algorithm}{Algorithms}
+\crefname{table}{Table}{Tables}
 
 \begin{document}
 \include{helper/macros}

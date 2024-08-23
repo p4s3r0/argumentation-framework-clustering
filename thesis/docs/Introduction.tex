@@ -38,7 +38,7 @@ For instance, let us consider a real-world example like the weather. We can defi
     \item $f$: Observations can alter, depending on the time.
 \end{itemize}
 
-With this knowledge basis, we can create a concrete AF $G = (A, R)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \ref{af:introExample1}. If we apply another layer of abstraction, we obtain, e.g. the abstract AF $G' = (A', R')$ defined in \ref{af:introExample2}. We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the \emph{singletons} \texttt{\{a, b, c, e, f\}}.
+With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \cref{af:introExample1}. If we apply another layer of abstraction, we obtain, e.g. the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ defined in \cref{af:introExample2}. We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the \emph{singletons} \texttt{\{a, b, c, e, f\}}.
 
 
 
@@ -82,14 +82,14 @@ With this knowledge basis, we can create a concrete AF $G = (A, R)$. Where we ab
         \def \dx{0}     \def \dy{0}
 
         \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c,e,f$};
-        \node at (1, -0.5) {$g'$};
+        \node at (1, -0.5) {$\hat{g}$};
         \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
 
         % Attacks
         \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy + 0.3}
         \DrawAttackVertical{D}{\dx}{\dy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{AF G' abstract}
+    \caption{AF $\hat{G}$ abstract}
     \label{af:introExample2}
 \end{minipage}
 \end{figure}
@@ -97,11 +97,11 @@ With this knowledge basis, we can create a concrete AF $G = (A, R)$. Where we ab
 
 
 
-Now we can compute the sets of the according semantic (cf, adm, stb). To reduce cluttering, we keep this example to the stable semantic. The stable sets of the AF $G$ defined in \ref{af:introExample1} are \texttt{stb=\{\{d, e\}, \{b, d, f\}\}}.
+Now we can compute the sets of the according semantic (cf, adm, stb). To reduce cluttering, we keep this example to the stable semantic. The stable sets of the AF $G$ are \texttt{stb=\{\{d, e\}, \{b, d, f\}\}}.
 
-By computing the stable semantic sets of the abstract AF $G'$ \texttt{stb=\{\{d\}, \{d, g'\}\}}, we can observe that it is spurious due to the extension \texttt{\{d\}}, since it cannot be mapped to one of the concrete stable extensions. 
+By computing the stable semantic sets of the abstract AF $\hat{G}$ \texttt{stb=\{\{d\}, \{d, g'\}\}}, we can observe that it is spurious due to the extension \texttt{\{d\}}, since it cannot be mapped to one of the concrete stable extensions.
 
-When concretizing (i.e. removing an argument from the cluster) the argument \texttt{\{c\}}, we create a new AF $G'' = (A'', R'')$ \ref{af:introExample3}, which has the following stable extensions: \texttt{stb=\{g', d\}}. This Extension can be mapped to both stable extensions of the concrete AF $G$, by expanding the cluster \texttt{g'} with \texttt{\{e\}} or \texttt{\{b, f\}}. Thus, we created a faithful abstract AF.
+When concretizing (i.e. removing an argument from the cluster) the argument \texttt{\{c\}}, we create a new AF $\hat{G}' = (\hat{A}', \hat{R}')$ depicted in \cref{af:introExample3}, which has the following stable extensions: $\mathtt{stb=\{\hat{g}, d\}}$. This Extension can be mapped to both stable extensions of the concrete AF $G$, by expanding the cluster $\mathtt{\hat{g}}$ with \texttt{\{e\}} or \texttt{\{b, f\}}. Thus, we created a faithful abstract AF.
 
 \begin{figure}[h]
     \centering
@@ -112,7 +112,7 @@ When concretizing (i.e. removing an argument from the cluster) the argument \tex
         \def \cx{0}     \def \cy{0}
 
         \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,e,f$};
-        \node at (1, -0.5) {$g'$};
+        \node at (0.5, -0.5) {$\hat{g}$};
         \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
         \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
 
@@ -121,7 +121,7 @@ When concretizing (i.e. removing an argument from the cluster) the argument \tex
         \DrawAttackHorizontal{L}{\dx}{\dy}{\cx}{\cy}
         \DrawAttackVertical{B}{\cx}{\cy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{AF G''}
+    \caption{AF $\hat{G}'$}
     \label{af:introExample3}
 \end{figure}
 
@@ -152,8 +152,6 @@ We created one of the first tools \cite{Pasero2024-AFClustering-Repo} to produce
 \noindent
 
 \textit{TODO: Further contributions}
-
-\textit{TODO: give pointers to why are non-trivial to obtain}
 
 \textit{TODO: Choice of methods to obtain results}
 

@@ -1,11 +1,11 @@
 \chapter{Algorithm}
 In this chapter we have a closer look at the algorithms we designed and how they work. We provide an explanation, accompanied with an example and pseudo-code.
-The first section explains, the concretization of a clustered argument \ref{sec:ConcretizingSingletons}. The next section explains, how the concretizer list (a list of clustered arguments which are mutated to singletons) is computed \ref{sec:ComputationOfConcretizerList}. The approach to compute faithful clustered AFs is describer in Section \ref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in Section \ref{sec:HeuristicsAndRefinements}
+The first section explains, the concretization of a clustered argument \ref{sec:ConcretizingSingletons}. The next section explains, how the concretizer list (a list of clustered arguments which are mutated to singletons) is computed \ref{sec:ComputationOfConcretizerList}. The approach to compute faithful clustered AFs is describer in Section \ref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}
 
 \section{Concretizing Singletons}
 \label{sec:ConcretizingSingletons}
 When operating on clustered AFs, a crucial mutation is to extract clustered arguments from a cluster and transform it to a singleton. This is called concretizing. When clustering singletons, the cluster inherits the attacks of the argument, concretizing is the inverse operation. This means, that it needs to revert the changes done by the clustering.
-Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\mathtt{\hat{F}}$ to create a new AF $\mathtt{\hat{F}'}$ and mutating it. The mutation is guided by five steps considering the unchanged abstract AF $\mathtt{\hat{F}}$ and the concrete AF $\mathtt{F}$. To improve the understanding of each step, we accompany the explanation with the example depicted in Figure \ref{example:concretizationOfArguments}, where we concretize the arguments $\mathtt{a}$ and $\mathtt{b}$.
+Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\mathtt{\hat{F}}$ to create a new AF $\mathtt{\hat{F}'}$ and mutating it. The mutation is guided by five steps considering the unchanged abstract AF $\mathtt{\hat{F}}$ and the concrete AF $\mathtt{F}$. To improve the understanding of each step, we accompany the explanation with the example depicted in \cref{example:concretizationOfArguments}, where we concretize the arguments $\mathtt{a}$ and $\mathtt{b}$.
 
 \vspace{0.3cm}
 
@@ -77,7 +77,7 @@ Concretizing a list of arguments is done iteratively by duplicating the abstract
 
 \paragraph{Step 1:} Each argument needing concretization is first removed from the parent cluster and added as a singleton in $\mathtt{\hat{F}'}$.
 If an argument is not part of a cluster, we ignore it.
-We do not consider attacks in this step since they depend on the concrete- and abstract AFs. The resulting AF is depicted in Figure \ref{example:algorithmConcretizeSingletonsStep1}.
+We do not consider attacks in this step since they depend on the concrete- and abstract AFs. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep1}.
 
 
 \vspace{0.3cm}
@@ -115,7 +115,7 @@ We do not consider attacks in this step since they depend on the concrete- and a
 
 
 \paragraph{Step 2:} We add the new attacks from all concretized arguments to the remaining clusters. We must do this after
-removing the arguments from the clusters because if an argument $\mathtt{a}$ attacks argument $\mathtt{b}$ in the concrete AF, and $\mathtt{b}$ is part of the cluster $\mathtt{\hat{g}}$ in the abstract AF, by concretizing $\mathtt{b}$, the attack $\mathtt{(a,\hat{g})}$ would not be present anymore. The resulting AF is depicted in Figure \ref{example:algorithmConcretizeSingletonsStep2}.
+removing the arguments from the clusters because if an argument $\mathtt{a}$ attacks argument $\mathtt{b}$ in the concrete AF, and $\mathtt{b}$ is part of the cluster $\mathtt{\hat{g}}$ in the abstract AF, by concretizing $\mathtt{b}$, the attack $\mathtt{(a,\hat{g})}$ would not be present anymore. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep2}.
 
 
 \vspace{0.3cm}
@@ -150,12 +150,12 @@ removing the arguments from the clusters because if an argument $\mathtt{a}$ att
 
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 2}
-    \label{example:algorithmConcretizeSingletonsStep2}.
+    \label{example:algorithmConcretizeSingletonsStep2}
 \end{figure}
 \vspace{-0.2cm}
 
 
-\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $\mathtt{\hat{F}}$ are still present in $\mathtt{\hat{F}'}$. If an attack does not persist through the concretization, we remove it in $\mathtt{\hat{F}'}$. An attack is not present anymore; if we remove one of the arguments being attacked or attacked by argument $\mathtt{a}$ from a cluster $\mathtt{\hat{f}}$ and no other attack exists, s.t. $\mathtt{a}$ is attacked from/attacking an argument within $\mathtt{\hat{f}}$. Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from which the arguments are concretized. The resulting AF is depicted in Figure \ref{example:algorithmConcretizeSingletonsStep3}.
+\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $\mathtt{\hat{F}}$ are still present in $\mathtt{\hat{F}'}$. If an attack does not persist through the concretization, we remove it in $\mathtt{\hat{F}'}$. An attack is not present anymore; if we remove one of the arguments being attacked or attacked by argument $\mathtt{a}$ from a cluster $\mathtt{\hat{f}}$ and no other attack exists, s.t. $\mathtt{a}$ is attacked from/attacking an argument within $\mathtt{\hat{f}}$. Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from which the arguments are concretized. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep3}.
 
 
 \vspace{0.3cm}
@@ -186,12 +186,12 @@ removing the arguments from the clusters because if an argument $\mathtt{a}$ att
         \DrawAttackDiagonal{NRL}{\gx-0.1}{\gy+0.1}{\ax}{\ay}
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 3}
-    \label{example:algorithmConcretizeSingletonsStep3}.
+    \label{example:algorithmConcretizeSingletonsStep3}
 \end{figure}
 \vspace{-0.2cm}
 
 
-\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $\mathtt{\hat{F}}$, we only have to take into consideration the attacks from or to the concretized singletons. So instead of iterating over all singletons of the AF, we can limit the attack creation to the concretized singletons. The resulting AF is depicted in Figure \ref{example:algorithmConcretizeSingletonsStep4}.
+\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $\mathtt{\hat{F}}$, we only have to take into consideration the attacks from or to the concretized singletons. So instead of iterating over all singletons of the AF, we can limit the attack creation to the concretized singletons. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep4}.
 
 
 \vspace{0.3cm}
@@ -224,13 +224,13 @@ removing the arguments from the clusters because if an argument $\mathtt{a}$ att
         \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 4}
-    \label{example:algorithmConcretizeSingletonsStep4}.
+    \label{example:algorithmConcretizeSingletonsStep4}
 \end{figure}
 \vspace{-0.2cm}
 
 
 \paragraph{Step 5:} The last step is to clean up the argumentation framework $\mathtt{\hat{F}'}$ by removing all empty clusters and mutating the clusters with exactly
-one singleton to the mentioned singleton. The resulting AF is depicted in Figure \ref{example:algorithmConcretizeSingletonsStep5}.
+one singleton to the mentioned singleton. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep5}.
 
 
 \vspace{0.3cm}
@@ -260,11 +260,11 @@ one singleton to the mentioned singleton. The resulting AF is depicted in Figure
         \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 5}
-    \label{example:algorithmConcretizeSingletonsStep5}.
+    \label{example:algorithmConcretizeSingletonsStep5}
 \end{figure}
 \vspace{-0.2cm}
 
-The pseudo code is listed in \ref{alg:concretizingSingletons}.
+The pseudo code is listed in \cref{alg:concretizingSingletons}.
 
 \begin{algorithm}[H]
     \caption{Concretizing Singletons Pseudocode}\label{alg:concretizingSingletons}
@@ -313,13 +313,13 @@ The pseudo code is listed in \ref{alg:concretizingSingletons}.
 When talking about clustering AFs, faithfulness is an important property. If an AF is spurious, we found atleast one semantics extension, which cannot be mapped to a concrete extension. Based on the spurious extensions, we try to mutate the clustered AF, to obtain faithfulness. This mutation is realized through the concretizer list.
 
 % What is concretizer list
-The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependend on the size of the set. We use a heuristic approach, putting the main focus on local optimizations. Here we operate directly on the arguments and its attackers which make a set spurious, instead of applying global changes to the AF. Further, a minimal deviation of the abstract AF is usually desired, so small concretizer sets are checked first.
+The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependend on the size of the set. We use a heuristicical approach, putting the main focus on local changes. Here we operate directly on the arguments and its attackers which make a set spurious, instead of applying global changes to the AF. Further, a minimal deviation of the abstract AF is usually desired, so small concretizer sets are checked first.
 
 % Input: spurious set
 The input to the computation of the concretizer list is a set of the arguments of all the spurious semantic extensions. The size and computation intensity of the concretizer list is highly dependent on the amount of attacks, each argument of the input set and its neighbours with depth 2 have. This is also the critical part of the faithful AF computation and makes some AFs infeasible to solve.
 
 % Example base
-Let us have a look at an example to demonstrate how the concretizer list is computed. The concrete AF $G$ is defined in \ref{af:algorithmConcretizer1} and the according abstract AF $\hat{G}$ in \ref{af:algorithmConcretizer2}.
+Let us have a look at an example to demonstrate how the concretizer list is computed. The concrete AF $\mathtt{G}$ is defined in \cref{af:algorithmConcretizer1} and the according abstract AF $\mathtt{\hat{G}}$ in \cref{af:algorithmConcretizer2}.
 
 
 \vspace{0.3cm}
@@ -354,7 +354,7 @@ Let us have a look at an example to demonstrate how the concretizer list is comp
         \DrawAttackVertical{D}{\ex}{\ey}{\fx}{\fy}
         \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{Concrete AF $G$}
+    \caption{Concrete AF $\mathtt{G}$}
     \label{af:algorithmConcretizer1}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
@@ -374,13 +374,13 @@ Let us have a look at an example to demonstrate how the concretizer list is comp
         \DrawSelfAttackRightTopCluster{\hx+1}{\hy+0.29}
 
     \end{tikzpicture}
-    \caption{Abstract AF $\hat{G}$}
+    \caption{Abstract AF $\mathtt{\hat{G}}$}
     \label{af:algorithmConcretizer2}
 \end{minipage}
 \end{figure}
 \vspace{0.3cm}
 
-If we have a look at the stable extensions of the concrete AF $G$, e.g. $\mathtt{stb=[\{b, c\}]}$ and at the stable extensions of the abstract AF $\hat{G}$, e.g. $\mathtt{stb=[\{b, \hat{h}\}, \{\hat{h}\}, \{b\}]}$, we can see that stable extensions $\mathtt{\{\hat{h}\}}$ and $\mathtt{\{b\}}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\mathtt{\{b, \hat{h}\}}$.
+If we have a look at the stable extensions of the concrete AF $\mathtt{G}$, e.g. $\mathtt{stb=[\{b, c\}]}$ and at the stable extensions of the abstract AF $\mathtt{\hat{G}}$, e.g. $\mathtt{stb=[\{b, \hat{h}\}, \{\hat{h}\}, \{b\}]}$, we can see that stable extensions $\mathtt{\{\hat{h}\}}$ and $\mathtt{\{b\}}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\mathtt{\{b, \hat{h}\}}$.
 
 % Filter Cluster out of spurious set, because we cant concretize cluster
 The first step is to filter out the clusters of the input, since clusters are not present in the concrete AF and therefore do not attack any singletons and are not being attacked. So we reduce the concretizer list from $\mathtt{\{b, \hat{h}\}}$ to $\mathtt{\{b\}}$.
@@ -389,7 +389,7 @@ The first step is to filter out the clusters of the input, since clusters are no
 % Get combination as defender depth 2
 Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked by an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the direct arguments, which are being attacked by the argument. A depth $2$ argument is an argument, which has some attack relation (e.g. attacks the argument or is attacked by the argument) with a depth $1$ argument.
 
-We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \ref{af:algorithmConcretizer3} depicted in yellow and the attacker with the same depth, depicted in blue. Some arguments can have multiple depths (f.e. argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), than the lower depth is chosen as the representative.
+We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in yellow and the attacker with the same depth, depicted in blue. Some arguments can have multiple depths (e.g. argument $\mathtt{c}$. It is a direct attacker of the argument $\mathtt{b}$ with depth $0$, but also a direct attacker of the argument $\mathtt{c}$ with depth $1$), than the lower depth is chosen as the representative.
 
 %Depth 2 Attacker
 \vspace{0.1cm}
@@ -442,12 +442,12 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
         \DrawAttackVertical{D}{\ex}{\ey}{\fx}{\fy}
         \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{Singletons depth with $b$ as viewpoint}
+    \caption{Singletons depth with $\mathtt{b}$ as viewpoint}
     \label{af:algorithmConcretizer3}
 \end{figure}
 \vspace{-0.2cm}
 
-Now the concretizer list is expanded with all the possible combinations of the neighbours. The neighbours of the current example are $\mathtt{\{a, c, d, e\}}$. When building the combinations, we create the table in \ref{table:algorithmConcretizer1}.
+Now the concretizer list is expanded with all the possible combinations of the neighbours. The neighbours of the current example are $\mathtt{\{a, c, d, e\}}$. When building the combinations, we create the table defined in \cref{table:algorithmConcretizer1}.
 
 \begin{table}[htb]
     \centering
@@ -501,7 +501,7 @@ $\mathtt{\{a, d, e\}}$
 $\mathtt{\{c, d, e\}}$
 $\mathtt{\{a, c, d, e\}]}$.
 
-When concretizing the list, we find a set which leads to a faithful AF: $\mathtt{\{a, c, d\}}$ depicted in \ref{af:algorithmConcretizer4}. The pseudo code of the computation is listed in \ref{alg:concretizerList}
+When concretizing the list, we find a set which leads to a faithful AF: $\mathtt{\{a, c, d\}}$ depicted in \cref{af:algorithmConcretizer4}. The pseudo code of the computation is listed in \cref{alg:concretizerList}
 
 \begin{figure}[H]
     \centering
@@ -530,7 +530,7 @@ When concretizing the list, we find a set which leads to a faithful AF: $\mathtt
         \DrawSelfAttackLeftSingleton{\ax}{\ay}
 
     \end{tikzpicture}
-    \caption{Faithful AF $\hat{G}'$}
+    \caption{Faithful AF $\mathtt{\hat{G}'}$}
     \label{af:algorithmConcretizer4}
 \end{figure}
 
