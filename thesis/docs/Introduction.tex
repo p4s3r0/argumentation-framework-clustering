@@ -8,11 +8,11 @@ Arguments can have many forms \cite{Toulmin_2003}. For instance, arguments can b
 
 
 % Abstract Models of argumentation. Graphs.
-If a fact or, i.e., an argument $a$ is a counterargument of another argument $b$, we can say that $a$ attacks $b$. With this abstraction, we can abstract our model with directed graphs. The arguments are represented as nodes, and the attacks as directed edges \cite{DUNG1995321}. Now we can define Argumentation Frameworks (AFs) and use them to evaluate conclusions \cite{DBLP:conf/fapr/Geffner96}. In many cases, viewing arguments as abstract entities is sufficient to carry out argumentative reasoning. Such reasoning is defined via so-called argumentation semantics, which define criteria which (sets of) arguments are deemed jointly acceptable.
+If an argument $\mathtt{a}$ is a counterargument of another argument $\mathtt{b}$, we can say that $\mathtt{a}$ attacks $\mathtt{b}$. With this abstraction, we can abstract our model with directed graphs. The arguments are represented as nodes, and the attacks as directed edges \cite{DUNG1995321}. Now we can define Argumentation Frameworks (AFs) and use them to evaluate conclusions \cite{DBLP:conf/fapr/Geffner96}. In many cases, viewing arguments as abstract entities is sufficient to carry out argumentative reasoning. Such reasoning is defined via so-called argumentation semantics, which define criteria which (sets of) arguments are deemed jointly acceptable.
 
 % Semantics with AFs
 % Computation
-Semantics define a subset of argument sets that have a certain relation to each other. Dung defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free (cf), admissible (adm) and stable (stb). To be precise, conflict-free and admissible are semantical properties but we will treat it as semantics. According to Dung's definitions, a set \textit{S} is conflict-free if there are no attacks between the arguments in \textit{S}. The conflict-free set is mainly a building block for the other semantics.
+Semantics define a subset of argument sets that have a certain relation to each other. Dung defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free (cf), admissible (adm) and stable (stb). To be precise, conflict-free and admissible are semantical properties but we will treat them as semantics. According to Dung's definitions, a set \textit{S} is conflict-free if there are no attacks between the arguments in \textit{S}. The conflict-free set is mainly a building block for the other semantics.
 A stable set, is a conflict-free set, if every argument, which is not in \textit{S}, has an attacker which is in \textit{S}.
 Finally, an admissible set is a conflict-free set, where each argument in \textit{S} has a defender in \textit{S}. A defender is this context means an argument which attacks an attacker of an argument in \textit{S}.
 The specific rules can be defined via a Boolean formula. They can be used to encode the AFs to be solvable with different solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}.
@@ -21,29 +21,30 @@ The specific rules can be defined via a Boolean formula. They can be used to enc
 % Clustering of AFs
 Since AFs can get very big and complicated, another layer of abstraction can be added. This abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. Clustering of arguments is a technique to reduce the number of arguments and to provide a high-level view of a given AF. Here, clustering means that arguments can be clustered together in clusters (or clustered arguments). In general, as is the case with many abstraction techniques, clustering can change conclusions that can be drawn from an abstracted formalism. A clustering is said to be \emph{faithful} if no erroneous conclusions can be drawn that is not part of the original, non-abstracted, structure. Otherwise, if conclusions can be drawn that are not there on the original structure, we say that these are \emph{spurious} conclusions.
 
-In our case, the semantics of conflict-free, admissibility, and stable semantics were "lifted`` to the case with clustered arguments. That is, a clustered (abstracted) version of conflict-free sets, admissible sets, and stable extensions was defined on clustered AFs. These semantics respect the clustering of arguments. Then, e.g., an abstract admissible set is spurious if there is no (concrete, non-abstract) admissible set matching this one in the original AF. If no such spurious sets exist, then the clustered AF is said to be faithful, w.r.t. the original AF.
+In our case, the semantics of conflict-free, admissibility, and stable semantics were "lifted`` to the case with clustered arguments. That is, a clustered (abstracted) version of conflict-free sets, admissible sets, and stable extensions was defined on clustered AFs. These semantics respect the clustering of arguments. Then, e.g., an abstract admissible set is spurious if there is no (concrete, non-abstract) admissible set matching this one in the original AF. If no such spurious sets exist, then the clustered AF is said to be faithful, w.r.t.\ the original AF.
 
 
 
 
 % Example
-For instance, let us consider a real-world example like the weather. We can define arguments:
+For instance, let us consider a real-world example like the weather. We can define arguments.
 
 \begin{itemize}
-    \item $a$: The sky is blue
-    \item $b$: The atmosphere scatters the sunlights and makes the sky appear blue. 
-    \item $c$: There exist photographs of a blue sky. 
+    \item $a$: The sky is blue.
+    \item $b$: The atmosphere scatters the sunlights and makes the sky appear blue.
+    \item $c$: There exist photographs of a blue sky.
     \item $d$: Photographs can be fake.
-    \item $e$: At sunrise the sky appears to be orange. 
+    \item $e$: At sunrise the sky appears to be orange.
     \item $f$: Observations can alter, depending on the time.
 \end{itemize}
 
-With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \cref{af:introExample1}. If we apply another layer of abstraction, we obtain, e.g. the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ defined in \cref{af:introExample2}. We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the \emph{singletons} \texttt{\{a, b, c, e, f\}}.
+With this knowledge basis, we can create a concrete AF $\mathtt{G=(A, R)}$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \cref{af:introExample1}. An opposing statement in this context would be for instance the argument $\mathtt{a}$ (i.d. \emph{The sky is blue}) and $\mathtt{e}$ (i.d. \emph{At sunrise the sky appears to be orange}). Since both statements can not be true at the same time, they are contradicting, or in other words, attacking each other. If we apply another layer of abstraction, we obtain, e.g. the abstract AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ defined in \cref{af:introExample2}. We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the arguments \texttt{\{a, b, c, e, f\}}.
 
 
 
 \vspace{0.3cm}
-\begin{figure}[h]
+
+\begin{example}[h]
 \begin{minipage}{.5\textwidth}
     \centering
     \begin{tikzpicture}
@@ -71,7 +72,7 @@ With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abst
         \DrawAttackDiagonal{PB}{\fx}{\fy}{\ex}{\ey}
         \DrawAttackDiagonal{NB}{\ax}{\ay}{\ex}{\ey}
     \end{tikzpicture}
-    \caption{AF G concrete}
+    \caption{Concrete AF $\mathtt{G}$}
     \label{af:introExample1}
 \end{minipage}%
 \begin{minipage}{.5\textwidth}
@@ -89,21 +90,22 @@ With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abst
         \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy + 0.3}
         \DrawAttackVertical{D}{\dx}{\dy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{AF $\hat{G}$ abstract}
+    \caption{Abstract AF $\mathtt{\hat{G}}$}
     \label{af:introExample2}
 \end{minipage}
-\end{figure}
+\end{example}
 
 
 
 
-Now we can compute the sets of the according semantic (cf, adm, stb). To reduce cluttering, we keep this example to the stable semantic. The stable sets of the AF $G$ are \texttt{stb=\{\{d, e\}, \{b, d, f\}\}}.
 
-By computing the stable semantic sets of the abstract AF $\hat{G}$ \texttt{stb=\{\{d\}, \{d, g'\}\}}, we can observe that it is spurious due to the extension \texttt{\{d\}}, since it cannot be mapped to one of the concrete stable extensions.
+Now we can compute the sets of the according semantics (cf, adm, stb). The definitions of the semantics are defined in the \cref{ch:Background}. To reduce cluttering, we keep this example to the stable semantics. The stable extensions of the AF $G$ are \texttt{stb=\{\{d, e\}, \{b, d, f\}\}}.
 
-When concretizing (i.e. removing an argument from the cluster) the argument \texttt{\{c\}}, we create a new AF $\hat{G}' = (\hat{A}', \hat{R}')$ depicted in \cref{af:introExample3}, which has the following stable extensions: $\mathtt{stb=\{\hat{g}, d\}}$. This Extension can be mapped to both stable extensions of the concrete AF $G$, by expanding the cluster $\mathtt{\hat{g}}$ with \texttt{\{e\}} or \texttt{\{b, f\}}. Thus, we created a faithful abstract AF.
+By computing the stable semantics sets of the abstract AF $\mathtt{\hat{G}}$ \texttt{stb=\{\{d\}, \{d, g'\}\}}, we can observe that it is spurious due to the extension \texttt{\{d\}}, since it cannot be mapped to one of the concrete stable extensions.
 
-\begin{figure}[h]
+When concretizing (i.e. removing an argument from the cluster) the argument \texttt{c}, we create a new AF $\mathtt{\hat{G}' = (\hat{A}', \hat{R}')}$ depicted in \cref{af:introExample3}, which has the following stable extensions $\mathtt{stb=\{\hat{g}, d\}}$. This extension can be mapped to both stable extensions of the concrete AF $G$, by expanding the cluster $\mathtt{\hat{g}}$ with \texttt{\{e\}} or \texttt{\{b, f\}}. Thus, we created a faithful abstract AF.
+
+\begin{example}[h]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -121,9 +123,9 @@ When concretizing (i.e. removing an argument from the cluster) the argument \tex
         \DrawAttackHorizontal{L}{\dx}{\dy}{\cx}{\cy}
         \DrawAttackVertical{B}{\cx}{\cy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{AF $\hat{G}'$}
+    \caption{Concretized AF $\mathtt{\hat{G}'}$}
     \label{af:introExample3}
-\end{figure}
+\end{example}
 
 
 % Importance of concretizing single arguments
@@ -133,9 +135,9 @@ When producing an AF with multiple layer of abstractions, we obtain a high-level
 % What we want to show in this paper
 % Main contributions in this paper
 %Complexity
-Creating abstract, faithful AFs can be challenging and is the main focus of this thesis. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be beyond NP to decide whether an argument is acceptable under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}. In fact, the complexity of proofing faithfulness or spuriousness of an AF is $\prod_2^P$ \cite{DBLP:conf/kr/SaribaturW21}. This means, that to obtain a result, multiple instances or calls of a SAT-Solver need to be invoked.
+Creating abstract, faithful AFs can be challenging and is the main focus of this thesis. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be beyond NP to decide whether an argument is acceptable under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}. In fact, the complexity of proving faithfulness or spuriousness of an AF is $\prod_2^P$ hard \cite{DBLP:conf/kr/SaribaturW21}. In practice, this means, that to obtain a result, multiple instances or calls of a SAT-Solver need to be invoked.
 
-We created one of the first tools \cite{Pasero2024-AFClustering-Repo} to produce an abstract AFs based on a concrete AFs. We cover different setups and usages, including different semantics and base functionalities. The main contributions of this thesis are as follows.
+We created one of the first tools to produce an abstract AFs based on a concrete AFs. We cover different setups and usages, including different semantics and base functionalities. The main contributions of this thesis are as follows.
 
 \begin{itemize}
     \item We provide algorithms for computing abstract semantics of a given clustered AF. That is, our algorithms are capable of computing or enumerating all extensions under abstract conflict-free, admissible, and stable semantics.

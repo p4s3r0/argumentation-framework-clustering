@@ -21,12 +21,28 @@
 \usepackage{caption}
 \usepackage[printonlyused]{acronym}
 \usepackage{subcaption}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage{cleveref}
 % for references "Figure x.x" instead of "x.x"
-\crefname{figure}{Figure}{Figures}
+\crefname{figure}{Example}{Examples}
 \crefname{section}{Section}{Sections}
 \crefname{algorithm}{Algorithm}{Algorithms}
 \crefname{table}{Table}{Tables}
+\crefname{chapter}{Chapter}{Chapters}
+
+\newenvironment{example}[1][]{
+    \begin{figure}[#1]
+        \renewcommand{\figurename}{Example}
+    }{
+    \end{figure}
+}
+
+\newtheorem{definition}{Definition}
+
+\crefname{example}{Example}{Examples}
+
 
 \begin{document}
 \include{helper/macros}

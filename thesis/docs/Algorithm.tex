@@ -1,16 +1,18 @@
 \chapter{Algorithm}
 In this chapter we have a closer look at the algorithms we designed and how they work. We provide an explanation, accompanied with an example and pseudo-code.
-The first section explains, the concretization of a clustered argument \ref{sec:ConcretizingSingletons}. The next section explains, how the concretizer list (a list of clustered arguments which are mutated to singletons) is computed \ref{sec:ComputationOfConcretizerList}. The approach to compute faithful clustered AFs is describer in Section \ref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}
+In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are mutated to singletons) is computed. The approach to compute faithful clustered AFs is described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}.
+
+\textit{TODO: Update when adding sections}
 
 \section{Concretizing Singletons}
 \label{sec:ConcretizingSingletons}
 When operating on clustered AFs, a crucial mutation is to extract clustered arguments from a cluster and transform it to a singleton. This is called concretizing. When clustering singletons, the cluster inherits the attacks of the argument, concretizing is the inverse operation. This means, that it needs to revert the changes done by the clustering.
-Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\mathtt{\hat{F}}$ to create a new AF $\mathtt{\hat{F}'}$ and mutating it. The mutation is guided by five steps considering the unchanged abstract AF $\mathtt{\hat{F}}$ and the concrete AF $\mathtt{F}$. To improve the understanding of each step, we accompany the explanation with the example depicted in \cref{example:concretizationOfArguments}, where we concretize the arguments $\mathtt{a}$ and $\mathtt{b}$.
+Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\mathtt{\hat{F}}$ to create a new AF $\mathtt{\hat{F}'}$ and transforming it. The transformation is guided by five steps considering the unchanged abstract AF $\mathtt{\hat{F}}$ and the concrete AF $\mathtt{F}$. To improve the understanding of each step, we accompany the explanation with the example depicted in \cref{example:concretizationOfArguments}, where we concretize the arguments $\mathtt{a}$ and $\mathtt{b}$.
 
 \vspace{0.3cm}
 
 \vspace{0.3cm}
-\begin{figure}[h]
+\begin{example}[h]
     \centering
     \begin{subfigure}[b]{0.475\textwidth}
         \centering
@@ -70,18 +72,18 @@ Concretizing a list of arguments is done iteratively by duplicating the abstract
 
     \caption{Example: Concretization of arguments}
     \label{example:concretizationOfArguments}
-\end{figure}
+\end{example}
 
 
 \vspace{-0.2cm}
 
 \paragraph{Step 1:} Each argument needing concretization is first removed from the parent cluster and added as a singleton in $\mathtt{\hat{F}'}$.
 If an argument is not part of a cluster, we ignore it.
-We do not consider attacks in this step since they depend on the concrete- and abstract AFs. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep1}.
+We do not consider attacks in this step since they depend on the concrete- and abstract AFs. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep1} and the pseudo-code in \cref{alg:concretizingSingletonsStep1}.
 
 
 \vspace{0.3cm}
-\begin{figure}[h]
+\begin{example}[h]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -110,16 +112,35 @@ We do not consider attacks in this step since they depend on the concrete- and a
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 1}
     \label{example:algorithmConcretizeSingletonsStep1}
-\end{figure}
+\end{example}
 \vspace{-0.2cm}
 
 
-\paragraph{Step 2:} We add the new attacks from all concretized arguments to the remaining clusters. We must do this after
-removing the arguments from the clusters because if an argument $\mathtt{a}$ attacks argument $\mathtt{b}$ in the concrete AF, and $\mathtt{b}$ is part of the cluster $\mathtt{\hat{g}}$ in the abstract AF, by concretizing $\mathtt{b}$, the attack $\mathtt{(a,\hat{g})}$ would not be present anymore. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep2}.
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 1}\label{alg:concretizingSingletonsStep1}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \State $N$ $\gets$ $A$ \Comment{$N$ = Concretized Cluster}
+        \For{$a_i$ in $e$}
+            \For{$c_i$ in $A.clusters$}
+                \If{$a_i$ in $c_i$}
+                    \State $c_i.remove(a_i)$
+                \EndIf
+                \EndFor
+            \State $N.addSingleton(a_i)$
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+
+\paragraph{Step 2:} We add the new attacks from all concretized arguments to the remaining clusters and vice versa. We must do this after removing the arguments from the clusters because if an argument $\mathtt{a}$ attacks argument $\mathtt{b}$ in the concrete AF $\mathtt{F}$, and $\mathtt{b}$ is part of the cluster $\mathtt{\hat{g}}$ in the abstract AF $\mathtt{\hat{F}}$, by concretizing $\mathtt{b}$, the attack $\mathtt{(a,\hat{g})}$ would not be present anymore. The resulting AF $\mathtt{\hat{F}'}$ is depicted in \cref{example:algorithmConcretizeSingletonsStep2} and the pseudo-code in \cref{alg:concretizingSingletonsStep2}
 
 
 \vspace{0.3cm}
-\begin{figure}[h]
+\begin{example}[h]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -151,15 +172,39 @@ removing the arguments from the clusters because if an argument $\mathtt{a}$ att
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 2}
     \label{example:algorithmConcretizeSingletonsStep2}
-\end{figure}
+\end{example}
 \vspace{-0.2cm}
 
 
-\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $\mathtt{\hat{F}}$ are still present in $\mathtt{\hat{F}'}$. If an attack does not persist through the concretization, we remove it in $\mathtt{\hat{F}'}$. An attack is not present anymore; if we remove one of the arguments being attacked or attacked by argument $\mathtt{a}$ from a cluster $\mathtt{\hat{f}}$ and no other attack exists, s.t. $\mathtt{a}$ is attacked from/attacking an argument within $\mathtt{\hat{f}}$. Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from which the arguments are concretized. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep3}.
+
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 2}\label{alg:concretizingSingletonsStep2}
+    \begin{algorithmic}[1]
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$e_i$ in $e$}
+            \For{$att_i$ in $C[e_i].attacks$}
+                \If{$att_i$ to cluster $c_i$}
+                    \State $N.addAttack((e_i, c_i))$
+                \EndIf
+            \EndFor
+            \For{$def_i$ in $C[e_i].defends$}
+                \If{$def_i$ from cluster $c_i$}
+                    \State $N.addAttack((c_i, e_i))$
+                \EndIf
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $\mathtt{\hat{F}}$ are still present in $\mathtt{\hat{F}'}$. If an attack does not persist through the concretization, we remove it in $\mathtt{\hat{F}'}$. An attack is not present anymore; if we remove one of the arguments being attacked or attacked by argument $\mathtt{a}$ from a cluster $\mathtt{\hat{f}}$ and no other attack exists, s.t. $\mathtt{a}$ is attacked from/attacking an argument within $\mathtt{\hat{f}}$. Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from which the arguments are concretized. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep3} and the pseudo-code in \cref{alg:concretizingSingletonsStep3}.
 
 
 \vspace{0.3cm}
-\begin{figure}[h]
+\begin{example}[h]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -187,15 +232,44 @@ removing the arguments from the clusters because if an argument $\mathtt{a}$ att
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 3}
     \label{example:algorithmConcretizeSingletonsStep3}
-\end{figure}
+\end{example}
 \vspace{-0.2cm}
 
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 3}\label{alg:concretizingSingletonsStep3}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$r_i$ in $A_{r_1}$}
+            \If{$r_i.defender$ is cluster and $r_i.attacker$ is cluster}
+                \If{!($r_i.attacker$ attacks any of $C[r_i].defender$)}
+                    \State $N.removeAttack(r_i)$
+                    \State continue
+                \EndIf
+            \EndIf
+            \If{$r_i.defender$ is cluster}
+                \If{!($r_i.attacker$ attacks any of $C[r_i].defender$)}
+                    \State $N.removeAttack(r_i)$
+                    \State continue
+                \EndIf
+            \EndIf
+            \If{$r_i.attacker$ is cluster}
+                \If{!($r_i.defender$ defends against any $C[r_i].attacker$)}
+                    \State $N.removeAttack(r_i)$
+                    \State continue
+                \EndIf
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
 
-\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $\mathtt{\hat{F}}$, we only have to take into consideration the attacks from or to the concretized singletons. So instead of iterating over all singletons of the AF, we can limit the attack creation to the concretized singletons. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep4}.
+
+\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $\mathtt{\hat{F}}$, we only have to take into consideration the attacks from or to the concretized singletons. So instead of iterating over all singletons of the AF $\mathtt{\hat{F}'}$, we can limit the attack creation to the concretized singletons. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep4} and the pseudo-code in \cref{alg:concretizingSingletonsStep4}.
 
 
 \vspace{0.3cm}
-\begin{figure}[h]
+\begin{example}[h]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -225,16 +299,39 @@ removing the arguments from the clusters because if an argument $\mathtt{a}$ att
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 4}
     \label{example:algorithmConcretizeSingletonsStep4}
-\end{figure}
+\end{example}
 \vspace{-0.2cm}
 
 
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 4}\label{alg:concretizingSingletonsStep4}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$e_i$ in $e$}
+            \For{$a_i$ in $C[e_i].attacks$}
+                \If{$a_i$ is singleton and ($e_i$, $a_i$) not in $r_2$}
+                    \State $N.addAttack((e_i, a_i))$
+                \EndIf
+            \EndFor
+            \For{$a_i$ in $C[e_i].defends$}
+                \If{$a_i$ is singleton and ($a_i$, $e_i$) not in $r_2$}
+                    \State $N.addAttack((a_i, e_i))$
+                \EndIf
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
 \paragraph{Step 5:} The last step is to clean up the argumentation framework $\mathtt{\hat{F}'}$ by removing all empty clusters and mutating the clusters with exactly
-one singleton to the mentioned singleton. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep5}.
+one singleton to the mentioned singleton. The resulting AF $\mathtt{\hat{F}'}$ is depicted in \cref{example:algorithmConcretizeSingletonsStep5} and the pseudo-code in \cref{alg:concretizingSingletonsStep5}.
 
 
 \vspace{0.3cm}
-\begin{figure}[h!]
+\begin{example}[h!]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -261,45 +358,21 @@ one singleton to the mentioned singleton. The resulting AF is depicted in \cref{
     \end{tikzpicture}
     \caption{Concretized AF $\mathtt{\hat{F}'}$ after Step 5}
     \label{example:algorithmConcretizeSingletonsStep5}
-\end{figure}
+\end{example}
 \vspace{-0.2cm}
 
-The pseudo code is listed in \cref{alg:concretizingSingletons}.
-
 \begin{algorithm}[H]
-    \caption{Concretizing Singletons Pseudocode}\label{alg:concretizingSingletons}
+    \caption{Concretizing Singletons Pseudocode Step 5}\label{alg:concretizingSingletonsStep5}
     \begin{algorithmic}[1]
         \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
-        \Require $C: AF(a_2, r_2)$ \Comment{Abstract Concrete AF}
-        \Require $e: list(Arguments)$ \Comment{concretizer list}
-        \For{$e_i$ in $e$}
-            \If{$e_i$ not in $C$ $\lor$ $e_i$ not in $A_{C}$} \Comment{$A_C$ = Cluster in $A$}
-                \State $e$.remove($e_i$)
-            \EndIf
-        \EndFor
-        \State $N$ $\gets$ $A$ \Comment{$N$ = Concretized Cluster}
-        \State $N$.addSingletons($e$) \Comment{Step 1}
-        \State $N_C$.removeArguments($e$)
-        \For{$e_i$ in $e$} \Comment{Step 2}
-            \For{$e_i$ attacks $A_c$}
-                \State $N[e_i].attacks.append(A_c)$
-            \EndFor
-        \EndFor
-        \For{$r_i$ in $A_r$} \Comment{Step 3}
-            \If{$r_i$ not persists in $C$}
-                \State $A_r.remove(r_i)$
-            \EndIf
-        \EndFor
-        \For{$e_i$ in $e$} \Comment{Step 4}
-            \For{$e_i$ attacks $C_a$}
-                \State $N[e_i].attacks.append(C_a)$
-            \EndFor
-        \EndFor
-        \For{$c_i$ in $N_c$} \Comment{Step 5}
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$c_i$ in $N.clusters$}
             \If{$c_i.argAmount == 1$}
                 \State $c_i \gets Singleton$
             \ElsIf{$c_i.argAmount == 0$}
-                \State $N_c.remove(c_i)$
+                \State $N.remove(c_i)$
             \EndIf
         \EndFor
     \end{algorithmic}
@@ -323,7 +396,7 @@ Let us have a look at an example to demonstrate how the concretizer list is comp
 
 
 \vspace{0.3cm}
-\begin{figure}[h]
+\begin{example}[h]
 \begin{minipage}{.5\textwidth}
     \centering
     \begin{tikzpicture}
@@ -377,23 +450,36 @@ Let us have a look at an example to demonstrate how the concretizer list is comp
     \caption{Abstract AF $\mathtt{\hat{G}}$}
     \label{af:algorithmConcretizer2}
 \end{minipage}
-\end{figure}
+\end{example}
 \vspace{0.3cm}
 
-If we have a look at the stable extensions of the concrete AF $\mathtt{G}$, e.g. $\mathtt{stb=[\{b, c\}]}$ and at the stable extensions of the abstract AF $\mathtt{\hat{G}}$, e.g. $\mathtt{stb=[\{b, \hat{h}\}, \{\hat{h}\}, \{b\}]}$, we can see that stable extensions $\mathtt{\{\hat{h}\}}$ and $\mathtt{\{b\}}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\mathtt{\{b, \hat{h}\}}$.
+If we have a look at the stable extensions of the concrete AF $\mathtt{G}$, e.g. $\mathtt{stb=[\{b, c\}]}$ and at the abstractly stable extensions of the abstract AF $\mathtt{\hat{G}}$, e.g. $\mathtt{\hat{stb}=[\{b, \hat{h}\}, \{\hat{h}\}, \{b\}]}$, we can see that the abstractly stable extensions $\mathtt{\{\hat{h}\}}$ and $\mathtt{\{b\}}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\mathtt{\{b, \hat{h}\}}$.
 
 % Filter Cluster out of spurious set, because we cant concretize cluster
-The first step is to filter out the clusters of the input, since clusters are not present in the concrete AF and therefore do not attack any singletons and are not being attacked. So we reduce the concretizer list from $\mathtt{\{b, \hat{h}\}}$ to $\mathtt{\{b\}}$.
+The first step is to filter out the clusters of the input, since clusters are not present in the concrete AF and therefore do not attack any singletons and are not being attacked. So we reduce the concretizer list from $\mathtt{\{b, \hat{h}\}}$ to $\mathtt{\{b\}}$. The pseudo-code is listed in \cref{alg:concretizerListPrefiltering}.
+
+\begin{algorithm}[H]
+    \caption{Computation of Concretizer list Algorithm: Prefiltering}\label{alg:concretizerListPrefiltering}
+    \begin{algorithmic}[1]
+        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
+        \Require $s: list(Arguments)$ \Comment{spurious arguments}
+        \For{$s_i$ in $s$}
+            \If{$s_i$ in $\hat{G}$ is cluster}
+                \State $s$.remove($s_i$)
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
 
 % Get combination as attacker depth 2
 % Get combination as defender depth 2
 Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked by an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the direct arguments, which are being attacked by the argument. A depth $2$ argument is an argument, which has some attack relation (e.g. attacks the argument or is attacked by the argument) with a depth $1$ argument.
 
-We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in yellow and the attacker with the same depth, depicted in blue. Some arguments can have multiple depths (e.g. argument $\mathtt{c}$. It is a direct attacker of the argument $\mathtt{b}$ with depth $0$, but also a direct attacker of the argument $\mathtt{c}$ with depth $1$), than the lower depth is chosen as the representative.
+We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in yellow and the attacker with the same depth, depicted in blue. The pseudo-code of this procedure is listed in \cref{alg:concretizerListNeighbours}. Some arguments can have multiple depths (e.g. argument $\mathtt{c}$. It is a direct attacker of the argument $\mathtt{b}$ with depth $0$, but also a direct attacker of the argument $\mathtt{c}$ with depth $1$), than the lower depth is chosen as the representative.
 
 %Depth 2 Attacker
 \vspace{0.1cm}
-\begin{figure}[h!]
+\begin{example}[h!]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -444,8 +530,26 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
     \end{tikzpicture}
     \caption{Singletons depth with $\mathtt{b}$ as viewpoint}
     \label{af:algorithmConcretizer3}
-\end{figure}
+\end{example}
 \vspace{-0.2cm}
+
+\begin{algorithm}
+    \caption{Computation of Concretizer list Algorithm: Neighbours}\label{alg:concretizerListNeighbours}
+    \begin{algorithmic}[1]
+        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
+        \Require $s: list(Arguments)$ \Comment{Working List}
+        \State $N$ $\gets$ $[]$ \Comment{$N$ = list of neighbours}
+        \For{$s_i$ in $s$} \Comment{Get neighbours}
+            \For{$n(1)_i$ neighbour of $s_i$} \Comment{depth 1 attacker}
+                \For{$n(2)_i$ neighbour of $n(1)_i$} \Comment{depth 2 attacker}
+                    \State $N.append(n(1)_i$)
+                    \State $N.append(n(2)_i$)
+                \EndFor
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
 
 Now the concretizer list is expanded with all the possible combinations of the neighbours. The neighbours of the current example are $\mathtt{\{a, c, d, e\}}$. When building the combinations, we create the table defined in \cref{table:algorithmConcretizer1}.
 
@@ -499,11 +603,40 @@ $\mathtt{\{a, c, d\}}$
 $\mathtt{\{a, c, e\}}$
 $\mathtt{\{a, d, e\}}$
 $\mathtt{\{c, d, e\}}$
-$\mathtt{\{a, c, d, e\}]}$.
+$\mathtt{\{a, c, d, e\}]}$. The pseudo-code for the last step is stated in \cref{alg:concretizerListCombinationAndCleanup}.
 
-When concretizing the list, we find a set which leads to a faithful AF: $\mathtt{\{a, c, d\}}$ depicted in \cref{af:algorithmConcretizer4}. The pseudo code of the computation is listed in \cref{alg:concretizerList}
 
-\begin{figure}[H]
+\begin{algorithm}
+    \caption{Computation of Concretizer list Algorithm: Combinations and Cleanup}\label{alg:concretizerListCombinationAndCleanup}
+    \begin{algorithmic}[1]
+        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
+        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
+        \Require $s: list(Arguments)$ \Comment{Working List}
+        \Require $ca: list(Arguments)$ \Comment{Concretize arguments parameter}
+
+        \State $C \gets$ combinations of N with $range(1, len(N)-1)$ \Comment{Combination List}
+
+        \For{$ca_i$ in $ca$} \Comment{Parameter Arguments to be concretized}
+            \For{$c_i$ in $C$}
+                \State $c_i.append(ca_i)$
+            \EndFor
+        \EndFor
+        \State $C.deduplicate()$
+
+        \For{$s_i$ in $C$} \Comment{Remove clusters}
+            \For{$a_i$ in $s_i$}
+                \If{$\hat{G}[a_i]$ is cluster}
+                    \State $s_i.remove(a_i)$
+                \EndIf
+            \EndFor
+        \EndFor
+        \State \Return $s.sortBySize()$
+    \end{algorithmic}
+\end{algorithm}
+
+When concretizing the list, we find a set which leads to a faithful AF: $\mathtt{\{a, c, d\}}$ depicted in \cref{af:algorithmConcretizer4}.
+
+\begin{example}[H]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -532,60 +665,7 @@ When concretizing the list, we find a set which leads to a faithful AF: $\mathtt
     \end{tikzpicture}
     \caption{Faithful AF $\mathtt{\hat{G}'}$}
     \label{af:algorithmConcretizer4}
-\end{figure}
-
-
-
-\begin{algorithm}
-    \caption{Computation of Concretizer list Algorithm}\label{alg:concretizerList}
-    \begin{algorithmic}[1]
-        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
-        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
-        \Require $s: list(Arguments)$ \Comment{spurious arguments}
-        \Require $ca: list(Arguments)$ \Comment{Concretize arguments parameter}
-        \For{$s_i$ in $s$}
-            \If{$s_i$ in $\hat{G}$ is cluster}
-                \State $s$.remove($s_i$)
-            \EndIf
-        \EndFor
-        \State $N$ $\gets$ $[]$ \Comment{$N$ = list of neighbours}
-        \For{$s_i$ in $s$} \Comment{Get neighbours}
-            \For{$n(1)_i$ attacks $s_i$} \Comment{depth 1 attacker}
-                \For{$n(2)_i$ attacks $n(1)_i$} \Comment{depth 2 attacker}
-                    \State $N.append(n(2)_i$)
-                \EndFor
-                \For{$n(2)_i$ defends $n(1)_i$} \Comment{depth 2 defender}
-                    \State $N.append(n(2)_i$)
-                \EndFor
-            \EndFor
-
-            \For{$n(1)_i$ defends $s_i$} \Comment{depth 1 defender}
-                \For{$n(2)_i$ attacks $n(1)_i$} \Comment{depth 2 attacker}
-                    \State $N.append(n(2)_i$)
-                \EndFor
-                \For{$n(2)_i$ defends $n(1)_i$} \Comment{depth 2 defender}
-                    \State $N.append(n(2)_i$)
-                \EndFor
-            \EndFor
-        \EndFor
-        \State $C \gets$ combinations of N with $range(1, len(N)-1)$ \Comment{Combination List}
-
-        \For{$ca_i$ in $ca$} \Comment{Parameter Arguments to be concretized}
-            \For{$c_i$ in $C$}
-                \State $c_i.append(ca_i)$
-            \EndFor
-        \EndFor
-        \State $C.deduplicate()$
-        
-        \For{$s_i$ in $C$} \Comment{Remove clusters}
-            \For{$a_i$ in $s_i$}
-                \If{$\hat{G}[a_i]$ is cluster}
-                    \State $s_i.remove(a_i)$
-                \EndIf
-            \EndFor
-        \EndFor
-    \end{algorithmic}
-\end{algorithm}
+\end{example}
 
 
 
