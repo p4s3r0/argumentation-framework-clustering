@@ -1,6 +1,6 @@
 \chapter{Introduction}
 % Argumentation in general and in research.
-We all encounter arguments in our lives frequently. When talking to friends, listening to political discussions, or even making decisions in our head. These arguments can get heated and complex since humans have different beliefs and motivations. Finding a common ground or a ''correct`` conclusion is complicated and sometimes impossible. However, these imperfections are what make us humans. \ac{AI}, conversely, needs to act precisely and logically \cite{DBLP:journals/frai/DietzKM24}. To do so, the data needs to be stored and structured in a way, that AI can extract informations from it. That is why much research is being done in that field of knowledge representation and reasoning \cite{DBLP:journals/dagstuhl-manifestos/DelgrandeG0TW24, DBLP:journals/inffus/PopescuD23}.
+We all encounter arguments in our lives frequently. When talking to friends, listening to political discussions, or even making decisions in our head. These arguments can get heated and complex since humans have different beliefs and motivations. Finding a common ground or a ''correct`` conclusion is complicated and sometimes impossible. However, these imperfections are what make us humans. \ac{AI}, conversely, needs to act precisely and logically \cite{DBLP:journals/frai/DietzKM24}. To do so, the data needs to be stored and structured in a way, that AI can extract informations from it. This is part of knowledge representation and reasoning and that is why much research is being done in that field \cite{DBLP:journals/dagstuhl-manifestos/DelgrandeG0TW24, DBLP:journals/inffus/PopescuD23}.
 
 % Abstraction of Argumentation -> promises and conclusions, attacks
 Arguments can have many forms \cite{Toulmin_2003}. For instance, arguments can be seen as derivations of conclusions, based on assumptions or premises. Such premises can be facts or defeasible assumptions. Relations among arguments are key for driving (automated) argumentative reasoning. A prominent relation between arguments is that of an attack relation, or counter-argument relation. For instance, an argument might attack another. As an example, one argument might conclude that a square is red, while another is concluding that a square is blue. These two arguments are conflicting, and mutually attack each other. Another example would be that an argument is based on a witness statement, while a counter-argument to this one claims that the witness is not truthful, leading to a one-directional attack.
@@ -8,20 +8,22 @@ Arguments can have many forms \cite{Toulmin_2003}. For instance, arguments can b
 
 
 % Abstract Models of argumentation. Graphs.
-If an argument $\mathtt{a}$ is a counterargument of another argument $\mathtt{b}$, we can say that $\mathtt{a}$ attacks $\mathtt{b}$. With this abstraction, we can abstract our model with directed graphs. The arguments are represented as nodes, and the attacks as directed edges \cite{DUNG1995321}. Now we can define Argumentation Frameworks (AFs) and use them to evaluate conclusions \cite{DBLP:conf/fapr/Geffner96}. In many cases, viewing arguments as abstract entities is sufficient to carry out argumentative reasoning. Such reasoning is defined via so-called argumentation semantics, which define criteria which (sets of) arguments are deemed jointly acceptable.
+If an argument $a$ is a counterargument of another argument $b$, we can say that $a$ attacks $b$. With this abstraction, we can abstract our model with directed graphs. The arguments are represented as nodes, and the attacks as directed edges \cite{DUNG1995321}. Now we can define argumentation frameworks (AFs) and use them to evaluate conclusions \cite{DBLP:conf/fapr/Geffner96}. In many cases, viewing arguments as abstract entities is sufficient to carry out argumentative reasoning. Such reasoning is defined via so-called argumentation semantics, which define criteria which (sets of) arguments are deemed jointly acceptable. One of the first pioneers in the topic of argumentation frameworks was Dung. He defined the structure and functionalities in 1995 \cite{Dung1995-DUNOTA-2}.
 
 % Semantics with AFs
 % Computation
-Semantics define a subset of argument sets that have a certain relation to each other. Dung defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free (cf), admissible (adm) and stable (stb). To be precise, conflict-free and admissible are semantical properties but we will treat them as semantics. According to Dung's definitions, a set \textit{S} is conflict-free if there are no attacks between the arguments in \textit{S}. The conflict-free set is mainly a building block for the other semantics.
-A stable set, is a conflict-free set, if every argument, which is not in \textit{S}, has an attacker which is in \textit{S}.
+Semantics define subsets of arguments that have a certain relation to each other. Dung defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free (cf), admissible (adm) and stable (stb). To be precise, conflict-free and admissible are semantical properties but we will treat them as semantics. According to Dung's definitions, a set \textit{S} is conflict-free if there are no attacks between the arguments in \textit{S}. The defintion of conflict-freeness is mainly a building block for the other semantics.
+A stable extension, is a conflict-free set, if every argument, which is not in \textit{S}, has an attacker which is in \textit{S}.
 Finally, an admissible set is a conflict-free set, where each argument in \textit{S} has a defender in \textit{S}. A defender is this context means an argument which attacks an attacker of an argument in \textit{S}.
-The specific rules can be defined via a Boolean formula. They can be used to encode the AFs to be solvable with different solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}.
 
 
 % Clustering of AFs
-Since AFs can get very big and complicated, another layer of abstraction can be added. This abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. Clustering of arguments is a technique to reduce the number of arguments and to provide a high-level view of a given AF. Here, clustering means that arguments can be clustered together in clusters (or clustered arguments). In general, as is the case with many abstraction techniques, clustering can change conclusions that can be drawn from an abstracted formalism. A clustering is said to be \emph{faithful} if no erroneous conclusions can be drawn that is not part of the original, non-abstracted, structure. Otherwise, if conclusions can be drawn that are not there on the original structure, we say that these are \emph{spurious} conclusions.
+Since AFs can get very big and complicated, another layer of abstraction can be added. This abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. In this thesis we refer to the clustered AF as \emph{abstract AF} and the original AF, where no clustering occurs is called \emph{concrete AF}.
+Clustering of arguments is a technique to reduce the number of arguments and to provide a high-level view of a given AF. Here, clustering means that arguments can be clustered together in clusters (or clustered arguments). In general, as is the case with many abstraction techniques, clustering can change conclusions that can be drawn from an abstracted formalism. A clustering is said to be \emph{faithful} if no erroneous conclusions can be drawn that is not part of the original, non-abstracted, structure. Otherwise, if conclusions can be drawn that are not there on the original structure, we say that these are \emph{spurious} conclusions.
 
-In our case, the semantics of conflict-free, admissibility, and stable semantics were "lifted`` to the case with clustered arguments. That is, a clustered (abstracted) version of conflict-free sets, admissible sets, and stable extensions was defined on clustered AFs. These semantics respect the clustering of arguments. Then, e.g., an abstract admissible set is spurious if there is no (concrete, non-abstract) admissible set matching this one in the original AF. If no such spurious sets exist, then the clustered AF is said to be faithful, w.r.t.\ the original AF.
+In our case, the semantics of conflict-free, admissibility, and stable semantics were "lifted`` to the case with clustered arguments. That is, a clustered (abstracted) version of conflict-free sets, admissible sets, and stable extensions was defined on clustered AFs. These semantics respect the clustering of arguments. Then, e.g., an abstract admissible set is spurious if there is no (concrete, non-abstract) admissible set matching this one in the concrete AF. If no such spurious sets exist, then the clustered AF is said to be faithful, w.r.t.\ the concrete AF.
+
+
 
 
 
@@ -38,74 +40,76 @@ For instance, let us consider a real-world example like the weather. We can defi
     \item $f$: Observations can alter, depending on the time.
 \end{itemize}
 
-With this knowledge basis, we can create a concrete AF $\mathtt{G=(A, R)}$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \cref{af:introExample1}. An opposing statement in this context would be for instance the argument $\mathtt{a}$ (i.d. \emph{The sky is blue}) and $\mathtt{e}$ (i.d. \emph{At sunrise the sky appears to be orange}). Since both statements can not be true at the same time, they are contradicting, or in other words, attacking each other. If we apply another layer of abstraction, we obtain, e.g. the abstract AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ defined in \cref{af:introExample2}. We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the arguments \texttt{\{a, b, c, e, f\}}.
+With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \cref{af:introExample1}. An opposing statement in this context would be for instance the argument $a$ (i.e.\ \emph{The sky is blue}) and $e$ (i.e.\ \emph{At sunrise the sky appears to be orange}). Since both statements can not be true at the same time, they are contradicting, or in other words, attacking each other. If we apply another layer of abstraction, we obtain, e.g.\ the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ defined in \cref{af:introExample2}. We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the arguments $\{a, b, c, e, f\}$.
 
 
 
 \vspace{0.3cm}
-
-\begin{example}[h]
-\begin{minipage}{.5\textwidth}
+\begin{figure}[h]
     \centering
-    \begin{tikzpicture}
-        % Singletons
-        \def \ax{0}     \def \ay{0}
-        \def \bx{0}     \def \by{-1}
-        \def \cx{2}     \def \cy{-1}
-        \def \dx{3}     \def \dy{-1}
-        \def \ex{1}     \def \ey{-1}
-        \def \fx{2}     \def \fy{0}
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \ax{0}     \def \ay{0}
+            \def \bx{0}     \def \by{-1}
+            \def \cx{2}     \def \cy{-1}
+            \def \dx{3}     \def \dy{-1}
+            \def \ex{1}     \def \ey{-1}
+            \def \fx{2}     \def \fy{0}
 
-        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
-        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
-        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
-        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
-        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
-        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+            \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
 
-        % Attacks
-        \DrawAttackHorizontal{L}{\fx}{\fy}{\ax}{\ay}
-        \DrawAttackHorizontal{B}{\ex}{\ey}{\bx}{\by}
-        \DrawAttackHorizontal{B}{\cx}{\cy}{\ex}{\ey}
-        \DrawAttackHorizontal{L}{\dx}{\dy}{\cx}{\cy}
-        \DrawAttackVertical{D}{\fx}{\fy}{\cx}{\cy}
-        \DrawAttackDiagonal{PB}{\fx}{\fy}{\ex}{\ey}
-        \DrawAttackDiagonal{NB}{\ax}{\ay}{\ex}{\ey}
-    \end{tikzpicture}
-    \caption{Concrete AF $\mathtt{G}$}
-    \label{af:introExample1}
-\end{minipage}%
-\begin{minipage}{.5\textwidth}
-    \centering
-    \begin{tikzpicture}
-        % Singletons
-        \def \gx{0}     \def \gy{-1}
-        \def \dx{0}     \def \dy{0}
+            % Attacks
+            \DrawAttackHorizontal{L}{\fx}{\fy}{\ax}{\ay}
+            \DrawAttackHorizontal{B}{\ex}{\ey}{\bx}{\by}
+            \DrawAttackHorizontal{B}{\cx}{\cy}{\ex}{\ey}
+            \DrawAttackHorizontal{L}{\dx}{\dy}{\cx}{\cy}
+            \DrawAttackVertical{D}{\fx}{\fy}{\cx}{\cy}
+            \DrawAttackDiagonal{PB}{\fx}{\fy}{\ex}{\ey}
+            \DrawAttackDiagonal{NB}{\ax}{\ay}{\ex}{\ey}
+        \end{tikzpicture}
+        \subcaption{Concrete AF $G$}
+        \label{af:introExample1}
+    \end{minipage}%
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \gx{0}     \def \gy{-1}
+            \def \dx{0}     \def \dy{0}
 
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c,e,f$};
-        \node at (1, -0.5) {$\hat{g}$};
-        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c,e,f$};
+            \node at (1, -0.5) {$\hat{g}$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
 
-        % Attacks
-        \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy + 0.3}
-        \DrawAttackVertical{D}{\dx}{\dy}{\gx}{\gy}
-    \end{tikzpicture}
-    \caption{Abstract AF $\mathtt{\hat{G}}$}
-    \label{af:introExample2}
-\end{minipage}
-\end{example}
+            % Attacks
+            \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy + 0.3}
+            \DrawAttackVertical{D}{\dx}{\dy}{\gx}{\gy}
+        \end{tikzpicture}
+        \subcaption{Abstract AF $\hat{G}$}
+        \label{af:introExample2}
+    \end{minipage}
+    \caption{Concrete and abstract AF}
+    \label{fig:comparison}
+\end{figure}
 
 
 
 
 
-Now we can compute the sets of the according semantics (cf, adm, stb). The definitions of the semantics are defined in the \cref{ch:Background}. To reduce cluttering, we keep this example to the stable semantics. The stable extensions of the AF $G$ are \texttt{stb=\{\{d, e\}, \{b, d, f\}\}}.
+Now we can compute the sets of the according semantics (cf, adm, stb). The definitions of the semantics are defined in the \cref{ch:Background}. To reduce cluttering, we keep this example to the stable semantics. The stable extensions of the AF $G$ are $\mathtt{stb=}\bigl\{\{d, e\}, \{b, d, f\}\bigl\}$.
 
-By computing the stable semantics sets of the abstract AF $\mathtt{\hat{G}}$ \texttt{stb=\{\{d\}, \{d, g'\}\}}, we can observe that it is spurious due to the extension \texttt{\{d\}}, since it cannot be mapped to one of the concrete stable extensions.
+By computing the stable extensions of the abstract AF $\hat{G}$ $\mathtt{stb=}\bigl\{\{d\}, \{d, \hat{g}\}\bigl\}$, we can observe that the AF is spurious due to the extension $\{d\}$, since the abstract stable extension cannot be mapped to one of the concrete stable extensions.
 
-When concretizing (i.e. removing an argument from the cluster) the argument \texttt{c}, we create a new AF $\mathtt{\hat{G}' = (\hat{A}', \hat{R}')}$ depicted in \cref{af:introExample3}, which has the following stable extensions $\mathtt{stb=\{\hat{g}, d\}}$. This extension can be mapped to both stable extensions of the concrete AF $G$, by expanding the cluster $\mathtt{\hat{g}}$ with \texttt{\{e\}} or \texttt{\{b, f\}}. Thus, we created a faithful abstract AF.
+When concretizing (i.e. removing an argument from the cluster) the argument $c$, we create a new AF $\hat{G}' = (\hat{A}', \hat{R}')$ depicted in \cref{af:introExample3}, which has the following stable extensions $\mathtt{stb=}\{\hat{g}, d\}$. This extension can be mapped to both stable extensions of the concrete AF $G$, by mutating the cluster $\hat{g}$ with $\{e\}$ or $\{b, f\}$. Thus, we created a faithful abstract AF.
 
-\begin{example}[h]
+\begin{figure}[h]
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -123,9 +127,9 @@ When concretizing (i.e. removing an argument from the cluster) the argument \tex
         \DrawAttackHorizontal{L}{\dx}{\dy}{\cx}{\cy}
         \DrawAttackVertical{B}{\cx}{\cy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{Concretized AF $\mathtt{\hat{G}'}$}
+    \caption{Concretized AF $\hat{G}'$}
     \label{af:introExample3}
-\end{example}
+\end{figure}
 
 
 % Importance of concretizing single arguments
@@ -150,6 +154,12 @@ We created one of the first tools to produce an abstract AFs based on a concrete
     \item In an experimental evaluation, $\cdots$ TODO results.
     \item $\cdots$
 \end{itemize}
+
+We provide an open source implementation of the previously listed tools \cite{Pasero2024-AFClustering-Repo}.
+
+\begin{center}
+    \url{https://github.com/p4s3r0/argumentation-framework-clustering}
+\end{center}
 
 \noindent
 

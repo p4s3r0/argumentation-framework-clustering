@@ -26,22 +26,17 @@
 \usepackage{amsmath}
 \usepackage{cleveref}
 % for references "Figure x.x" instead of "x.x"
-\crefname{figure}{Example}{Examples}
+\crefname{figure}{Figure}{Figures}
 \crefname{section}{Section}{Sections}
 \crefname{algorithm}{Algorithm}{Algorithms}
 \crefname{table}{Table}{Tables}
 \crefname{chapter}{Chapter}{Chapters}
 
-\newenvironment{example}[1][]{
-    \begin{figure}[#1]
-        \renewcommand{\figurename}{Example}
-    }{
-    \end{figure}
-}
-
 \newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
 
-\crefname{example}{Example}{Examples}
+\usepackage{changepage}  % Required for adjusting margins
+
 
 
 \begin{document}
