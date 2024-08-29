@@ -104,7 +104,6 @@ class StableSolver:
         for arg in self.AF.values():
             clause = z3.Or(clause, arg.z3_value)
         self.solver.add(clause)
-        self.solution.append([])
     
         if self.AF_main == None:
             return

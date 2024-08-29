@@ -1,4 +1,4 @@
-\chapter{Algorithm}
+\chapter{Algorithm to obtain Faithful Clustering}
 In this chapter we have a closer look at the algorithms we designed and how they work. We provide an explanation, accompanied with an example and pseudo-code.
 In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are mutated to singletons) is computed. The approach to compute faithful clustered AFs is described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}.
 
@@ -669,14 +669,72 @@ When concretizing the list, we find a set which leads to a faithful AF: $\{a, c,
 
 
 
-% return list
-
-
-
-
-
-
 \newpage
+
+\section{Encodings}
+\label{sec:Encodings}
+We previously defined the semantics in mathematical notation. But since we use SAT-Solving to obtain semantics sets, we have to bring them into a Boolean form. We will accompany each Boolean formula with an example AF with the according Boolean resolution.
+
+
+\paragraph{Conflict-Free} A set of arguments is (abstractly) conflict-free, if each argument of the set is \emph{true} and the formula defined in \cref{def:booleanFormulaConflictFree} is satisfiable.
+
+\begin{definition}
+    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are conflict-free sets.
+    \begin{center}
+        \[
+        \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \bigl( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \bigl( a \wedge b \bigl) \bigl)
+        \]
+    \end{center}
+    \label{def:booleanFormulaConflictFree}
+\end{definition}
+
+
+\begin{example}
+    Let us have a look at an example and define the AF $G=(A,R)$ to be the AF depicted in \cref{af:algorithmEncodings}. Where the arguments are $A=\{a, b, c, d\}$ and the attacks $R=\big\{ (a,a), (a,b), (b,c), (d,a), (d,b), (d,c)\big\}$.
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \ax{0}   \def \ay{-1}
+            \def \bx{1}   \def \by{-1}
+            \def \cx{2}   \def \cy{-1}
+            \def \dx{1}   \def \dy{0}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+
+            % Attacks
+            \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
+            \DrawAttackHorizontal{R}{\bx}{\by}{\cx}{\cy}
+            \DrawSelfAttackLeftSingleton{\ax}{\ay}
+            \DrawAttackDiagonal{PRL}{\dx}{\dy}{\ax}{\ay}
+            \DrawAttackDiagonal{NLR}{\dx}{\dy}{\cx}{\cy}
+            \DrawAttackVertical{D}{\dx}{\dy}{\bx}{\by}
+        \end{tikzpicture}
+        \caption{Concrete AF $G$}
+        \label{af:algorithmEncodings}
+    \end{figure}
+\end{example}
+
+The generated Boolean expression for this example is the following.
+\begin{align*}
+    \psi =
+    \lnot(\land(2, 1))  \land
+    \lnot(\land(2, 4))  \land
+    & \lnot(\land(1, 4))  \land
+    \lnot(\land(1, 1))  \land
+    \\
+    & \lnot(\land(3, 2))  \land
+    \lnot(\land(3, 4))
+\end{align*}
+
+\paragraph{Admissible}
+
+
+
 \section{Algorithmic Approach to Compute Faifthul Clusterings}
 \label{sec:AlgorithmicApproachToComputeFaifthulClusterings}
 \textit{TODO: Concretize singletons of clustered AF algorithm}

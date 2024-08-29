@@ -19,6 +19,7 @@ class ConflictFreeSolver:
     def setRulesConflictFree(self):
         ''' Sets the rules for admissibility check. Formula is in the Readme'''
         # get a: a∈A
+        p = []
         a: Argument.Argument
         for a in self.AF.values():
 
@@ -33,6 +34,7 @@ class ConflictFreeSolver:
 
                 if b.is_singleton:
                     self.solver.add(z3.Not(z3.And(a.z3_value, b.z3_value)))
+                    p.append(z3.Not(z3.And(a.z3_value, b.z3_value)))
 
 
         # skip empty set solution in calculation but add by hand
@@ -40,6 +42,8 @@ class ConflictFreeSolver:
         for arg in self.AF.values():
             clause = z3.Or(clause, arg.z3_value)
         self.solver.add(clause)
+        for a in p:
+            print(a, " AND ")
         self.solution.append([])
         
 
