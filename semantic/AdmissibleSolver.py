@@ -66,11 +66,11 @@ class AdmissibleSolver:
                     c = self.AF[c]
                     clause_right_or = z3.Or(clause_right_or, c.z3_value)
                 clause_right_and = z3.And(clause_right_and, clause_right_or)
-        
+
             clause_right = z3.And(clause_right, z3.Implies(a.z3_value, clause_right_and))
-        
+
         clause = z3.And(clause_cf, clause_right)
-        self.solver.add(clause)        
+        self.solver.add(clause)
 
         #TODO: Check refinement
         return
