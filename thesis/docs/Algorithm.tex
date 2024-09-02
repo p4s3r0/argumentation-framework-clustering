@@ -679,7 +679,7 @@ We previously defined the semantics in mathematical notation. But since we use S
 \paragraph{Conflict-Free} A set of arguments is (abstractly) conflict-free, if each argument of the set is \emph{true} and the formula defined in \cref{def:booleanFormulaConflictFree} is satisfiable.
 
 \begin{definition}
-    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are conflict-free sets.
+    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are (abstract) conflict-free sets.
     \begin{center}
         \[
         \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \bigl( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \bigl( a \wedge b \bigl) \bigl)
@@ -734,10 +734,10 @@ The satisfiable models of $\psi$, and thus, the conflict-free sets of the AF $G$
 \end{example}
 
 
-\paragraph{Admissible} Every satisfiable model of \cref{def:booleanFormulaAdmissible} is an admissible set.
+\paragraph{Admissible} Every satisfiable model of \cref{def:booleanFormulaAdmissible} is an (abstractly) admissible set.
 
 \begin{definition}
-    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are admissible sets.
+    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are (abstract) admissible sets.
     \begin{center}
         \[ \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \big( a \wedge b \big)\big) \land  \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)
         \]
@@ -788,10 +788,67 @@ By applying the admissible formula to the AF $G$, we obtain a Boolean expression
     & \land \bigl( c \rightarrow (a \lor c \lor d) \bigl) \land \bigl( d \rightarrow (d) \land (e \lor d) \bigl) \land \bigl( e \rightarrow (e \lor d) \bigl)
 \end{align*}
 
-The satisfiable models of $\psi$, and thus, the admissible sets of the AF $G$ are $\big\{ \{\}, \{e\}, \{c, e\} \big\}$.
+The satisfiable models of $\psi$, and thus, the admissible sets of the AF $G$ are $\big\{ \{\},$ $\{e\},$ $\{c, e\}$ $\big\}$.
 \end{example}
 
 
+
+\paragraph{Stable} Every satisfiable model of \cref{def:booleanFormulaStable} is a (abstractly) stable extension.
+
+
+\begin{definition}
+    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are (abstractly) stable extensions.
+    \begin{center}
+        \[
+        \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \big( a \wedge b \big) \big) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{\!S\!I\!N\!G\!L\!E}} \lnot c\big) \big)
+        \]
+    \end{center}
+    \label{def:booleanFormulaStable}
+\end{definition}
+
+
+\begin{example}
+    Let us have a look at an example and define the AF $G=(A,R)$ to be the AF depicted in \cref{af:algorithmEncodingsStable}. Where the arguments are $A=\{a, b, c, d\}$ and the attacks $R=\big\{ (a,a), (a,b), (a,d), (b,a), (b,d), (c,b), (d,a)\big\}$.
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \ax{2}   \def \ay{0}
+            \def \bx{1}   \def \by{0}
+            \def \cx{0}   \def \cy{0}
+            \def \dx{1}   \def \dy{-1}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+
+            % Attacks
+            \DrawSelfAttackRightSingleton{\ax}{\ay}
+            \DrawAttackHorizontal{R}{\cx}{\cy}{\bx}{\by}
+            \DrawAttackHorizontal{B}{\ax}{\ay}{\bx}{\by}
+            \DrawAttackVertical{D}{\bx}{\by}{\dx}{\dy}
+            \DrawAttackDiagonal{PLR}{\dx}{\dy}{\ax}{\ay}
+        \end{tikzpicture}
+        \caption{Concrete AF $G$}
+        \label{af:algorithmEncodingsStable}
+    \end{figure}
+
+If we apply the stable extension formula, we obtain the following Boolean expression. In contrast to conflict-free and admissible, the empty set does not satisfy the expression and therefore is not part of the stable extensions.
+
+\begin{align*}
+    \psi = \bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) &\land (\lnot (a \land d)) \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \land (\lnot (d \land a)) \bigl) \\
+    &\land \bigl( (a \lor a \lor b \lor d) \land (a \lor b \lor c) \land (a \lor b \lor d) \bigl) \\
+    &\land \bigl( ((a \land \lnot a \land \lnot b \land \lnot d) \rightarrow (\lnot a \land \lnot b \land \lnot d)\bigl)\\
+    &\land \bigl((b \land \lnot a \land \lnot c) \rightarrow \lnot a \land \lnot d) \land ((d \land \lnot b \land \lnot a) \rightarrow \lnot a)\bigl)
+\end{align*}
+
+
+The satisfiable models of $\psi$, and therefore, the stable extensions of the AF $G$ is $\bigl\{ \{c, d\}\bigl\}$.
+\end{example}
+
+\newpage
 
 \section{Algorithmic Approach to Compute Faifthul Clusterings}
 \label{sec:AlgorithmicApproachToComputeFaifthulClusterings}

@@ -19,7 +19,8 @@ class StableSolver:
 
     def setRulesStable(self):
         ''' Sets the rules for stable check. Formula is in the Readme'''
-        
+
+        q = []
         cf_clause = True # conflict free part
         # get a: a∈A
         a: Argument.Argument
@@ -47,6 +48,7 @@ class StableSolver:
         for a in self.AF.values():
             # check if b exists
             if len(a.defends) == 0:
+                q.append(z3.Or(a.z3_value, False))
                 self.solver.add(z3.Or(a.z3_value, False))
                 continue
             
@@ -70,6 +72,7 @@ class StableSolver:
 
             # check if b exists
             if len(a.defends) == 0:
+                q.append(z3.Implies(z3.And(a.z3_value, True), True))
                 self.solver.add(z3.Implies(z3.And(a.z3_value, True), True))
                 continue
 
@@ -97,17 +100,21 @@ class StableSolver:
             right_clause = z3.And(right_clause, z3.Implies(z3.And(a.z3_value, right_clause_inner), right_right_clause))
 
         # Add the final clause to the solver 
+        q.append(z3.And(z3.And(cf_clause, middle_clause), right_clause))
         self.solver.add(z3.And(z3.And(cf_clause, middle_clause), right_clause))
         
         # skip empty set solution in calculation but add by hand
         clause = False
         for arg in self.AF.values():
             clause = z3.Or(clause, arg.z3_value)
+        q.append(clause)
         self.solver.add(clause)
-    
+        for l in q:
+            print(l, "AND")
         if self.AF_main == None:
             return
         
+
         #TODO: CHECK REFINEMENT
         return
         
