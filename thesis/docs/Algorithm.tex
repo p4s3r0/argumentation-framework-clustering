@@ -673,15 +673,15 @@ When concretizing the list, we find a set which leads to a faithful AF: $\{a, c,
 
 \section{Encodings}
 \label{sec:Encodings}
-We previously defined the semantics in mathematical notation. But since we use SAT-Solving to obtain semantics sets, we have to bring them into a Boolean form. We will accompany each Boolean formula with an example AF with the according Boolean resolution.
+We previously defined the semantics in mathematical notation. But since we use SAT-Solving to obtain semantics sets, we have to bring them into a Boolean form. We will accompany each Boolean formula of the specific semantics with an example AF, the according Boolean resolution and the satisfiable models.
 
 
-\paragraph{Conflict-Free} A set of arguments is (abstractly) conflict-free, if each argument of the set is \emph{true} and the formula defined in \cref{def:booleanFormulaConflictFree} is satisfiable.
+\paragraph{Conflict-Free} A set of arguments is (abstractly) conflict-free, if each Boolean (representing an argument) of the set is \emph{true} and the formula defined in \cref{def:booleanFormulaConflictFree} is satisfiable. For conflict-freeness, the expression is always satisfiable with the empty set (i.e.\ every Boolean is set to \emph{false}) and is therefore part of the conflict-free sets. Every other model that satisfies the formula is also part of the conflict-free set.
 
 \begin{definition}
-    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are (abstract) conflict-free sets.
+    Let $G=(A,R)$ be an AF. Then all the satisfiable models of the following formula are (abstractly) conflict-free.
     \begin{center}
-        \[
+        \[ \hat{cf}(G)=
         \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \bigl( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \bigl( a \wedge b \bigl) \bigl)
         \]
     \end{center}
@@ -718,7 +718,8 @@ We previously defined the semantics in mathematical notation. But since we use S
         \label{af:algorithmEncodingsConflictFree}
     \end{figure}
 
-By applying the conflict-free formula to the AF $G$, we obtain a Boolean expression. For conflict-free, the expression is always satisfiable with the empty set. Every other model that satisfies the formula is also part of the conflict-free set.
+By applying the conflict-free formula to the AF $G$, we obtain the Boolean resolution.
+
 \begin{align*}
     \psi =
     \lnot(b \land a)  \land
@@ -730,16 +731,17 @@ By applying the conflict-free formula to the AF $G$, we obtain a Boolean express
     \lnot(c \land d)
 \end{align*}
 
-The satisfiable models of $\psi$, and thus, the conflict-free sets of the AF $G$ are $\bigl\{$ $\{\}$ $\{b\}$, $\{c\}$, $\{d\}$ $\bigl\}$.
+The satisfiable models of $\psi$, and thus, the (abstractly) conflict-free sets of the AF $G$ are $\bigl\{$ $\{\}$ $\{b\}$, $\{c\}$, $\{d\}$ $\bigl\}$.
 \end{example}
 
 
-\paragraph{Admissible} Every satisfiable model of \cref{def:booleanFormulaAdmissible} is an (abstractly) admissible set.
+\paragraph{Admissible} Every satisfiable model of \cref{def:booleanFormulaAdmissible} is an (abstractly) admissible set. For admissibility, the empty set does always satisfy the formula and therefore is always part of the admissible sets. Besides the empty set, every model which satisfies the formula is also part of the admissible sets.
 
 \begin{definition}
-    Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are (abstract) admissible sets.
+    Let $G=(A,R)$ be an AF. Then all the satisfiable models of the following formula are (abstractly) admissible.
     \begin{center}
-        \[ \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \big( a \wedge b \big)\big) \land  \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)
+        \[ \hat{adm}(G)=
+        \hat{cf}(G) \land  \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)
         \]
     \end{center}
     \label{def:booleanFormulaAdmissible}
@@ -778,7 +780,8 @@ The satisfiable models of $\psi$, and thus, the conflict-free sets of the AF $G$
         \label{af:algorithmEncodingsAdmissible}
     \end{figure}
 
-By applying the admissible formula to the AF $G$, we obtain a Boolean expression. For admissible, the empty set does always satisfy the formula and therefore is always part of the admissible sets. Besides the empty set, every model which satisfies the formula is also part of the admissible sets.
+By applying the admissible formula defined in \cref{def:booleanFormulaAdmissible} to the AF $G$, we obtain the Boolean resolution.
+
 \begin{align*}
     \psi = \big(
     \lnot (a \land a)
@@ -788,19 +791,18 @@ By applying the admissible formula to the AF $G$, we obtain a Boolean expression
     & \land \bigl( c \rightarrow (a \lor c \lor d) \bigl) \land \bigl( d \rightarrow (d) \land (e \lor d) \bigl) \land \bigl( e \rightarrow (e \lor d) \bigl)
 \end{align*}
 
-The satisfiable models of $\psi$, and thus, the admissible sets of the AF $G$ are $\big\{ \{\},$ $\{e\},$ $\{c, e\}$ $\big\}$.
+The satisfiable models of $\psi$, and thus, the (abstractly) admissible sets of the AF $G$ are $\big\{ \{\},$ $\{e\},$ $\{c, e\}$ $\big\}$.
 \end{example}
 
 
 
-\paragraph{Stable} Every satisfiable model of \cref{def:booleanFormulaStable} is a (abstractly) stable extension.
-
+\paragraph{Stable} Every satisfiable model of \cref{def:booleanFormulaStable} is an (abstractly) stable extension. In contrast to conflict-free and admissible, the empty set does not satisfy the expression and therefore is never part of the stable extensions.
 
 \begin{definition}
     Let $G=(A,R)$ be an AF. Then all the satisfiable of the following formula are (abstractly) stable extensions.
     \begin{center}
-        \[
-        \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \big( a \wedge b \big) \big) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{\!S\!I\!N\!G\!L\!E}} \lnot c\big) \big)
+        \[ \hat{stb}(G)=
+        \hat{cf}(G) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{\!S\!I\!N\!G\!L\!E}} \lnot c\big) \big)
         \]
     \end{center}
     \label{def:booleanFormulaStable}
@@ -835,7 +837,7 @@ The satisfiable models of $\psi$, and thus, the admissible sets of the AF $G$ ar
         \label{af:algorithmEncodingsStable}
     \end{figure}
 
-If we apply the stable extension formula, we obtain the following Boolean expression. In contrast to conflict-free and admissible, the empty set does not satisfy the expression and therefore is not part of the stable extensions.
+If we apply the encoded formula for the stable semantics defined in \cref{def:booleanFormulaStable} to the AF $G$, we obtain the following Boolean resolution.
 
 \begin{align*}
     \psi = \bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) &\land (\lnot (a \land d)) \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \land (\lnot (d \land a)) \bigl) \\
@@ -852,7 +854,7 @@ The satisfiable models of $\psi$, and therefore, the stable extensions of the AF
 
 \section{Algorithmic Approach to Compute Faifthul Clusterings}
 \label{sec:AlgorithmicApproachToComputeFaifthulClusterings}
-\textit{TODO: Concretize singletons of clustered AF algorithm}
+When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t. we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the according concrete AFs. Thus, we need to mutate the clustered AF, that only correct solutions can be drawen, which we then call faithful.
 
 \section{Heuristics and Refinements}
 \label{sec:HeuristicsAndRefinements}
