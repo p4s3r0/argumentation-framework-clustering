@@ -11,7 +11,7 @@ We previously defined the semantics in mathematical notation. But since we use S
 In general, given an AF $\hat{G}=(\hat{A}, \hat{R})$, we will use Boolean variables corresponding to arguments. That is, if $a \in \hat{A}$ is an argument, then $a$ is also a Boolean variable. The intended meaning is then that in a truth-value assignment a variable $a$ is \emph{true}, then there is a corresponding set of arguments with $a$ in the set. Formally, if $\tau$ is a truth-value assignment on the variables in $\hat{A}$, then the corresponding set of arguments is defined as $\{a \in A \mid \tau(a) = 1\}$.
 
 
-\paragraph{Conflict-Free} We begin with (abstract) conflict-free extensions. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, the empty set is always part of the conflict-free sets.
+\paragraph{Conflict-Free} We begin with (abstract) conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, the empty set is always part of the conflict-free sets.
 
 \begin{definition}
     Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. Where $\hat{A}$ are the representations of the arguments as Boolean variables and $\hat{R}$ are the the attacks between the arguments.
@@ -69,19 +69,19 @@ By applying the formula from \cref{def:booleanFormulaConflictFree} to the AF $\h
     \lnot(c \land d)
 \end{align*}
 
-The models of $\psi$ in this example are $\bigl\{$ $\{\}$ $\{b\}$, $\{c\}$, $\{d\}$, $\{\hat{h}\}$, $\{b, \hat{h}\}$, $\{c, \hat{h}\}$, $\{d, \hat{h}\}$ $\bigl\}$.
+The models of $\psi$ in this example are $\bigl\{\{\}$ $\{b\}$, $\{c\}$, $\{d\}$, $\{\hat{h}\}$, $\{b, \hat{h}\}$, $\{c, \hat{h}\}$, $\{d, \hat{h}\}\bigl\}$.
 \end{example}
 
 If we compare the models of $\psi$ with the conflict-free sets of $\hat{G}$, we can observe that they are equal. In fact, \cref{def:booleanFormulaConflictFree} is a Boolean representation to obtain conflict-free sets from an AF. The formula can be applied to concrete and abstract AFs, because if no cluster is present, the formula corresponds to the previously defined conflict-free formula and only adds the layer of abstraction if atleast one cluster is present.
 
 
-\paragraph{Admissible} Every model of \cref{def:booleanFormulaAdmissible} is an (abstractly) admissible set. For admissibility, the empty set does always satisfy the formula and therefore is always part of the admissible sets. Besides the empty set, every model which satisfies the formula is also part of the admissible sets.
+\paragraph{Admissible} Next we continue with (abstract) admissible sets. Recall that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. For admissibility, the empty set does always satisfy the criteria and therefore is part of the admissible sets.
 
 \begin{definition}
-    Let $G=(A,R)$ be an AF. Then all the models of the following formula are (abstractly) admissible.
+    Let $\hat{G}=(\hat{A}, \hat{R})$ be an abstract AF. Here the arguments as Boolean variables denote to $\hat{A}$ and the attacks of $G$ denote to $\hat{R}$.
     \begin{center}
-        \[ \hat{adm}(G)=
-        \hat{cf}(G) \land  \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)
+        \[ \hat{adm}(\hat{G})=
+        \hat{cf}(\hat{G}) \land  \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)
         \]
     \end{center}
     \label{def:booleanFormulaAdmissible}
@@ -89,7 +89,7 @@ If we compare the models of $\psi$ with the conflict-free sets of $\hat{G}$, we 
 
 
 \begin{example}
-    Let us have a look at an example and define the AF $G=(A,R)$ to be the AF depicted in \cref{af:algorithmEncodingsAdmissible}. Where the arguments are $A=\{a, b, c, d, e\}$ and the attacks $R=\big\{ (a,a), (a,b), (b,c), (d,a), (d,b), (d,d), (d, e), (e, d)\big\}$.
+    Let us have a look at an example and define the AF $\hat{G}=(\hat{A},\hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsAdmissible}. Where the arguments are $\hat{A}=\{a, b, c, d, e\}$ and the attacks $\hat{R}=\big\{ (a,a), (a,b), (b,c), (d,a), (d,b), (d,d), (d, e), (e, d)\big\}$.
 
     \begin{figure}[H]
         \centering
@@ -126,7 +126,7 @@ If we compare the models of $\psi$ with the conflict-free sets of $\hat{G}$, we 
         \label{af:algorithmEncodingsAdmissible}
     \end{figure}
 
-By applying the admissible formula defined in \cref{def:booleanFormulaAdmissible} to the AF $G$, we obtain the Boolean resolution.
+By applying the formula defined in \cref{def:booleanFormulaAdmissible} to the AF $\hat{G}$, we obtain the following Boolean expression.
 \begin{align*}
     \psi = \big(
     \lnot (a \land a)
@@ -136,18 +136,24 @@ By applying the admissible formula defined in \cref{def:booleanFormulaAdmissible
     & \land \bigl( c \rightarrow ((a \lor c \lor d) \land (\hat{h})) \bigl) \land \bigl( d \rightarrow (d) \land (e \lor d) \bigl) \land \bigl( e \rightarrow (e \lor d) \bigl)
 \end{align*}
 
-The models of $\psi$, and thus, the (abstractly) admissible sets of the AF $G$ are $\big\{ \{\}$, $\{c\}$, $\{e\}$, $\{\hat{h}\}$, $\{c, e\}$, $\{c, \hat{h}\}$, $\{e, \hat{h}\}$, $\{c, e, \hat{h}\}$ $\big\}$.
+The models of $\psi$ in this example are $\big\{\{\}$, $\{c\}$, $\{e\}$, $\{\hat{h}\}$, $\{c, e\}$, $\{c, \hat{h}\}$, $\{e, \hat{h}\}$, $\{c, e, \hat{h}\} \big\}$.
 \end{example}
 
+If we compare the models of $\psi$ with the admissible sets of $\hat{G}$, we can observe that they are equal. Indeed, \cref{def:booleanFormulaAdmissible} provides a Boolean representation that allows the derivation of admissible sets from an AF. If the AF $\hat{G}$ has no cluster, the formula reduces itself to the previously defined admissible formula.
 
 
-\paragraph{Stable} Every model of \cref{def:booleanFormulaStable} is an (abstractly) stable extension. In contrast to conflict-free and admissible, the empty set does not satisfy the expression and therefore is never part of the stable extensions.
+
+\paragraph{Stable} Finally we take a look at the (abstract) stable extensions. Recall, that a set of arguments is abstractly stable, if it is abstractly conflict-free and if an
+argument is not in the abstractly stable extension, it implies that an argument in the
+abstractly stable extension is attacking it. Furthermore if the abstractly stable extension
+is not attacking an argument, then every singleton attacking the argument is not in the
+abstractly stable extension. Other than conflict-free and admissible, the empty set is not part of the stable extension.
 
 \begin{definition}
-    Let $G=(A,R)$ be an AF. Then all the models of the following formula are (abstractly) stable extensions.
+    Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. In this case, $\hat{A}$ represents the arguments as Boolean variables, and $\hat{R}$ represents the attacks of $\hat{G}$.
     \begin{center}
-        \[ \hat{stb}(G)=
-        \hat{cf}(G) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{\!S\!I\!N\!G\!L\!E}} \lnot c\big) \big)
+        \[ \hat{stb}(\hat{G})=
+        \hat{cf}(\hat{G}) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{\!S\!I\!N\!G\!L\!E}} \lnot c\big) \big)
         \]
     \end{center}
     \label{def:booleanFormulaStable}
@@ -155,7 +161,7 @@ The models of $\psi$, and thus, the (abstractly) admissible sets of the AF $G$ a
 
 
 \begin{example}
-    Let us have a look at an example and define the AF $G=(A,R)$ to be the AF depicted in \cref{af:algorithmEncodingsStable}. Where the arguments are $A=\{a, b, c, d\}$ and the attacks $R=\big\{ (a,a), (a,b), (a,d), (b,a), (b,d), (c,b), (d,a)\big\}$.
+    Let us have a look at an example and define the AF $\hat{G}=(\hat{A}, \hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsStable}. Where the arguments are $\hat{A}=\{a, b, c, d\}$ and the attacks $\hat{R}=\big\{ (a,a)$, $(a,b)$, $(a,d)$, $(b,a)$, $(b,d)$, $(c,b)$, $(d,a)\big\}$.
 
     \begin{figure}[H]
         \centering
@@ -185,7 +191,7 @@ The models of $\psi$, and thus, the (abstractly) admissible sets of the AF $G$ a
         \label{af:algorithmEncodingsStable}
     \end{figure}
 
-If we apply the encoded formula for the stable semantics defined in \cref{def:booleanFormulaStable} to the AF $G$, we obtain the following Boolean resolution.
+If we apply the encoded formula defined in \cref{def:booleanFormulaStable} to the AF $\hat{G}$, we obtain the following Boolean expression.
 \begin{align*}
     \psi = \bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) 
     & \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \bigl) \\
@@ -195,10 +201,12 @@ If we apply the encoded formula for the stable semantics defined in \cref{def:bo
 \end{align*}
 
 
-The models of $\psi$, and therefore, the stable extensions of the AF $G$ is $\bigl\{ $ $\{c, d\}$, $\{c, d, \hat{h}\} \bigl\}$.
+The models of $\psi$ in this example are $\bigl\{$$\{c, d\}$, $\{c, d, \hat{h}\} \bigl\}$.
 \end{example}
 
+By comparing the models of $\psi$ with the stable sets of $\hat{G}$, we find that they are identical.
 
+// TODO HERE
 
 
 \section{Concretizing Singletons}
