@@ -117,6 +117,8 @@ def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, alg
 
         concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=faithful[1], concretizer_list = [])
 
+        print("CON", concretizer_list)
+
         # try few concretizer items first, then try more and more
         if concretizer_list == "too_many":
             Out.ConcretizeNOTFoundSolution("because Problematic set to big")
@@ -137,7 +139,7 @@ def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, alg
             if faithful[0]:
                 Out.ConcretizeFoundSolution()
                 if visualize: Visualizer.show(concretized_af.arguments)
-                
+                return
         else:
             Out.ConcretizeNOTFoundSolution()
     else:

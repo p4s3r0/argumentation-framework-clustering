@@ -72,7 +72,6 @@ def filterDuplicates(l: list) -> list:
         if (a := list(set(s))) not in filtered_l:
             filtered_l.append(a)
 
-
     # filter duplicates in l
     ret_string = list()
     ret = list()
@@ -82,7 +81,6 @@ def filterDuplicates(l: list) -> list:
         if curr_str not in ret_string:
             ret_string.append(curr_str)
             ret.append(s)
-
     return ret
 
 
@@ -112,6 +110,7 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
 
     depth_2_single_view = list()
     for prob_set in filtered_problematic_singletons:
+        curr_list = list()
         for prob in prob_set:
             curr = list()
             # get combinations of def -> depth 2
@@ -124,13 +123,10 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     curr.extend(itertools.combinations(af_concrete.arguments[direct].attacks, i))
 
                 curr = filterDuplicates(curr)
-
                 # add direct defender, sort, and deduplicate
                 for i in range(len(curr)):
-                    curr[i] = list(curr[i])
-                    curr[i].extend(direct)
-                    if prob not in curr[i]:
-                        curr[i].extend(prob)
+                    if direct not in curr[i]:
+                        curr[i].extend(direct)
                     curr[i].sort()
                 curr = filterDuplicates(curr)
 
@@ -143,10 +139,12 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                             if arg in af_abstract.arguments[cluster].clustered_arguments:
                                 temp.append(arg)
                     filter_singletons.append(temp)
+                
                 curr = filterDuplicates(filter_singletons)
+                curr_list += curr
+                curr.clear
 
-
-
+            curr = curr_list
             # add concretizer arguments (they have to be there by force)
             curr_with_concretizer = list()
             for curr_sol in curr:
@@ -160,9 +158,11 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                 curr_with_concretizer.append(filtered_arguments)
 
 
+
             depth_2_single_view.extend(curr_with_concretizer)
             curr.clear()
 
+            curr_list = list()
             # get combinations of att -> depth 2
             for direct in af_concrete.arguments[prob].attacks:
                 # att def
@@ -176,10 +176,7 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
 
                 # add direct attacker, sort, and deduplicate
                 for i in range(len(curr)):
-                    curr[i] = list(curr[i])
                     curr[i].extend(direct)
-                    if prob not in curr[i]:
-                        curr[i].extend(prob)
                     curr[i].sort()
                 curr = filterDuplicates(curr)
 
@@ -193,6 +190,9 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                                 temp.append(arg)
                     filter_singletons.append(temp)
                 curr = filterDuplicates(filter_singletons)
+                curr_list += curr
+                curr.clear()
+            curr = curr_list
 
             # add concretizer arguments (they have to be there by force)
             curr_with_concretizer = list()
