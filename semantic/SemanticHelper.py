@@ -55,7 +55,7 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
                     current_solver.solution.append(subset)
 
     else:
-        Info.info(f"{current_solver.name} -- Found {len(current_solver.solution)} many solutions")
+        Info.info(f"{current_solver.name} -- Found {len(current_solver.solution)} many semantics extensions")
         if algorithm == "BFS":
             return current_solver.solution
         else:
