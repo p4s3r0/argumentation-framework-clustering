@@ -18,7 +18,7 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
 
     if algorithm == "BFS":
         set_af_1 = list()
-        if len(solver_af_1.solution) == 0:
+        if len(solver_af_1.solution) == 0 or len(solver_af_1.solution) == 1:
             set_af_1 = solver_af_1.computeSets()
         else:
             set_af_1 = solver_af_1.solution
@@ -101,8 +101,56 @@ def computeSemanticSets(input_file: str, semantic: str, visualize: bool, all_set
 
 
 
+def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, visualize: bool):
+    # read in concrete AF
+    concrete_af = ArgumentationFramework.ArgumentationFramework()
+    concrete_af.parseFile(filepath=concrete_file)
+    if visualize: Visualizer.show(concrete_af.arguments)
+    # read in abstract AF
+    abstract_af = ArgumentationFramework.ArgumentationFramework()
+    abstract_af.parseFile(filepath=abstract_file)
+    if visualize: Visualizer.show(abstract_af.arguments)
+
+    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=abstract_af, algorithm=algorithm,
+                                        semantic=semantic)
+    if not faithful[0]:
+
+        concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=faithful[1], concretizer_list = [])
+
+        # try few concretizer items first, then try more and more
+        if concretizer_list == "too_many":
+            Out.ConcretizeNOTFoundSolution("because Problematic set to big")
+            return
+        concretizer_list.sort(key=len)
+
+
+
+        Info.info(f"Problematic Singletons: {faithful[1]}, Further tests: {concretizer_list}")
+        for maybe_sol in concretizer_list:
+            Info.info(f"Spurious, trying to concretize {maybe_sol}")
+            concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af,
+                                                concrete_af=concrete_af)
+            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
+                                                algorithm=algorithm, semantic=semantic)
+
+
+            if faithful[0]:
+                Out.ConcretizeFoundSolution()
+                if visualize: Visualizer.show(concretized_af.arguments)
+                
+        else:
+            Out.ConcretizeNOTFoundSolution()
+    else:
+        Out.ConcretizeFoundSolution()
+        if visualize: Visualizer.show(abstract_af.arguments)
+
+    Info.info("Ending Program")
+
+
+
+
 def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, concretize: list, visualize: bool):
-     # read in concrete AF
+    # read in concrete AF
     concrete_af = ArgumentationFramework.ArgumentationFramework()
     concrete_af.parseFile(filepath=concrete_file)
     if visualize: Visualizer.show(concrete_af.arguments)
@@ -112,23 +160,19 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
     if visualize: Visualizer.show(abstract_af.arguments)
 
 
-    concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=concretize, abstract_af=abstract_af,
-                                        concrete_af=concrete_af)
+    concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=concretize, abstract_af=abstract_af, concrete_af=concrete_af)
 
     faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=algorithm,
                                         semantic=semantic)
     if not faithful[0]:
 
-        concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
-                                                    problematic_singletons=faithful[1], concretizer_list = concretize)
+        concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=faithful[1], concretizer_list = [])
 
         # try few concretizer items first, then try more and more
         if concretizer_list == "too_many":
             Out.ConcretizeNOTFoundSolution("because Problematic set to big")
             return
         concretizer_list.sort(key=len)
-
-
 
         Info.info(f"Problematic Singletons: {faithful[1]}, Further tests: {concretizer_list}")
         for maybe_sol in concretizer_list:

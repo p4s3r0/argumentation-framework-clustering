@@ -30,7 +30,7 @@ def argumentParser():
         description="Parses an AF file and computes clustered AF. \nAuthor: Pasero Christian")
     parser.add_argument("f", metavar="<function>", action="store",
                         help="Defines the behaviour of the program. Choices: SETS (=calculates sets of semantic), CHECK (=determines if two AFs are faithful), CONCRETIZE (=concretizes a list of arguments)",
-                        choices=['SETS', 'CHECK', 'CONCRETIZE', 'TEMP'])
+                        choices=['SETS', 'CHECK', 'CONCRETIZE', 'FAITHFUL'])
     parser.add_argument("i", metavar="<input_file>", action="store", help="Filename of input file")
     parser.add_argument("-c", metavar="<input_file_2>", action="store",
                         help="Filename of the second input file for which spuriousness should be checked",
@@ -67,6 +67,11 @@ def main():
         if args.compare_input_file is None:
             Error.programArgumentsInvalid("Function = CONCRETIZE, but concrete AF is missing.")
         Programs.concretizeAF(concrete_file=args.compare_input_file, abstract_file=args.input_file, semantic=args.semantic, algorithm=args.algorithm, concretize=args.concretize, visualize=args.visualize)
+
+    elif args.function == "FAITHFUL":
+        if args.compare_input_file is None:
+            Error.programArgumentsInvalid("Function = FAITHFUL, but concrete AF is missing.")
+        Programs.computeFaithfulAF(concrete_file=args.compare_input_file, abstract_file=args.input_file, semantic=args.semantic, algorithm=args.algorithm, visualize=args.visualize)
 
 
 

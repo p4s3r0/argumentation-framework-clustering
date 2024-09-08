@@ -845,7 +845,280 @@ When clustering AFs, information gets lost. If crucial information is abstracted
 
 But if we find spurious extensions, we build the concretizer list as specified previously in \cref{sec:ComputationOfConcretizerList}. Recall, that the concretizer list operates with the depth of neighbours of $2$. This means, that depending on the AF, we can not guarantee to find a faithful AF. If the spurious extension of an AF $G$ has an argument $a$ with depth 3 to an argument $b$, and the only faithful AF is the concrete one, than we will not find the faithful AF.
 
-Finally, we concretize the concretizer list, set after set and check for faithfulness.
+Finally, we concretize the concretizer list, set after set and check for faithfulness. The algorithm is listed in \cref{alg:computeFaithfulClusters}.
+
+
+
+\begin{example}
+    Let us have a look at an example and define an AF $G=(A,R)$ with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{(a, a)$, $(a, c),$ $(b, a),$ $(c, b),$ $(c, d),$ $(d, c),$ $(e, b),$ $(b, e),$ $(f, f)\bigl\}$, depicted in \cref{af:computeFaithfulCluster1a}. When clustering the arguments $\{a, b, f\}$ we obtain the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ depicted in \cref{af:computeFaithfulCluster1b}. Where the arguments are $\hat{A}=\{c, d, e, \hat{h}\}$. The attacks of the abstract AF are $\hat{R}=\{(\hat{h},$ $\hat{h}),$ $(\hat{h}, c),$ $(c, d),$ $(d, c),$ $(\hat{h}, e),$ $(e \hat{h})\}$ and the cluster $\hat{h}$ contains the arguments $\{a, b, f\}$.
+\end{example}
+
+\vspace{0.3cm}
+\begin{figure}[h]
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{1}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \fx{2}   \def \fy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawAttackVertical{D}{\ax}{\ay}{\cx}{\cy}
+        \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackDiagonal{PLR}{\cx}{\cy}{\bx}{\by}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\bx}{\by}
+        \DrawSelfAttackRightSingleton{\fx}{\fy}
+    \end{tikzpicture}
+    \subcaption{Concrete AF $G$}
+    \label{af:computeFaithfulCluster1a}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{2}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \hx{0}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a. b. f$};
+        \node at (\hx + 0.4, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawSelfAttackLeftTopCluster{\hx-0.4}{\hy+0.29}
+        \DrawAttackVertical{D}{\hx}{\hy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.25}{\hy}
+
+    \end{tikzpicture}
+    \subcaption{Abstract AF $\hat{G}$}
+    \label{af:computeFaithfulCluster1b}
+\end{minipage}
+\caption{Concrete and abstract AF}
+\label{fig:comparison}
+\end{figure}
+\vspace{0.3cm}
+
+
+When taking a look at the conflict-free sets of the concrete AF $G$ (e.g.\ $\bigl\{ \{\},$ $\{b\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{b, d\},$  $\{c, e\},$ $\{d, e\} \bigl\}$) and the abstractly conflict-free sets of the abstract AF $\hat{G}$ (e.g.\ $\bigl\{ \{\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{\hat{h}\},$ $\{c, e\},$ $\{c, \hat{h}\},$ $\{d, e\},$ $\{d, \hat{h}\},$ $\{e, \hat{h}\},$ $\{c, e, \hat{h}\},$ $\{e, d, \hat{h}\} \bigl\}$) we can observe, that the abstract AF $\hat{G}$ is spurious due to the sets $\bigl\{\{\hat{h}, d, e\},$ $\{\hat{h}, e\},$ $\{c, \hat{h}, e\},$ $\{c, \hat{h}\}\bigl\}$. Now we compute the concretizer list and obtain the sets defined in \cref{table:computeFaithfulClusterConcretizerTable}.
+
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{ |c|c|c|c|c| }
+        \hline
+        size $1$ & size $2$ & size $3$ & size $4$ & size $5$\\
+        \hline
+        \hline
+        $\{b\}$ & $\{c, d\}$ & $\{a, c, d\}$ &$\{a, b, c, d\}$ & $\{a, b, c, d, e\}$ \\
+        \hline
+         & $\{a, b\}$ & $\{b, c, d\}$ & $\{b, c, d, e\}$ & \\
+        \hline
+         & $\{b, e\}$ & $\{b, c, e\}$ & $\{a, b, c, e\}$ & \\
+        \hline
+         & & $\{a, b, e\}$ & $\{a, b, c, e\}$ & \\
+        \hline
+    \end{tabular}
+\caption{Concretizer list}
+\label{table:computeFaithfulClusterConcretizerTable}
+\end{table}
+
+For this example, we can concretize six sets of the concretizer list to obtain a faithful AF $\hat{G}'$, e.g.\ $\bigl\{ \{a, b\},$ $\{a, b, e\},$ $\{a, b, c, d\},$ $\{b, c, d, e\},$ $\{a, b, c, e\},$ $\{a, b, c, d, e\}\bigl\}$. Each of them depicted in \cref{af:computeFaithfulClusterSolutions}.
+
+
+\vspace{0.3cm}
+\begin{figure}[h]
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{1}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \fx{2}   \def \fy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawAttackVertical{D}{\ax}{\ay}{\cx}{\cy}
+        \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackDiagonal{PLR}{\cx}{\cy}{\bx}{\by}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\bx}{\by}
+        \DrawSelfAttackRightSingleton{\fx}{\fy}
+    \end{tikzpicture}
+    \subcaption{Concrete AF $G$}
+    \label{af:computeFaithfulCluster1a}
+\end{minipage}%
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{2}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \hx{0}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a. b. f$};
+        \node at (\hx + 0.4, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawSelfAttackLeftTopCluster{\hx-0.4}{\hy+0.29}
+        \DrawAttackVertical{D}{\hx}{\hy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.25}{\hy}
+
+    \end{tikzpicture}
+    \subcaption{Abstract AF $\hat{G}$}
+    \label{af:computeFaithfulCluster1b}
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{2}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \hx{0}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a. b. f$};
+        \node at (\hx + 0.4, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawSelfAttackLeftTopCluster{\hx-0.4}{\hy+0.29}
+        \DrawAttackVertical{D}{\hx}{\hy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.25}{\hy}
+
+    \end{tikzpicture}
+    \subcaption{Abstract AF $\hat{G}$}
+    \label{af:computeFaithfulCluster1b}
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{1}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \fx{2}   \def \fy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawAttackVertical{D}{\ax}{\ay}{\cx}{\cy}
+        \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackDiagonal{PLR}{\cx}{\cy}{\bx}{\by}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\bx}{\by}
+        \DrawSelfAttackRightSingleton{\fx}{\fy}
+    \end{tikzpicture}
+    \subcaption{Concrete AF $G$}
+    \label{af:computeFaithfulCluster1a}
+\end{minipage}%
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{2}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \hx{0}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a. b. f$};
+        \node at (\hx + 0.4, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawSelfAttackLeftTopCluster{\hx-0.4}{\hy+0.29}
+        \DrawAttackVertical{D}{\hx}{\hy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.25}{\hy}
+
+    \end{tikzpicture}
+    \subcaption{Abstract AF $\hat{G}$}
+    \label{af:computeFaithfulCluster1b}
+\end{minipage}
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{2}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \hx{0}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a. b. f$};
+        \node at (\hx + 0.4, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawSelfAttackLeftTopCluster{\hx-0.4}{\hy+0.29}
+        \DrawAttackVertical{D}{\hx}{\hy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.25}{\hy}
+
+    \end{tikzpicture}
+    \subcaption{Abstract AF $\hat{G}$}
+    \label{af:computeFaithfulCluster1b}
+\end{minipage}
+\caption{Concrete and abstract AF}
+\label{fig:comparison}
+\end{figure}
+\vspace{0.3cm}
+
+
+
+
+
+
 
 \begin{algorithm}
     \caption{Compute Faithful Clusters}\label{alg:computeFaithfulClusters}
@@ -859,7 +1132,7 @@ Finally, we concretize the concretizer list, set after set and check for faithfu
             \State \Return $\hat{G}$
         \EndIf
         \State $conc \gets computeConcretizerList(sp)$
-        \For{$set_i in sp$}
+        \For{$set_i$ in $sp$}
             \State $\hat{G}' \gets concretize(\hat{G}, set_i)$
             \State $s_a \gets computeSemanticsExtension(\hat{G}')$
             \If{$sp.length == 0$}
@@ -868,6 +1141,7 @@ Finally, we concretize the concretizer list, set after set and check for faithfu
         \EndFor
     \end{algorithmic}
 \end{algorithm}
+
 
 \section{Heuristics and Refinements}
 \label{sec:HeuristicsAndRefinements}

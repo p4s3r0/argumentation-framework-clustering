@@ -82,6 +82,7 @@ def filterDuplicates(l: list) -> list:
         if curr_str not in ret_string:
             ret_string.append(curr_str)
             ret.append(s)
+
     return ret
 
 
@@ -133,6 +134,19 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                     curr[i].sort()
                 curr = filterDuplicates(curr)
 
+                # filter arguments out who are not in cluster
+                filter_singletons = list()
+                for set in curr:
+                    temp = list()
+                    for arg in set:
+                        for cluster in af_abstract.arguments:
+                            if arg in af_abstract.arguments[cluster].clustered_arguments:
+                                temp.append(arg)
+                    filter_singletons.append(temp)
+                curr = filterDuplicates(filter_singletons)
+
+
+
             # add concretizer arguments (they have to be there by force)
             curr_with_concretizer = list()
             for curr_sol in curr:
@@ -168,6 +182,17 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
                         curr[i].extend(prob)
                     curr[i].sort()
                 curr = filterDuplicates(curr)
+
+                # filter arguments out who are not in cluster
+                filter_singletons = list()
+                for set in curr:
+                    temp = list()
+                    for arg in set:
+                        for cluster in af_abstract.arguments:
+                            if arg in af_abstract.arguments[cluster].clustered_arguments:
+                                temp.append(arg)
+                    filter_singletons.append(temp)
+                curr = filterDuplicates(filter_singletons)
 
             # add concretizer arguments (they have to be there by force)
             curr_with_concretizer = list()

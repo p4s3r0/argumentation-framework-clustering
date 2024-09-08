@@ -13,6 +13,8 @@ class ConflictFreeSolver:
         self.solution = []
         self.solver = z3.Solver()
         self.setRulesConflictFree()
+        self.name = "CF"
+
 
 
 
