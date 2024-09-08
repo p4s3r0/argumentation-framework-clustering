@@ -12,7 +12,7 @@ from utils import Out
 current_semantic = ""
 
 
-def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument]=None):
+def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument]=None, all_sets=False):
     global current_semantic
     current_semantic = semantic
 
@@ -55,7 +55,7 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
                     current_solver.solution.append(subset)
 
     else:
-        Info.info(f"Found {len(current_solver.solution)} many solutions")
+        Info.info(f"{current_solver.name} -- Found {len(current_solver.solution)} many solutions")
         if algorithm == "BFS":
             return current_solver.solution
         else:

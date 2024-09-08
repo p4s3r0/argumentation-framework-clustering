@@ -7,16 +7,21 @@ from utils import ClusterConcretization
 
 from semantic.SemanticHelper import getSemanticSolver
 
-
+solver_af_1 = None
 
 def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str,
                           semantic: str):
-    
-    solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_concrete.arguments)
+    global solver_af_1
+    if solver_af_1 == None:
+        solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_concrete.arguments)
     solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_concrete.arguments)
 
     if algorithm == "BFS":
-        set_af_1 = solver_af_1.computeSets()
+        set_af_1 = list()
+        if len(solver_af_1.solution) == 0:
+            set_af_1 = solver_af_1.computeSets()
+        else:
+            set_af_1 = solver_af_1.solution
         set_af_2 = solver_af_2.computeSets()
 
         Out.SolutionSets(semantic, set_af_1, "Concrete: ")
@@ -82,11 +87,11 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visuali
 
 
 
-def computeSemanticSets(input_file: str, semantic: str, visualize: bool):
+def computeSemanticSets(input_file: str, semantic: str, visualize: bool, all_sets=False):
     af = ArgumentationFramework.ArgumentationFramework()
     af.parseFile(input_file)
     Info.info("Input File Parsed")
-    solver = getSemanticSolver(semantic=semantic, AF=af.arguments)
+    solver = getSemanticSolver(semantic=semantic, AF=af.arguments, all_sets=all_sets)
     solutions = solver.computeSets()
     Out.SolutionSets(semantic=semantic, sets=solutions)
     Info.info("Solution Sets Computed")
