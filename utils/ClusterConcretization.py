@@ -233,11 +233,11 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
     all_comb = list()
     pre_deduplication = filterDuplicates(depth_2_single_view)
     if len(pre_deduplication) >= 25:
-        #TODO: Do something here
-
+        #TODO: Do something here. Dirty solution
+        pre_deduplication = pre_deduplication[:12] + pre_deduplication[len(pre_deduplication)-12:]
+        print("Too many neighbours.")
         print("problematic-sing:", p_singletons, "mix:", len(pre_deduplication))
-        [print("TOO MANY", i) for i in pre_deduplication]
-        return "too_many"
+        [print("STILL IN", i) for i in pre_deduplication]
 
 
 
