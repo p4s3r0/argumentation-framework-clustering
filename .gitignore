@@ -7,3 +7,5 @@ External Libraries
 notes
 *.aux
 *.gz
+*.bcf
+main.out
