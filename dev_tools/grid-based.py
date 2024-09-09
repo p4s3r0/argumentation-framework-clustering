@@ -55,7 +55,7 @@ class Grid:
                         s.attacks.append(int(s.name)+self.size)
                         attacks = self.getGridIndex(int(s.name)+self.size)
                         attacks.attacked_by.append(s.name)
-                        
+
                 # attacks to top
                 if int(s.name) > self.size-1:
                     if random.random() < p:
@@ -71,7 +71,7 @@ class Grid:
         if self.amount > 100:
             print("IF YOU WANT TO PRINT IT, DONT USE AMOUNT > 100")
             return;
-    
+
         for line in self.data:
             upper_upper_row = ""
             upper_lower_row = ""
@@ -111,7 +111,7 @@ class Grid:
                         upper_upper_row += "↑     "
                     else:
                         upper_upper_row += "      "
-                    
+
                     # check attack bottom
                     if int(el.name) + self.size in el.attacks:
                         upper_lower_row += "↓     "
@@ -121,7 +121,7 @@ class Grid:
             print("\n ", upper_upper_row, end="")
             print("\n ", upper_lower_row)
 
-    
+
 
 class Singleton:
     def __init__(self, name) -> None:

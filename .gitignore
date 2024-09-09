@@ -5,3 +5,5 @@ __pycache__
 test.py
 External Libraries
 notes
+*.aux
+*.gz
