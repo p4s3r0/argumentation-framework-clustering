@@ -193,7 +193,130 @@ Random-based generated AFs have the property (depending on the probability value
     \label{fig:GridBasedApproach}
 \end{figure}
 
-With the grid-based approach, we obtain a more structured AF. Structured in this context means, that the attacks between the arguments are restricted to locality. Due to this restriction, we reduce the amount of neighbours drastically in comparison to the random-based approach. Since we have less neighbours, we decrease the computation time and increase the chance to find a faithful AF.
+With the grid-based approach, we obtain a more structured AF. Structured in this context means, that the attacks between the arguments are restricted to locality. Due to this restriction, we reduce the amount of neighbours drastically in comparison to the random-based approach. Since we have less neighbours, we decrease the computation time and increase the chance to find a faithful AF. Example AF created with the grid-based approach can be seen in \cref{fig:ImplementationGridBasedExampleAFs}.
+
+
+
+\vspace{0.3cm}
+\begin{figure}[h]
+    \begin{minipage}{.3\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \def \ax{0}   \def \ay{0}
+            \def \bx{1}   \def \by{0}
+            \def \cx{2}   \def \cy{0}
+            \def \dx{0}   \def \dy{-1}
+            \def \ex{1}   \def \ey{-1}
+            \def \fx{2}   \def \fy{-1}
+            \def \gx{0}   \def \gy{-2}
+            \def \hx{1}   \def \hy{-2}
+            \def \ix{2}   \def \iy{-2}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+            \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+            \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+            \draw[line width=0.3mm] (\hx, \hy) circle (0.3) node[anchor=center]{$h$};
+            \draw[line width=0.3mm] (\ix, \iy) circle (0.3) node[anchor=center]{$i$};
+            % Attacks
+            \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
+            \DrawAttackHorizontal{R}{\dx}{\dy}{\ex}{\ey}
+            \DrawAttackHorizontal{R}{\bx}{\by}{\cx}{\cy}
+            \DrawAttackVertical{U}{\ex}{\ey}{\bx}{\by}
+            \DrawAttackVertical{B}{\ex}{\ey}{\hx}{\hy}
+            \DrawAttackHorizontal{L}{\ix}{\iy}{\hx}{\hy}
+
+
+        \end{tikzpicture}
+        \subcaption{\texttt{arg\_amount}=9 \texttt{p}=0.25}
+        \label{af:ImplementationGridBasedExampleAFsa}
+    \end{minipage}
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{2}   \def \cy{0}
+        \def \dx{0}   \def \dy{-1}
+        \def \ex{1}   \def \ey{-1}
+        \def \fx{2}   \def \fy{-1}
+        \def \gx{0}   \def \gy{-2}
+        \def \hx{1}   \def \hy{-2}
+        \def \ix{2}   \def \iy{-2}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+        \draw[line width=0.3mm] (\hx, \hy) circle (0.3) node[anchor=center]{$h$};
+        \draw[line width=0.3mm] (\ix, \iy) circle (0.3) node[anchor=center]{$i$};
+        % Attacks
+        \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
+        \DrawAttackHorizontal{R}{\dx}{\dy}{\ex}{\ey}
+        \DrawAttackHorizontal{R}{\bx}{\by}{\cx}{\cy}
+        \DrawAttackHorizontal{L}{\fx}{\fy}{\ex}{\ey}
+        \DrawAttackHorizontal{B}{\hx}{\hy}{\gx}{\gy}
+        \DrawAttackVertical{U}{\gx}{\gy}{\dx}{\dy}
+        \DrawAttackVertical{D}{\cx}{\cy}{\fx}{\fy}
+        \DrawAttackVertical{U}{\ex}{\ey}{\bx}{\by}
+        \DrawAttackVertical{B}{\ax}{\ay}{\dx}{\dy}
+        \DrawAttackVertical{B}{\fx}{\fy}{\ix}{\iy}
+
+    \end{tikzpicture}
+    \subcaption{\texttt{arg\_amount}=9 \texttt{p}=0.5}
+    \label{af:ImplementationGridBasedExampleAFsb}
+\end{minipage}%
+\begin{minipage}{.3\textwidth}
+    \centering
+    \begin{tikzpicture}
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{2}   \def \cy{0}
+        \def \dx{0}   \def \dy{-1}
+        \def \ex{1}   \def \ey{-1}
+        \def \fx{2}   \def \fy{-1}
+        \def \gx{0}   \def \gy{-2}
+        \def \hx{1}   \def \hy{-2}
+        \def \ix{2}   \def \iy{-2}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+        \draw[line width=0.3mm] (\hx, \hy) circle (0.3) node[anchor=center]{$h$};
+        \draw[line width=0.3mm] (\ix, \iy) circle (0.3) node[anchor=center]{$i$};
+        % Attacks
+        \DrawAttackHorizontal{B}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
+        \DrawAttackHorizontal{B}{\cx}{\cy}{\bx}{\by}
+        \DrawAttackHorizontal{B}{\ix}{\iy}{\hx}{\hy}
+        \DrawAttackHorizontal{R}{\ex}{\ey}{\fx}{\fy}
+        \DrawAttackHorizontal{L}{\hx}{\hy}{\gx}{\gy}
+        \DrawAttackVertical{B}{\bx}{\by}{\ex}{\ey}
+        \DrawAttackVertical{B}{\fx}{\fy}{\ix}{\iy}
+        \DrawAttackVertical{B}{\dx}{\dy}{\gx}{\gy}
+        \DrawAttackVertical{D}{\ex}{\ey}{\hx}{\hy}
+        \DrawAttackVertical{B}{\ax}{\ay}{\dx}{\dy}
+        \DrawAttackVertical{U}{\fx}{\fy}{\cx}{\cy}
+    \end{tikzpicture}
+    \subcaption{\texttt{arg\_amount}=9 \texttt{p}=0.75}
+    \label{af:ImplementationGridBasedExampleAFsc}
+\end{minipage}
+\caption{Example AF generated with grid-based approach}
+\label{fig:ImplementationGridBasedExampleAFs}
+\end{figure}
+\vspace{0.3cm}
+
+
 
 \paragraph{level-based} The last approach we provide is the level-based approach. The arguments for this script are \texttt{<arg\_amount>}, \texttt{<level>} and \texttt{<p>}. Same as for the grid-based and random-based approach, \texttt{<arg\_amount>} defines how many arguments the computed AF has. The \texttt{<level>} argument restricts the height of the grid to the provided value and \texttt{<p>} is again the probability that an attack between to arguments occurs. The difference to the grid-based approach is the dimension of the grid. While the grid-based approach uses a $n \times n$ grid, in the level-based approach we use a $\texttt{<level>} \times n$ grid. In this context, $n$ is equal to $\lceil \texttt{<arg\_amount>}/2 \rceil$. An example grid is depicted in \cref{fig:LevelBasedApproach}.
 
@@ -233,8 +356,86 @@ With the grid-based approach, we obtain a more structured AF. Structured in this
 \end{figure}
 
 
+With the level-based approach, we obtain the same structured AF as for the grid-based, but with less neighbours. Every argument can only have $min(\texttt{<level>}+1, 4)$ amount of direct neighbours. This reduces the neighbours even further and thus, decreases the overall computation effort. Example AFs created with the level-based script can be seen in \cref{fig:ImplementationLevelBasedExampleAFs}
 
 
+\vspace{0.3cm}
+\begin{figure}[h]
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \def \ax{0}   \def \ay{0}
+            \def \bx{0}   \def \by{-1}
+            \def \cx{1}   \def \cy{0}
+            \def \dx{1}   \def \dy{-1}
+            \def \ex{2}   \def \ey{0}
+            \def \fx{2}   \def \fy{-1}
+            \def \gx{3}   \def \gy{0}
+            \def \hx{3}   \def \hy{-1}
+            \def \ix{4}   \def \iy{0}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+            \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+            \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+            \draw[line width=0.3mm] (\hx, \hy) circle (0.3) node[anchor=center]{$h$};
+            \draw[line width=0.3mm] (\ix, \iy) circle (0.3) node[anchor=center]{$i$};
+            % Attacks
+            \DrawAttackHorizontal{R}{\ax}{\ay}{\cx}{\cy}
+            \DrawAttackHorizontal{R}{\fx}{\fy}{\hx}{\hy}
+            \DrawAttackHorizontal{R}{\dx}{\dy}{\fx}{\fy}
+            \DrawAttackHorizontal{L}{\gx}{\gy}{\ex}{\ey}
+            \DrawAttackVertical{D}{\ax}{\ay}{\bx}{\by}
+            \DrawAttackVertical{B}{\gx}{\gy}{\hx}{\hy}
+        \end{tikzpicture}
+        \subcaption{\texttt{arg\_amount}=9 \texttt{level}=2 \texttt{p}=0.25}
+        \label{af:ImplementationLevelBasedExampleAFsa}
+    \end{minipage}
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        \def \ax{0}   \def \ay{0}
+        \def \bx{0}   \def \by{-1}
+        \def \cx{1}   \def \cy{0}
+        \def \dx{1}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \fx{2}   \def \fy{-1}
+        \def \gx{3}   \def \gy{0}
+        \def \hx{3}   \def \hy{-1}
+        \def \ix{4}   \def \iy{0}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+        \draw[line width=0.3mm] (\hx, \hy) circle (0.3) node[anchor=center]{$h$};
+        \draw[line width=0.3mm] (\ix, \iy) circle (0.3) node[anchor=center]{$i$};
+        % Attacks
+        \DrawAttackHorizontal{B}{\cx}{\cy}{\ax}{\ay}
+        \DrawAttackHorizontal{B}{\hx}{\hy}{\fx}{\fy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ix}{\iy}{\gx}{\gy}
+        \DrawAttackHorizontal{R}{\dx}{\dy}{\fx}{\fy}
+        \DrawAttackHorizontal{R}{\ex}{\ey}{\gx}{\gy}
+        \DrawAttackHorizontal{L}{\dx}{\dy}{\bx}{\by}
+        \DrawAttackVertical{U}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackVertical{D}{\gx}{\gy}{\hx}{\hy}
+        \DrawAttackVertical{B}{\cx}{\cy}{\dx}{\dy}
+        \DrawAttackVertical{B}{\ex}{\ey}{\fx}{\fy}
+    \end{tikzpicture}
+    \subcaption{\texttt{arg\_amount}=9 \texttt{level}=2 \texttt{p}=0.75}
+    \label{af:ImplementationLevelBasedExampleAFsb}
+\end{minipage}%
+\caption{Example AF generated with grid-based approach}
+\label{fig:ImplementationLevelBasedExampleAFs}
+\end{figure}
+\vspace{0.3cm}
 
 \section{BFS and DFS Approach}
 \label{sec:ImplementationsBFSandDFSApproach}
