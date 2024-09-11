@@ -437,9 +437,112 @@ With the level-based approach, we obtain the same structured AF as for the grid-
 \end{figure}
 \vspace{0.3cm}
 
+\paragraph{clustering} Todo
+
+
+\newpage
 \section{BFS and DFS Approach}
 \label{sec:ImplementationsBFSandDFSApproach}
-\textit{TODO: BFS and DFS approach in current research + when BFS is better than DFS}
+Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algorithms to traverse graphs. Where BFS visits each node in order of distance to the start, DFS follows a direct path and only backtracks, if is has to. We, however, are not using the two approaches to traverse a graph, but we are using a similar principle to compute faithfulness of an abstract AF. The BFS approach in our implementation first computes all the semantics extensions of the abstract AF, then computes all the semantics extensions of the concrete AF and finally compares them to check for spuriousness.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Compute Block
+        \def \computeBlockX{0}
+        \def \computeBlockY{0}
+        \def \computeBlockWidth{3cm}
+        \def \computeBlockHeight{4cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\computeBlockWidth, minimum height=\computeBlockHeight , text width=\computeBlockWidth, align=center] at (\computeBlockX, \computeBlockY) {COMPUTE ALL ABSTRACT EXTENSIONS};
+
+
+        % Check Block
+        \def \checkBlockX{4}
+        \def \checkBlockY{0}
+        \def \checkBlockWidth{2.5cm}
+        \def \checkBlockHeight{4cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {CECK IF SPURIOUS};
+        
+        % Brace
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (1.8,-2) --  (1.8,2);
+        \DrawAttackHorizontal{R}{1.7}{0}{2.9}{0}
+
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt}] (6.2,-2) --  (6.2,2);
+        \DrawAttackHorizontal{L}{6.3}{0}{5.1}{0}
+
+        % Compute Block
+        \def \compBlockX{8}
+        \def \compBlockY{0}
+        \def \compBlockWidth{3cm}
+        \def \compBlockHeight{4cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\compBlockWidth, minimum height=\compBlockHeight , text width=\compBlockWidth, align=center] at (\compBlockX, \compBlockY) {COMPUTE ALL CONCRETE EXTENSIONS};
+    \end{tikzpicture}
+    \caption{BFS visualization}
+    \label{fig:ImplementationBFSVisualization}
+\end{figure}
+
+
+
+The BFS approach, visualized in \cref{fig:ImplementationBFSVisualization} is practical for AFs which do not have many semantics extensions. If the semantics sets take too long to compute, we will run into a timeout no matter at which seed the SAT-Solver is operating on. BFS is a solid and robust approach, nevertheless, there is no space of randomness and lucky early terminations.
+
+On the other hand, we have the DFS approach depicted in \cref{fig:ImplementationDFSVisualization}. When using DFS, instead of calculating all the abstract extensions at once, we verify each computed set directly. Verifying in this context means, to check if the extension can be mapped to one of the concrete extensions. But instead of computing every possible concrete set, and checking for a valid mapping, we encode the extensions directly, add a new context (using incremental solving), and check for satisfiability. If the SAT-Solver returns \emph{UNSAT}, we found a spurious extension and, therefore, showed that the abstract AF is spurious.
+
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        \def \bwidth{3cm}
+        \def \bheight{1.5cm}
+        % Block 1
+        \def \cbIX{0}
+        \def \cbIY{1.5cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIX, \cbIY) {COMPUTE ABSTRACT EXTENSION};
+
+        % Block connection dotted
+        \draw[dotted,-, line width=0.5mm, >={To[length=4, width=5]}]
+        (0cm, 0.45cm) -- (0cm, -0.45cm);
+
+        % Block 2
+        \def \cbIIX{0}
+        \def \cbIIY{-1.5cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIX, \cbIIY) {COMPUTE ABSTRACT EXTENSION};
+
+
+
+        % Block 3
+        \def \cbIIIX{4}
+        \def \cbIIIY{1.5cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIX, \cbIIIY) {VERIFY ON CONCRETE AF};
+        \DrawAttackHorizontal{R}{1.3}{1.5cm}{2.7}{1.5cm}
+
+        % Block connection dotted
+        \draw[dotted,-, line width=0.5mm, >={To[length=4, width=5]}]
+        (4.2cm, 0.45cm) -- (4.2cm, -0.45cm);
+
+        % Block 4
+        \def \cbIIIIX{4}
+        \def \cbIIIIY{-1.5cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIIX, \cbIIIIY) {VERIFY ON CONCRETE AF};
+        \DrawAttackHorizontal{R}{1.3}{-1.5cm}{2.7}{-1.5cm}
+
+
+        % Brace
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (5.8,-2.25) --  (5.8,2.25);
+        \DrawAttackHorizontal{R}{5.7}{0}{6.9}{0}
+
+        % Check Block
+        \def \checkBlockX{8}
+        \def \checkBlockY{0}
+        \def \checkBlockWidth{2.5cm}
+        \def \checkBlockHeight{4cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {IF ANY VERIFY BLOCK IS UNSAT, RETURN SPURIOUS};
+    \end{tikzpicture}
+    \caption{DFS visualization}
+    \label{fig:ImplementationDFSVisualization}
+\end{figure}
+
+
+DFS has some overhead, due to the context switches resulting with a longer computation power for faithful AFs. Nevertheless, depending on the seed of the SAT-Solver, we can obtain a result much faster than with BFS. If the first computed semantics extension is already spurious, we save a lot of computation power and can even solve AFs, which are not feasible for the BFS approach.
 
 
 
@@ -449,24 +552,12 @@ With the level-based approach, we obtain the same structured AF as for the grid-
 
 \section{Generating Semantics Sets}
 \label{sec:ImplementationsGeneratingSemanticsSets}
-\textit{TODO: Semantic sets generation algorithm}
 
-\section{Faithful/Spurious Determination}
-\label{sec:ImplementationsFaithfulSpuriousDetermination}
-\textit{TODO: Determine faithful/spurious algorithm}
-
-\section{Refuted Theories}
-\label{sec:ImplementationsRefutedTheories}
-\textit{TODO: State refuted theories like subsets of spurious also spurious.}
+To be able to create semantics extensions with a SAT-Solver, we need to encode the semantics (previously defined in \cref{sec:Encodings} and the according refinements in \cref{sec:HeuristicsAndRefinements}) into Boolean logic. Since the semantics definitions are written in an generelazide form, we need to unpack the n-ary con-/disjunction and encode them appropriately.
 
 
-
-
-REUSE THIS SOMEWHERE:
-
-We encoded the semantics rules into Boolean formula and used the SAT-Solver to evaluate them. To cover all possibilities of AFs, we generalized the formulas and used short notation to concatinate the variables. Let us have a look at a concrete example with an abstract clustered AF $\mathtt{\hat{G}=(\hat{A}, \hat{R})}$ defined in \cref{af:backgroundSATExample1}.
-
-
+\begin{example}
+Let us have a look at a concrete example with an abstract clustered AF $\hat{G}=(\hat{A}, \hat{R})$ defined in \cref{af:implementationSATExample1}. The arguments of the AF are $\hat{A}=\{c, d, e, \hat{h}\}$, with the cluster $\hat{h}$ containing the arguments $\{a, b\}$ and the rules being $\hat{R}=\bigl\{ (\hat{h}, c)$, $(c, c)$, $(c, d)$, $(c, e)$, $(e, d)$, $(d, e)\bigl\}$.
 
 \begin{figure}[h]
     \centering
@@ -490,26 +581,47 @@ We encoded the semantics rules into Boolean formula and used the SAT-Solver to e
         \DrawAttackVertical{D}{\cx}{\cy}{\ex}{\ey}
         \DrawAttackDiagonal{PB}{\dx}{\dy}{\ex}{\ey}
     \end{tikzpicture}
-    \caption{Abstract AF $\mathtt{\hat{G}}$}
-    \label{af:backgroundSATExample1}
+    \caption{Abstract AF $\hat{G}$}
+    \label{af:implementationSATExample1}
 \end{figure}
 
 
-\paragraph{For-OR} To concatinate all the singletons of the AF $\hat{G}$, we can use the following notation:
-
-$$
-\bigvee_{a \in \hat{G}_{\!S\!I\!N\!G\!L\!E}} a = c \lor d \lor e
-$$
-
-\paragraph{For-AND} To concatinate all the singletons of the AF $\hat{G}$, we can use the following notation:
+\paragraph{n-ary conjunction} To concatinate all the arguments with a Boolean AND of the AF \emph{$\hat{G}$}, we use the n-ary conjunction operator. We select an argument \emph{a} from the singletons of the AF \emph{$\hat{G}$} and concatinate them conjunctively. Note, that with the subscript \emph{SINGLE} we only include the singletons of the AF.
 
 $$
 \bigwedge_{a \in \hat{G}_{\!S\!I\!N\!G\!L\!E}} a = c \land d \land e
 $$
 
-\paragraph{For-Attacks} To iterate over the attacks $\hat{R}$ we can extract it from the AF as tuple and address the attacker $a$ and defender $b$:
+
+\paragraph{n-ary disjunction} To concatinate all the arguments of the AF \emph{$\hat{G}$} with a Boolean OR, we use the n-ary disjunction operator. By iterating over all the arguments of the AF \emph{$\hat{G}$} and concatinating them disjunctively we generate the Boolean formula for the SAT-Solver. Note, that this time we do not have the subscript \emph{SINGLE}, so we include the clusters as well.
+
+$$
+\bigvee_{a \in \hat{G}} a = c \lor d \lor e \lor \hat{h}
+$$
+
+\paragraph{iterating attacks} We can also iterate over every attack of the AF $\hat{G}$. We can extract both arguments \emph{a} (being the attacker) and \emph{b} (being the defender) from the attacks by selecting the tuples from \emph{$\hat{R}$}.
 
 $$
 \bigwedge_{(a, b) \in \hat{R}, a\in \hat{G}_{\!S\!I\!N\!G\!L\!E}} \big( a \lor b \big) = (c \lor c) \land
 (c \lor d) \land (c \lor e) \land (e \lor d) \land (d \lor e)
 $$
+\end{example}
+
+With this encoding, we can compute a model with the SAT-Solver and extract a semantics set. If we try to compute another extension, we first have to add a new Boolean rule. This rule removes the previously found model from the satisfiable solutions by adding the negated disjunction of the arguments from the extension. Or formally, if $S$ is the previously found extension, we add the following formula conjunctively to the previous rule set.
+
+$$
+\bigvee_{a \in S} \lnot a
+$$
+
+
+\section{Faithful/Spurious Determination}
+\label{sec:ImplementationsFaithfulSpuriousDetermination}
+\textit{TODO: Determine faithful/spurious algorithm}
+
+\section{Refuted Theories}
+\label{sec:ImplementationsRefutedTheories}
+\textit{TODO: State refuted theories like subsets of spurious also spurious.}
+
+
+
+
