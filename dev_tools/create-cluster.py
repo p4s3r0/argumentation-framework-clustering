@@ -28,7 +28,6 @@ def readFile(filename: str):
 
             if len(attack.split()) <= 0 or attack.split()[0] == '#':
                 continue
-            
             if len(attack.split()) != 2:
                 print("ERROR", attack)
 
@@ -99,36 +98,20 @@ def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_
 
 
 
-
-
-        
-
-
-
 def main():
-    if not "MULTIPLE_FILES":
-        dir = sys.argv[1]
-        for file in os.listdir(f"{dir}/concrete"):
-            arg_amount, attacks, attackless = readFile(dir + "concrete/" + file)
-            cluster_size = int(random.randint(1, arg_amount))
-            if int(cluster_size) > int(arg_amount):
-                print("ERROR less arguments than cluster size")
-
-
-            C_AF = clusterAF(attacks, arg_amount, cluster_size)
-            generateFile(C_AF, file, dir, cluster_size, arg_amount, attackless)
-        print("Created", len(os.listdir(f"{dir}/concrete")), "abstracts af")
-    else:
-        dir = sys.argv[1]
-        arg_amount, attacks, attackless = readFile(dir)
-        cluster_size = int(random.randint(1, arg_amount))
-        if int(cluster_size) > int(arg_amount):
-            print("ERROR less arguments than cluster size")
-
+    '''
+    Folder structure:   dir/abstract/<empty>
+                        dir/concrete/concrete_<num>.af
+    '''
+    dir = sys.argv[1]
+    for file in os.listdir(f"{dir}/concrete"):
+        arg_amount, attacks, attackless = readFile(dir + "concrete/" + file)
+        cluster_size = int(random.randint(2, arg_amount))
 
         C_AF = clusterAF(attacks, arg_amount, cluster_size)
-        generateFile(C_AF, dir, dir, cluster_size, arg_amount, attackless, "SINGLE")
-        print("Created abstract af")
+        generateFile(C_AF, file, dir, cluster_size, arg_amount, attackless)
+    print("Created", len(os.listdir(f"{dir}/concrete")), "abstracts af")
+
 
 
 

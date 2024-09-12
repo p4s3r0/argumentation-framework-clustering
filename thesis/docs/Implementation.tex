@@ -599,7 +599,7 @@ $$
 \bigvee_{a \in \hat{G}} a = c \lor d \lor e \lor \hat{h}
 $$
 
-\paragraph{iterating attacks} We can also iterate over every attack of the AF $\hat{G}$. We can extract both arguments \emph{a} (being the attacker) and \emph{b} (being the defender) from the attacks by selecting the tuples from \emph{$\hat{R}$}.
+\paragraph{extracting attacks} We can also iterate over every attack of the AF $\hat{G}$. We can extract both arguments \emph{a} (being the attacker) and \emph{b} (being the defender) from the attacks by selecting the tuples from \emph{$\hat{R}$}.
 
 $$
 \bigwedge_{(a, b) \in \hat{R}, a\in \hat{G}_{\!S\!I\!N\!G\!L\!E}} \big( a \lor b \big) = (c \lor c) \land
@@ -614,14 +614,98 @@ $$
 $$
 
 
-\section{Faithful/Spurious Determination}
-\label{sec:ImplementationsFaithfulSpuriousDetermination}
-\textit{TODO: Determine faithful/spurious algorithm}
-
 \section{Refuted Theories}
 \label{sec:ImplementationsRefutedTheories}
-\textit{TODO: State refuted theories like subsets of spurious also spurious.}
+
+When developing the tool, we came up with different theories. Some theories were discarded immediately, some were implemented (recall \cref{sec:HeuristicsAndRefinements}) and others had to be proven wrong. This section describes the most promising theory which turned out to be wrong.
+
+We came up with the theory, that every subset of a stable spurious extension, is spurious as well. Formally, if $S$ is a spurious stable set of the abstract AF $\hat{G}$. Then for every subset $T \subseteq S$, $T$ is spurious as well. This would reduce the computation time of finding spurious sets drastically. Unfortunately, we can disprove this theory with a counter-example.
+
+\begin{example}
+    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(d, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{af:implementationRefutedTheoryA}. The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined with the arguments $\hat{A}=\{\hat{g}, f\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, e\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g})$, $(\hat{g}, f)\bigl\}$ depicted in \cref{af:implementationRefutedTheoryB}.
 
 
+\vspace{0.3cm}
+\begin{figure}[h]
+    \begin{minipage}{.5\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \def \ax{0}   \def \ay{0}
+            \def \bx{0}   \def \by{-1}
+            \def \cx{1}   \def \cy{0}
+            \def \dx{1}   \def \dy{-1}
+            \def \ex{2}   \def \ey{0}
+            \def \fx{2}   \def \fy{-1}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+            \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+            % Attacks
+            \DrawAttackHorizontal{R}{\ax}{\ay}{\cx}{\cy}
+            \DrawAttackHorizontal{R}{\cx}{\cy}{\ex}{\ey}
+            \DrawAttackHorizontal{R}{\dx}{\dy}{\fx}{\fy}
+            \DrawAttackVertical{U}{\bx}{\by}{\ax}{\ay}
+            \DrawAttackDiagonal{NLR}{\ax}{\ay}{\dx}{\dy}
+            \DrawAttackDiagonal{NLR}{\cx}{\cy}{\fx}{\fy}
+        \end{tikzpicture}
+        \subcaption{Concrete AF}
+        \label{af:implementationRefutedTheoryA}
+    \end{minipage}
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        \def \fx{2}   \def \fy{0}
+        \def \gx{0}   \def \gy{0}
+
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a, b, c, d, e$};
+        \node at (\gx + 0.1, \gy+0.55) {$\hat{g}$};
+        % Attacks
+        \DrawAttackHorizontal{R}{\gx+0.63}{\gy}{\fx}{\fy}
+        \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy+0.3}
+
+    \end{tikzpicture}
+    \subcaption{Spurious abstract AF}
+    \label{af:implementationRefutedTheoryB}
+\end{minipage}%
+\caption{Concrete and spurious abstract AF}
+\label{fig:ImplementationRefutedTheoryDefinition}
+\end{figure}
+\vspace{0.3cm}
+
+When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extensions $\bigl\{ \{\hat{g}\}, \{\hat{g}, f\}\bigl\}$. Since atleast one of the abstractly stable extensions are spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When concretizing the subset a subset of $\{\hat{g}\}$, e.g.\ $\{a, c\}$ we obtain the AF $\hat{G}'$ depicted in \cref{af:ImplementationRefutedTheoryDefinitionSpurious}.
 
 
+\vspace{0.3cm}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        \def \ax{0}   \def \ay{-1}
+        \def \cx{1.5}   \def \cy{-1}
+        \def \fx{1.5}   \def \fy{0}
+        \def \gx{0}   \def \gy{0}
+
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$b, e, d$};
+        \node at (\gx + 0.1, \gy+0.55) {$\hat{g}$};
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        % Attacks
+        \DrawAttackHorizontal{R}{\ax}{\ay}{\cx}{\cy}
+        \DrawAttackVertical{B}{\gx}{\gy}{\ax}{\ay}
+        \DrawAttackVertical{U}{\cx}{\cy}{\fx}{\fy}
+        \DrawAttackDiagonal{NRL}{\cx}{\cy}{\gx+0.35}{\gy-0.05}
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+    \end{tikzpicture}
+\caption{Concretized AF $\hat{G}'$}
+\label{af:ImplementationRefutedTheoryDefinitionSpurious}
+\end{figure}
+\vspace{0.3cm}
+
+Now we compute the abstractly stable extensions of $\hat{G}'$ and obtain $\{\hat{g}, c\}$, which after expanding the cluster $\hat{g}=\{b, d\}$ we can map the abstract extension to the concrete extension. Thus, we found a faithful AF by concretizing a subset of a spurious stable extension which disproves the theory.
+
+\end{example}

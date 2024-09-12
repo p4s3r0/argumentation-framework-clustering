@@ -47,7 +47,9 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
             Out.Faithful()
             return True, None
 
-
+def clearSolver():
+    global solver_af_1
+    solver_af_1 = None
 
 def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visualize: bool):
     """
@@ -210,17 +212,15 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
 
         faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=abstract_af, algorithm="BFS",
                                          semantic=semantics)
-        
+
         if not faithful[0] and faithful[1] != []:
             spurious_sets = faithful[1]
-            concretizer_list_grounded = ClusterConcretization.createGroundedConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
-                                                                    problematic_singletons=spurious_sets, concretizer_list = [])
+            concretizer_list_grounded = ClusterConcretization.createGroundedConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=spurious_sets, concretizer_list = [])
 
             if concretizer_list_grounded == -1:
                 return True
-            
+
             concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=concretizer_list_grounded, abstract_af=abstract_af, concrete_af=concrete_af)
-            
 
             faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
                                                 algorithm="BFS", semantic=semantics)
@@ -230,18 +230,15 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
 
                 if concretizer_list == "too_many":
                     return "DirectFaithful"
-                
+
                 concretizer_list.sort(key=len)
                 for maybe_sol in concretizer_list:
-                    concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af,
-                                                    concrete_af=concrete_af)
+                    concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af, concrete_af=concrete_af)
+                    print(maybe_sol)
                     faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
                                                     algorithm="BFS", semantic=semantics)
-                    
+
                     if faithful[0]:
-                        # print("spurious set", spurious_sets)
-                        # print("grounded", concretizer_list_grounded)
-                        # print("combi", maybe_sol)
                         return False
                 return True
 
