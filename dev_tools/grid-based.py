@@ -135,6 +135,7 @@ class Singleton:
 
 
 def writeGridToAFFile(filename, grid, p):
+    has_attack = list()
     with open(filename, "w") as f:
         f.write(f"p af {grid.amount}\n")
         f.write( "# Generated with createAFGridBased.af script.\n")
@@ -142,21 +143,33 @@ def writeGridToAFFile(filename, grid, p):
         for row in grid.data:
             for s in row:
                 for a in s.attacks:
+                    if (int(s.name)+1) not in has_attack: has_attack.append(int(s.name)+1)
+                    if (int(a)+1) not in has_attack: has_attack.append(int(a)+1)
                     f.write(f"{int(s.name)+1} {int(a)+1}\n")
+
+        attackless_written = False
+        for i in range(1, grid.amount+1):
+            if i not in has_attack:
+                if not attackless_written:
+                    f.write("--attackless--\n")
+                    attackless_written = True
+                f.write(f"{i}\n")
 
 
 
 def main():
-    if len(sys.argv) != 3:
-        print("usage: python3 createAFGridBased.py <arg_amount> <p>")
+    if len(sys.argv) != 3 and len(sys.argv) != 4:
+        print("usage: python3 createAFGridBased.py <arg_amount> <p> (<af_amount>)")
         exit()
 
-    grid = Grid(int(sys.argv[1]))
+    af_amount = 1
+    if len(sys.argv) == 4:
+        af_amount = int(sys.argv[3])
 
-    grid.addAttacks(float(sys.argv[2]))
-    grid.print()
-
-    writeGridToAFFile("concrete.af", grid, sys.argv[2])
+    for i in range(af_amount):
+        grid = Grid(int(sys.argv[1]))
+        grid.addAttacks(float(sys.argv[2]))
+        writeGridToAFFile(f"out/concrete_{i}.af", grid, sys.argv[2])
 
 
 

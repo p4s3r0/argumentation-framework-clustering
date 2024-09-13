@@ -1,9 +1,9 @@
 \chapter{Implementations}
-In this chapter we dive into the implementation part and discuss different approaches. First, we specify on how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. Next we explain two different settings to optimize the spurious/faithful check in \cref{sec:ImplementationsBFSandDFSApproach}. In \cref{sec:ImplementationsGeneratingSemanticsSets} is the explanation on how we generated the semantics extensions and in \cref{sec:ImplementationsFaithfulSpuriousDetermination} we describe the method to determine if an AF is spurious or faithful. Finally, we will tackle refuted theories in \cref{sec:ImplementationsRefutedTheories}.
+In this chapter we dive into the implementation part and discuss different approaches. First, we specify on how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. Next we explain two different settings to optimize the spurious/faithful check in \cref{sec:ImplementationsBFSandDFSApproach}. In \cref{sec:ImplementationsGeneratingSemanticsSets} is the explanation on how we generated the semantics extensions and finally, we will tackle refuted theories in \cref{sec:ImplementationsRefutedTheories}.
 
 \section{Creating AFs}
 \label{sec:ImplementationsCreatingAFs}
-We created three different approaches to generate AFs. Each of them has a different idea and generates AFs with different properties. While the random-based approach generates chaotic AFs, which are typically not similar to real-world problems, the grid-based approach has structure and is therefore more related to real-world problems. The level-based approach has even more structure and assures that we can not derive to many neighbours from a problematic argument. For each approach, we provide an additional figure to visualize it, and also a pseudo-code.
+We created three different approaches to generate AFs. Each of them has a different idea and generates AFs with different properties. While the random-based approach generates chaotic AFs, which are typically not similar to real-world problems, the grid-based approach has structure and is therefore more related to real-world problems. The level-based approach has even more structure and assures that we can not derive to many neighbours from a problematic argument. For each approach, we provide an additional figure for better visualization and example AFs generated with the algorithm.
 
 \paragraph{random-based} Let us begin with the random-based approach. The arguments of the script are \texttt{<arg\_amount>} and \texttt{<p>}. The \texttt{<arg\_amount>} specifies how many arguments the AF has and the argument \texttt{<p>} defines the probability of an attack between two arguments. This approach creates chaotic AFs with no structure. Basically, if we take a look at \cref{fig:LevelBasedApproach} we can see a graph with potential attacks depicted with dotted arrows. Every potential attack has a a probability of \texttt{<p>} to be an actual attack of the generated AF.
 
@@ -43,7 +43,7 @@ We created three different approaches to generate AFs. Each of them has a differ
     \label{fig:LevelBasedApproach}
 \end{figure}
 
-Random-based generated AFs have the property (depending on the probability value) of being hard to to predict on how good the AF is solvable. This is due the fact, that the neighbours of each argument are highly dependent on the amount of attacks and randomness. Example AFs generated with the random-based approach can be seen in \cref{fig:ImplementationRandomBasedExampleAFs}
+Random-based generated AFs have the property (depending on the probability value) of being hard to to predict on how good the AF is solvable. This is due the fact, that the neighbours of each argument are highly dependent on the amount of attacks and randomness (since an argument can attack every other arguments). Example AFs generated with the random-based approach can be seen in \cref{fig:ImplementationRandomBasedExampleAFs}
 
 
 \vspace{0.3cm}
@@ -318,7 +318,7 @@ With the grid-based approach, we obtain a more structured AF. Structured in this
 
 
 
-\paragraph{level-based} The last approach we provide is the level-based approach. The arguments for this script are \texttt{<arg\_amount>}, \texttt{<level>} and \texttt{<p>}. Same as for the grid-based and random-based approach, \texttt{<arg\_amount>} defines how many arguments the computed AF has. The \texttt{<level>} argument restricts the height of the grid to the provided value and \texttt{<p>} is again the probability that an attack between to arguments occurs. The difference to the grid-based approach is the dimension of the grid. While the grid-based approach uses a $n \times n$ grid, in the level-based approach we use a $\texttt{<level>} \times n$ grid. In this context, $n$ is equal to $\lceil \texttt{<arg\_amount>}/2 \rceil$. An example grid is depicted in \cref{fig:LevelBasedApproach}.
+\paragraph{level-based} The last algorithm to create concrete AFs we provide, is the level-based approach. The arguments for this script are \texttt{<arg\_amount>}, \texttt{<level>} and \texttt{<p>}. Same as for the grid-based and random-based approach, \texttt{<arg\_amount>} defines how many arguments the computed AF has. The \texttt{<level>} argument restricts the height of the grid to the provided value and \texttt{<p>} is again the probability that an attack between to arguments occurs. The difference to the grid-based approach is the dimension of the grid. While the grid-based approach uses a $n \times n$ grid, in the level-based approach we use a $\texttt{<level>} \times n$ grid. In this context, $n$ is equal to $\lceil \texttt{<arg\_amount>}/\texttt{<level>} \rceil$. An example grid is depicted in \cref{fig:LevelBasedApproach}.
 
 
 \begin{figure}[h!]
@@ -435,9 +435,8 @@ With the level-based approach, we obtain the same structured AF as for the grid-
 \caption{Example AF generated with grid-based approach}
 \label{fig:ImplementationLevelBasedExampleAFs}
 \end{figure}
-\vspace{0.3cm}
 
-\paragraph{clustering} Todo
+\paragraph{clustering} The random-based, grid-based and level-based only generate concrete AFs. To be able to generate the abstract AFs based on the concrete ones, we created another independent script. Since clusters make a lot more sense when respecting the locality of the arguments, we cluster arguments which are next to each other (e.g.\ direct neighbours). The size of the cluster is determined on runtime and is a random value between $2$ and the amount of arguments present in the concrete AF.
 
 
 \newpage

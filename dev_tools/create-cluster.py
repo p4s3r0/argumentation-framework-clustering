@@ -44,10 +44,10 @@ def clusterAF(attacks: list, arg_amount: int, cluster_size: int):
         attacker = attack[0]
         defender = attack[1]
 
-        if int(attack[0]) <= cluster_size:
+        if int(attacker) <= cluster_size:
             attacker = arg_amount + 10
 
-        if int(attack[1]) <= cluster_size:
+        if int(defender) <= cluster_size:
             defender = arg_amount + 10
 
         if [attacker, defender] not in clustered_attacks:
