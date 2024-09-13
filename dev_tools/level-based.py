@@ -18,7 +18,6 @@ class Grid:
         while i < self.amount:
             curr_level = list()
             for _ in range(self.level):
-                print(i)
                 if i >= self.amount:
                     break;
                 curr_level.append(Singleton(i+1))
@@ -86,18 +85,22 @@ def writeGridToAFFile(filename, grid, p):
 
 
 def main():
-    #if len(sys.argv) != 4:
-    #    print("usage: python3 level-based.py <arg_amount> <level_amount> <p>")
-    #    exit()
+    if len(sys.argv) != 5:
+       print("usage: python3 level-based.py <af_amount> <arg_amount> <level_amount> <p>")
+       exit()
 
-    arg1 = 9
-    arg2 = 2
-    arg3 = 1
-    grid = Grid(arg1, arg2)
+    af_amount = int(sys.argv[1])
+    arg_amount = int(sys.argv[2])
+    level_amount = int(sys.argv[3])
+    p = float(sys.argv[4])
 
-    grid.addAttacks(arg3)
-
-    writeGridToAFFile("concrete.af", grid, arg3)
+    for i in range(int(af_amount)):
+        print(f"[{i:4}] generating AF", end="\r")
+        grid = Grid(arg_amount, level_amount)
+        grid.addAttacks(p)
+        writeGridToAFFile(f"out/concrete_{i}.af", grid, p)
+    
+    print(f"Generated {af_amount} concrete AFs.")
 
 
 
