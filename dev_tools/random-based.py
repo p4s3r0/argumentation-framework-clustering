@@ -1,19 +1,17 @@
 import sys
 import random
-sys.path.append('../')
-from utils import Visualizer
-from utils import Parser
+
 
 out_path = "out"
 
 def main():
     if len(sys.argv) != 4:
-        print("usage: python3 random-based.py <af_amount> <arg_amount> <p>")
+        print("usage: python3 random-based.py <arg_amount> <p> (<af_amount>)")
         exit()
 
-    af_amount = int(sys.argv[1])
-    arg_amount = int(sys.argv[2])
-    probability = float(sys.argv[3])
+    af_amount = int(sys.argv[3])
+    arg_amount = int(sys.argv[1])
+    probability = float(sys.argv[2])
     file_name = f"concrete.af"
 
     attack_list = list()
