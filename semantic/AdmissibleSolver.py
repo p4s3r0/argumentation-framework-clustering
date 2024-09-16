@@ -5,7 +5,7 @@ from . import SemanticHelper
 
 
 class AdmissibleSolver:
-    def __init__(self, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument]) -> None:
+    def __init__(self, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument], no_refinement: bool) -> None:
         '''
         @AF ->        Argumentation Framework
         '''
@@ -13,6 +13,7 @@ class AdmissibleSolver:
         self.AF_main = AF_main
         self.solution = list()
         self.solver = z3.Solver()
+        self.no_refinement = no_refinement
         self.setRulesAdmissible()
         self.name = "CONC" if AF_main == None else "ABST"
 
@@ -74,7 +75,7 @@ class AdmissibleSolver:
 
 
         #### REFINEMENT ----------------------------------------------------------------
-        if self.AF_main == None:
+        if self.AF_main == None or self.no_refinement:
             return
 
         clause_cf = True

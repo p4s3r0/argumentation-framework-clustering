@@ -5,7 +5,7 @@ from . import SemanticHelper
 
 
 class StableSolver:
-    def __init__(self, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument]) -> None:
+    def __init__(self, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument], no_refinement: bool) -> None:
         '''
         @AF ->        Argumentation Framework
         '''
@@ -13,6 +13,7 @@ class StableSolver:
         self.AF_main = AF_main
         self.solution = list()
         self.solver = z3.Solver()
+        self.no_refinement = no_refinement
         self.setRulesStable()
         self.name = "CONC" if AF_main == None else "ABST"
 
@@ -98,7 +99,7 @@ class StableSolver:
 
 
         #### REFINEMENT ----------------------------------------------------------------
-        if self.AF_main == None:
+        if self.AF_main == None or self.no_refinement:
             return
 
         cf_clause = True # conflict free part

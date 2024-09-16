@@ -12,16 +12,16 @@ from utils import Out
 current_semantic = ""
 
 
-def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], AF_main: dict[str, Argument.Argument]=None, all_sets=False):
+def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], no_refinement: bool, AF_main: dict[str, Argument.Argument]=None, all_sets=False):
     global current_semantic
     current_semantic = semantic
 
     if semantic == "CF":
-        return ConflictFreeSolver.ConflictFreeSolver(AF=AF)
+        return ConflictFreeSolver.ConflictFreeSolver(AF=AF, no_refinement=no_refinement)
     elif semantic == "AD":
-        return AdmissibleSolver.AdmissibleSolver(AF=AF, AF_main=AF_main)
+        return AdmissibleSolver.AdmissibleSolver(AF=AF, AF_main=AF_main,no_refinement=no_refinement)
     elif semantic == "ST":
-        return StableSolver.StableSolver(AF=AF, AF_main=AF_main)
+        return StableSolver.StableSolver(AF=AF, AF_main=AF_main, no_refinement=no_refinement)
     else:
         Error.wrongSemantic()
 

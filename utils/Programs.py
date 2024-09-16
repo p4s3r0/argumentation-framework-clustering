@@ -9,12 +9,11 @@ from semantic.SemanticHelper import getSemanticSolver
 
 solver_af_1 = None
 
-def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str,
-                          semantic: str):
+def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: ArgumentationFramework, algorithm: str, semantic: str, no_refinement: bool):
     global solver_af_1
     if solver_af_1 == None:
-        solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_concrete.arguments)
-    solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_concrete.arguments)
+        solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_concrete.arguments, no_refinement=no_refinement)
+    solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_concrete.arguments, no_refinement=no_refinement)
 
     if algorithm == "BFS":
         set_af_1 = list()
@@ -24,8 +23,8 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
             set_af_1 = solver_af_1.solution
         set_af_2 = solver_af_2.computeSets()
 
-        Out.SolutionSets(semantic, set_af_1, "Concrete: ")
-        Out.SolutionSets(semantic, set_af_2, "Abstract: ")
+        Info.SolutionSets(semantic, set_af_1, "Concrete: ")
+        Info.SolutionSets(semantic, set_af_2, "Abstract: ")
 
         if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             Out.Spurious(cmp)
@@ -51,7 +50,7 @@ def clearSolver():
     global solver_af_1
     solver_af_1 = None
 
-def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visualize: bool):
+def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visualize: bool, no_refinement: bool):
     """
     Compares 2 AFs from the passed files and decides if spurious of faithful
     @file1 -> filepath of the first AF which should be parsed and compared
@@ -65,15 +64,15 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visuali
     af_abstract.parseFile(filepath=file1)
     Info.info(f"Input File Abstracxt {file1} parsed")
 
-    solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_main.arguments)
-    solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_main.arguments)
+    solver_af_1 = getSemanticSolver(semantic=semantic, AF=af_main.arguments, no_refinement=no_refinement)
+    solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_main.arguments, no_refinement=no_refinement)
 
     if algorithm == "BFS":
         set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
 
-        Out.SolutionSets(semantic, set_af_1, "Concrete: ")
-        Out.SolutionSets(semantic, set_af_2, "Abstract: ")
+        Info.SolutionSets(semantic, set_af_1, "Concrete: ")
+        Info.SolutionSets(semantic, set_af_2, "Abstract: ")
 
         if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             Out.Spurious(cmp)
@@ -89,11 +88,11 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visuali
 
 
 
-def computeSemanticSets(input_file: str, semantic: str, visualize: bool, all_sets=False):
+def computeSemanticSets(input_file: str, semantic: str, visualize: bool, no_refinement: bool, all_sets=False):
     af = ArgumentationFramework.ArgumentationFramework()
     af.parseFile(input_file)
     Info.info("Input File Parsed")
-    solver = getSemanticSolver(semantic=semantic, AF=af.arguments, all_sets=all_sets)
+    solver = getSemanticSolver(semantic=semantic, AF=af.arguments, all_sets=all_sets, no_refinement=no_refinement)
     solutions = solver.computeSets()
     Out.SolutionSets(semantic=semantic, sets=solutions)
     Info.info("Solution Sets Computed")
@@ -103,7 +102,7 @@ def computeSemanticSets(input_file: str, semantic: str, visualize: bool, all_set
 
 
 
-def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, visualize: bool):
+def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, visualize: bool, no_refinement: bool):
     # read in concrete AF
     concrete_af = ArgumentationFramework.ArgumentationFramework()
     concrete_af.parseFile(filepath=concrete_file)
@@ -113,13 +112,10 @@ def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, alg
     abstract_af.parseFile(filepath=abstract_file)
     if visualize: Visualizer.show(abstract_af.arguments)
 
-    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=abstract_af, algorithm=algorithm,
-                                        semantic=semantic)
+    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=abstract_af, algorithm=algorithm,semantic=semantic, no_refinement=no_refinement)
     if not faithful[0]:
 
         concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=faithful[1], concretizer_list = [])
-
-        print("CON", concretizer_list)
 
         # try few concretizer items first, then try more and more
         if concretizer_list == "too_many":
@@ -134,8 +130,7 @@ def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, alg
             Info.info(f"Spurious, trying to concretize {maybe_sol}")
             concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af,
                                                 concrete_af=concrete_af)
-            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
-                                                algorithm=algorithm, semantic=semantic)
+            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=algorithm, semantic=semantic, no_refinement=no_refinement)
 
 
             if faithful[0]:
@@ -153,7 +148,7 @@ def computeFaithfulAF(concrete_file: str, abstract_file: str, semantic: str, alg
 
 
 
-def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, concretize: list, visualize: bool):
+def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorithm: str, concretize: list, visualize: bool, no_refinement: bool):
     # read in concrete AF
     concrete_af = ArgumentationFramework.ArgumentationFramework()
     concrete_af.parseFile(filepath=concrete_file)
@@ -166,8 +161,7 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
 
     concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=concretize, abstract_af=abstract_af, concrete_af=concrete_af)
 
-    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=algorithm,
-                                        semantic=semantic)
+    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=algorithm,semantic=semantic, no_refinement=no_refinement)
     if not faithful[0]:
 
         concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af, problematic_singletons=faithful[1], concretizer_list = [])
@@ -183,8 +177,7 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
             Info.info(f"Spurious, trying to concretize {maybe_sol}")
             concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af,
                                                 concrete_af=concrete_af)
-            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
-                                                algorithm=algorithm, semantic=semantic)
+            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm=algorithm, semantic=semantic, no_refinement=no_refinement)
 
 
             if faithful[0]:
@@ -203,15 +196,13 @@ def concretizeAF(concrete_file: str, abstract_file: str, semantic: str, algorith
 
 def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
         # read in concrete AF
-
         concrete_af = ArgumentationFramework.ArgumentationFramework()
         concrete_af.parseFile(filepath=concrete_file)
         # read in abstract AF
         abstract_af = ArgumentationFramework.ArgumentationFramework()
         abstract_af.parseFile(filepath=abstract_file)
 
-        faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=abstract_af, algorithm="BFS",
-                                         semantic=semantics)
+        faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=abstract_af, algorithm="BFS", semantic=semantics, no_refinement=False)
 
         if not faithful[0] and faithful[1] != []:
             spurious_sets = faithful[1]
@@ -222,8 +213,8 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
 
             concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=concretizer_list_grounded, abstract_af=abstract_af, concrete_af=concrete_af)
 
-            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
-                                                algorithm="BFS", semantic=semantics)
+            faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,algorithm="BFS", semantic=semantics, no_refinement=False)
+
             if not faithful[0]: # subbis have to be spurious too
                 concretizer_list = ClusterConcretization.createConcretizerList(af_concrete=concrete_af, af_abstract=abstract_af,
                                                      problematic_singletons=spurious_sets, concretizer_list=[])
@@ -234,9 +225,7 @@ def checkTheory(concrete_file: str, abstract_file: str, semantics: str):
                 concretizer_list.sort(key=len)
                 for maybe_sol in concretizer_list:
                     concretized_af = ClusterConcretization.concretizeCluster(set_to_concretize=maybe_sol, abstract_af=abstract_af, concrete_af=concrete_af)
-                    print(maybe_sol)
-                    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af,
-                                                    algorithm="BFS", semantic=semantics)
+                    faithful = spuriousFaithfulCheck(af_concrete=concrete_af, af_abstract=concretized_af, algorithm="BFS", semantic=semantics, no_refinement=False)
 
                     if faithful[0]:
                         return False

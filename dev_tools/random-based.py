@@ -1,7 +1,6 @@
 import sys
 import random
 
-
 out_path = "out"
 
 def main():
@@ -12,13 +11,12 @@ def main():
     af_amount = int(sys.argv[3])
     arg_amount = int(sys.argv[1])
     probability = float(sys.argv[2])
-    file_name = f"concrete.af"
+    file_name = f"concrete"
 
     attack_list = list()
 
     for i in range(af_amount):
-
-        with open(f"{out_path}/{file_name}", "w") as f:
+        with open(f"{out_path}/{file_name}_{i}.af", "w") as f:
             f.write(f"p af {arg_amount}\n")
             f.write(f"# Generated with random-based.py script.\n")
             f.write(f"# Amount arguments: {arg_amount}\n")
@@ -41,7 +39,7 @@ def main():
                     if i not in attack_list:
                         f.write(f"{i}\n")
 
-        print("successfully generated.")
+    print("successfully generated.")
 
 
 

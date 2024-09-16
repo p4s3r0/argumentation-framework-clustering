@@ -1,11 +1,11 @@
 import z3
 
 from utils import Argument
-from . import SemanticHelper 
+from . import SemanticHelper
 from functools import reduce
 
 class ConflictFreeSolver:
-    def __init__(self, AF: dict[str, Argument.Argument]) -> None:
+    def __init__(self, AF: dict[str, Argument.Argument], no_refinement: bool) -> None:
         '''
         @AF ->        Argumentation Framework
         '''
@@ -14,6 +14,7 @@ class ConflictFreeSolver:
         self.solver = z3.Solver()
         self.setRulesConflictFree()
         self.name = "CF"
+        self.no_refinement = no_refinement
 
 
 
@@ -52,7 +53,7 @@ class ConflictFreeSolver:
 
     def verifySet(self, verify_set: list):
         return SemanticHelper.verifySet(self, verify_set)
-    
+
 
 
     def negateSolutions(self, solution: list):

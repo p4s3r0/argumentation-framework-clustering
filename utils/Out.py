@@ -2,20 +2,27 @@ from colorama import Fore, Back, Style
 
 OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
 
-debug = True
+DEBUG = True
 sol_print = True
 
 def OUT(func):
     def wrapper(*args, **kwargs):
-        if not debug: return
+        if not DEBUG: return
         print(f"{OUT_MESSAGE}", end="")
         func(*args, **kwargs)
     return wrapper
 
 
+
+def SET_OUT_DEBUG(value: bool):
+    global DEBUG
+    DEBUG = value
+
+
+
 @OUT
 def Spurious(set: list) -> None:
-    if not debug: return;
+    if not DEBUG: return;
     print(f"{Style.BRIGHT + Back.RED + Fore.BLACK} SPURIOUS! {Style.RESET_ALL} Because Set {Fore.CYAN}", end="") 
     print(set, end="")
     print(f"{Style.RESET_ALL} is spurious.")
@@ -23,13 +30,12 @@ def Spurious(set: list) -> None:
 
 @OUT
 def Faithful() -> None:
-    if not debug: return;
+    if not DEBUG: return;
     print(f"{Style.BRIGHT + Back.GREEN + Fore.BLACK} FAITHFUL! {Style.RESET_ALL}")
 
 
-@OUT
+
 def SolutionSets(semantic: str, sets: list, name: str = "") -> None:
-    if not debug: return;
     semantic_text = ""
     if semantic == "AD":
         semantic_text = "ADMISSIBLE"
@@ -37,7 +43,7 @@ def SolutionSets(semantic: str, sets: list, name: str = "") -> None:
         semantic_text = "CONFLICT-FREE"
     else:
         semantic_text = "STABLE"
-    print(f"{Style.BRIGHT}{semantic_text} SETS: {Style.RESET_ALL} {name}", end="")
+    print(f"{OUT_MESSAGE}{Style.BRIGHT}{semantic_text} SETS: {Style.RESET_ALL} {name}", end="")
     for set in sets:
         print("{", end="")
         for arg in set:
@@ -46,9 +52,10 @@ def SolutionSets(semantic: str, sets: list, name: str = "") -> None:
     print("")
 
 
+
 @OUT
 def CurrSolution(amount: int) -> None:
-    if not debug: return;
+    if not DEBUG: return;
     print(f"Current Solutions Found {Fore.CYAN + Style.BRIGHT}{amount}{Style.RESET_ALL}", end="\r")
 
 

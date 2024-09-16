@@ -4,7 +4,6 @@ from utils import Programs
 
 
 
-from semantic.SemanticHelper import getSemanticSolver
 
 
 def main():
