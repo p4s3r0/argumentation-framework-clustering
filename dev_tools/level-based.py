@@ -2,6 +2,8 @@ import sys
 import math
 import random
 
+out_path = "../input/experiment/level-based/concrete"
+
 class Grid:
     def __init__(self, amount, level) -> None:
         self.length = math.ceil(amount/level)
@@ -76,14 +78,22 @@ def writeGridToAFFile(filename, grid, p):
     has_attack = list()
     with open(filename, "w") as f:
         f.write(f"p af {grid.amount}\n")
-        f.write( "# Generated with createAFGridBased.af script.\n")
-        f.write(f"# Probability of attack: {p}\n")
+        f.write(f"# approach: level-based\n")
+        f.write(f"# arg_amount: {grid.amount}\n")
+        f.write(f"# p: {p}\n")
+
+        write_cache = list()
         for row in grid.data:
             for s in row:
                 for a in s.attacks:
                     if (int(s.name)+1) not in has_attack: has_attack.append(int(s.name)+1)
                     if (int(a)+1) not in has_attack: has_attack.append(int(a)+1)
-                    f.write(f"{int(s.name)+1} {int(a)+1}\n")
+                    write_cache.append(f"{int(s.name)+1} {int(a)+1}\n")
+
+        f.write(f"# att_amount: {len(write_cache)}\n")
+
+        for w in write_cache:
+            f.write(w)
 
         attackless_written = False
         for i in range(1, grid.amount+1):
@@ -107,13 +117,16 @@ def main():
 
     arg_amount = int(sys.argv[1])
     level_amount = int(sys.argv[2])
-    p = float(sys.argv[3])
+    probability = float(sys.argv[3])
 
     for i in range(int(af_amount)):
         print(f"[{i:4}] generating AF", end="\r")
         grid = Grid(arg_amount, level_amount)
-        grid.addAttacks(p)
-        writeGridToAFFile(f"out/concrete_{i}.af", grid, p)
+        grid.addAttacks(probability)
+
+        file_name = f"{out_path}/args-{arg_amount}-p-{int(probability*100)}-i-{i}.af"
+
+        writeGridToAFFile(file_name, grid, probability)
 
     print(f"Generated {af_amount} concrete AFs.")
 
