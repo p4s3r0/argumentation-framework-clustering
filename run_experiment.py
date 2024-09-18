@@ -1,0 +1,194 @@
+import subprocess
+import colorama
+import os
+import time
+
+EXP = f"{colorama.Fore.BLUE}[EXP]{colorama.Style.RESET_ALL}"
+EXP_OK = f"{colorama.Fore.GREEN}[EXP]{colorama.Style.RESET_ALL}"
+EXP_TEST = f"{colorama.Fore.LIGHTBLACK_EX}[EXP]{colorama.Style.RESET_ALL}"
+
+testcases_path = "input/experiment"
+
+
+class TestBench:
+    def __init__(self) -> None:
+        self.random_based_path = f"{testcases_path}/random-based"
+        self.random_based_testcases = list()
+        self.grid_based_path = f"{testcases_path}/grid-based"
+        self.grid_based_testcases = list()
+        self.level_based_path = f"{testcases_path}/level-based"
+        self.level_based_testcases = list()
+
+class Testcase:
+    def __init__(self, concrete, abstract) -> None:
+        self.concrete = concrete
+        self.abstract = abstract
+
+
+
+
+def init_testcases():
+    test_bench = TestBench()
+    #random
+    temp = os.listdir(f"{test_bench.random_based_path}/concrete")
+    for t in temp:
+        test = Testcase(f"{test_bench.random_based_path}/concrete/{t}", f"{test_bench.random_based_path}/abstract/{t}")
+        test_bench.random_based_testcases.append(test)
+
+    #grid
+    temp = os.listdir(f"{test_bench.grid_based_path}/concrete")
+    for t in temp:
+        test = Testcase(f"{test_bench.grid_based_path}/concrete/{t}", f"{test_bench.grid_based_path}/abstract/{t}")
+        test_bench.grid_based_testcases.append(test)
+
+
+    #level
+    temp = os.listdir(f"{test_bench.level_based_path}/concrete")
+    for t in temp:
+        test = Testcase(f"{test_bench.level_based_path}/concrete/{t}", f"{test_bench.level_based_path}/abstract/{t}")
+        test_bench.level_based_testcases.append(test)
+
+
+    return test_bench
+
+
+def removePrefix(line):
+    ...
+
+
+
+def extract_data_faithful(res):
+    split_data = res.split("\n")
+    temp = list()
+    for line in split_data:
+        line = line.replace('\n', '')
+        line = line.replace('\x1b[90m', '')
+        line = line.replace('[SPECS]   ', '')
+        line = line.replace('Runtime:     ','')
+        line = line.replace('CPU-Time:    ','')
+        line = line.replace('Memory RSS:  ','')
+        line = line.replace(' s', '')
+        line = line.replace(' MB', '')
+        line = line.replace('\x1b[0m', '')
+        temp.append(line)
+
+    data = {
+        "result": temp[0],
+        "runtime": temp[1],
+        "cpu_time": temp[2],
+        "memory": temp[3]
+    }
+    return data
+
+
+def getDataFromFile(test):
+    ret = list()
+    with open(test, 'r') as f:
+        for line in f:
+            if line.find(':') == -1:
+                continue
+            line = line.replace("# ", '')
+            line = line.replace('\n', '')
+            line = line.replace(' ', '')
+            line = line.split(':')
+            ret.append(line)
+    return ret
+
+
+
+def writeTestResultToFile(data):
+    with open(f"{testcases_path}/results_faithful.txt", 'a') as f:
+        f.write(f"{data['timestamp']};")
+        f.write(f"{data['program']};")
+        f.write(f"{data['semantics']};")
+        f.write(f"{data['DFS/BFS']};")
+        f.write(f"{data['refinement']};")
+        f.write(f"{data['approach']};")
+        f.write(f"{data['arg_amount']};")
+        f.write(f"{data['p']};")
+        f.write(f"X;")
+        f.write(f"{data['input_file_concrete']};")
+        f.write(f"{data['att_amount']};")
+        f.write(f"{data['input_file_abstract']};")
+        f.write(f"{data['result']};")
+        f.write(f"{data['runtime']};")
+        f.write(f"{data['cpu_time']};")
+        f.write(f"{data['memory']};\n")
+
+
+
+def extractData(test, timeout, result, refinement):
+    data = dict()
+    if not timeout:
+        data = extract_data_faithful(result)
+    else:
+        data["result"] = "TIMEOUT"
+        data["runtime"] = "X"
+        data["cpu_time"] = "X"
+        data["memory"] = "X"
+
+    data["test"] = test.concrete
+    data["timestamp"] = time.strftime("%D %T", time.gmtime(time.time()))
+    data["program"] = "FAITHFUL"
+    data["semantics"] = "CF"
+    data["DFS/BFS"] = "BFS"
+    data["refinement"] = refinement
+
+    temp = getDataFromFile(test.concrete)
+    for d in temp:
+        data[d[0]] = d[1]
+    data["input_file_concrete"] = test.concrete
+    data["input_file_abstract"] = test.abstract
+    writeTestResultToFile(data)
+
+
+
+def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement):
+    print(f"{EXP} Starting prog={program} gen={generator_approach} {BFS_DFS} {semantics} ref={refinement}")
+
+    for i, test in enumerate(tests):
+        command = f"python3 main.py {program} {test.abstract} -c {test.concrete} -exp -a {BFS_DFS} -s {semantics}"
+        if not refinement: command += " -noref"
+        print(f"{EXP_TEST} Running Test {i+1}/{len(tests)} {test.concrete}", end="\r")
+        try:
+            result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=300)
+            result = result.stdout
+            extractData(test, False, result, refinement=refinement)
+        except subprocess.TimeoutExpired:
+            extractData(test, True, result, refinement=refinement)
+    print(f"\n{EXP_OK} Finished Successfully")
+
+
+
+
+
+def main():
+    test_bench = init_testcases()
+    # FAITHFUL ---------------------------------------------------------
+    num_test = 1
+    for approach in ["random-based", "grid-based", "level-based"]:
+        for BFS_or_DFS in ["BFS", "DFS"]:
+            for semantics in ["CF", "AD", "ST"]:
+                for refinement in [True, False]:
+
+                    tests = None
+                    if approach == "random-based":
+                        tests = test_bench.random_based_testcases
+                    elif approach == "grid-based":
+                        tests = test_bench.grid_based_testcases
+                    else:
+                        tests = test_bench.level_based_testcases
+
+                    RUN_TEST(tests, "CHECK", approach, BFS_or_DFS, semantics, refinement)
+                    num_test += 1
+
+    # CONCRETIZE ------------------------------------------------------
+
+
+
+
+
+
+
+if __name__ == "__main__":
+    main()

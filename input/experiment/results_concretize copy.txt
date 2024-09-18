@@ -1,4 +1,8 @@
+timestamp;
 program;
+semantics;
+DFS/BFS;
+refinement;
 generator_approach;
 param_generator_arg_amount;
 param_generator_p;
@@ -6,9 +10,7 @@ param_generator_level;
 input_file_concrete;
 input_file_concrete_attacks_amount;
 input_file_abstract;
-input_file_abstract_attacks_amount;
 concretize_args;
-semantics;
 output_found_solution;
 output_file_concretized;
 ran_into_timeout;

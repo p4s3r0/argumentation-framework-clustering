@@ -3,6 +3,7 @@ from colorama import Fore, Back, Style
 OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
 
 DEBUG = True
+EXPERIMENT_FAITHFUL = True
 sol_print = True
 
 def OUT(func):
@@ -18,6 +19,9 @@ def SET_OUT_DEBUG(value: bool):
     global DEBUG
     DEBUG = value
 
+def SET_EXPERIMENT_FAITHFUL(value: bool):
+    global EXPERIMENT_FAITHFUL
+    EXPERIMENT_FAITHFUL = value
 
 
 @OUT

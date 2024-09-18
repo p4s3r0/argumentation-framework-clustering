@@ -76,15 +76,19 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visuali
 
         if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
             Out.Spurious(cmp)
+            return False
         else:
             Out.Faithful()
+            return True
     else:
         while set_af_2 := solver_af_2.computeSets(1, algorithm=algorithm):
             if not (cmp := solver_af_1.verifySet(set_af_2)):
                 Out.Spurious(cmp[0])
+                return False
                 break
         else:
             Out.Faithful()
+            return True
 
 
 

@@ -59,13 +59,24 @@ def clusterAF(attacks: list, arg_amount: int, cluster_size: int):
 def generateFile(C_AF: list, inp_file: str, inp_folder: str, clustered_argument_amount: int, arg_amount: int, attackless: list, typeOfFile: str = "MULTIPLE"):
     file = ""
     if typeOfFile == "MULTIPLE":
-        file = f"{inp_folder}abstract/abstract_{inp_file[inp_file.find('_')+1:inp_file.find('.')]}.af"
+        file = f"{inp_folder}abstract/{inp_file[inp_file.find('_')+1:inp_file.find('.')]}.af"
     else:
         file = f"{inp_file[inp_file.find('_')+1:inp_file.find('.')]}_abstract.af"
 
     with open(file, "w") as f:
         f.write(f"p af {arg_amount - clustered_argument_amount + 1}\n")
         f.write("# Clustered with Script\n")
+        concretize_arguments = [random.randint(1, clustered_argument_amount)]
+        for i in range(clustered_argument_amount - 3):
+            rand_item = random.randint(1, clustered_argument_amount)
+            if rand_item not in concretize_arguments:
+                concretize_arguments.append(rand_item)
+            if random.random() < 0.5:
+                break;
+        f.write(f"# concretize: ")
+        for arg in concretize_arguments:
+            f.write(f"{arg} ")
+        f.write("\n")
 
         cluster_has_attack = False
         for attack in C_AF:
