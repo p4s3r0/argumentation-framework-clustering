@@ -1,0 +1,11 @@
+p af 5
+# Clustered with Script
+# concretize: 1 3 
+20 20
+20 8
+8 7
+10 20
+--attackless--
+9
+--cluster--
+20 <- 1 2 3 4 5 6 

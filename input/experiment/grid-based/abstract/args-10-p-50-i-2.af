@@ -1,0 +1,15 @@
+p af 7
+# Clustered with Script
+# concretize: 2 
+20 20
+20 6
+20 7
+20 8
+6 10
+8 7
+8 20
+9 5
+10 9
+10 6
+--cluster--
+20 <- 1 2 3 4 

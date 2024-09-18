@@ -2,6 +2,8 @@ import subprocess
 import colorama
 import os
 import time
+import psutil
+import gc
 
 EXP = f"{colorama.Fore.BLUE}[EXP]{colorama.Style.RESET_ALL}"
 EXP_OK = f"{colorama.Fore.GREEN}[EXP]{colorama.Style.RESET_ALL}"
@@ -148,14 +150,23 @@ def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement)
 
     for i, test in enumerate(tests):
         command = f"python3 main.py {program} {test.abstract} -c {test.concrete} -exp -a {BFS_DFS} -s {semantics}"
-        if not refinement: command += " -noref"
+
+        command = ["python3", "main.py", program, test.abstract, "-c", test.concrete, "-exp", "-a", BFS_DFS, "-s", semantics]
+        if not refinement: command.append("-noref")
         print(f"{EXP_TEST} Running Test {i+1}/{len(tests)} {test.concrete}", end="\r")
         try:
-            result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=300)
-            result = result.stdout
+            process = subprocess.Popen(command, stdout=subprocess.
+            PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate(timeout=300)
+            result = stdout
+
+            os.system(f"kill {process.pid} > /dev/null 2>&1")
             extractData(test, False, result, refinement=refinement)
         except subprocess.TimeoutExpired:
-            extractData(test, True, result, refinement=refinement)
+            os.system(f"kill {process.pid} > /dev/null 2>&1")
+            extractData(test, True, None, refinement=refinement)
+
+        gc.collect()
     print(f"\n{EXP_OK} Finished Successfully")
 
 
@@ -164,13 +175,14 @@ def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement)
 
 def main():
     test_bench = init_testcases()
+    
     # FAITHFUL ---------------------------------------------------------
     num_test = 1
     for approach in ["random-based", "grid-based", "level-based"]:
         for BFS_or_DFS in ["BFS", "DFS"]:
-            for semantics in ["CF", "AD", "ST"]:
+            #for semantics in ["ST", "AD", "CF"]:
+            for semantics in ["ST"]:
                 for refinement in [True, False]:
-
                     tests = None
                     if approach == "random-based":
                         tests = test_bench.random_based_testcases

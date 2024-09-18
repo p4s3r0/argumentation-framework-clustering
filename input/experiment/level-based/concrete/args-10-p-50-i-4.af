@@ -1,0 +1,19 @@
+p af 10
+# approach: level-based
+# arg_amount: 10
+# p: 0.5
+# att_amount: 12
+2 3
+3 2
+3 5
+4 5
+4 6
+5 4
+6 4
+6 8
+7 5
+8 9
+9 11
+10 11
+--attackless--
+1

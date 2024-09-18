@@ -1,0 +1,18 @@
+p af 10
+# approach: grid-based
+# arg_amount: 10
+# p: 0.5
+# att_amount: 13
+1 5
+2 6
+3 2
+3 7
+4 3
+5 6
+5 1
+6 7
+6 10
+6 2
+7 6
+8 7
+9 10
