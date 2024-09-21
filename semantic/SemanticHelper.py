@@ -62,8 +62,7 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
             if len(current_solver.solution) < solution_amount:
                 return False
             return current_solver.solution
-        
-        
+
 
 
 def verifySet(current_solver, verify_set: list):
@@ -73,12 +72,15 @@ def verifySet(current_solver, verify_set: list):
 
     deconstructed_list = ClusterHelperFunctions.deconstructClusteredList(clustered_list=verify_set[0])
 
-    for combination in deconstructed_list: 
+    if type(deconstructed_list[0]) == str:
+        deconstructed_list = [deconstructed_list]
+
+    for combination in deconstructed_list:
         if len(deconstructed_list) > 1:
             for solution in combination:
                 current_solver.solver.push()
                 for arg in solution:
-                    current_solver.solver.add(current_solver.AF[arg].z3_value == True)
+                    current_solver.solver.add(current_solver.AF[solution].z3_value == True)
 
                 if Solver.solve(current_solver.solver):
                     current_solver.solver.pop()
@@ -87,8 +89,7 @@ def verifySet(current_solver, verify_set: list):
                     current_solver.solver.pop()
             else:
                 return verify_set
-
-        else: 
+        else:
             current_solver.solver.push()
             for argument in current_solver.AF.keys():
                 if argument in combination:

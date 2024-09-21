@@ -1,5 +1,7 @@
-import argparse
+from argparse import ArgumentParser
 from colorama import Fore, Back, Style
+
+import resource
 
 from utils import Info
 from utils import Error
@@ -8,8 +10,8 @@ from utils import Specs
 from utils import Out
 
 
-import time
-import psutil
+from time import time, process_time
+from psutil import Process
 
 experiment_file = "input/experiment/results.txt"
 
@@ -34,7 +36,7 @@ def argumentParser():
     """
     Parses The Process Arguments
     @return -> ProgramArguments instance with the according arguments"""
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         description="Parses an AF file and computes clustered AF. \nAuthor: Pasero Christian")
     parser.add_argument("f", metavar="<function>", action="store",
                         help="Defines the behaviour of the program. Choices: SETS (=calculates sets of semantic), CHECK (=determines if two AFs are faithful), CONCRETIZE (=concretizes a list of arguments), FAITHFUL (=makes a AF faithful)",
@@ -99,16 +101,15 @@ def main():
 
 
 if __name__ == '__main__':
-    process = psutil.Process()
-    t_CPU_start = time.process_time()
-    t_RUNTIME_start = time.time()
-    m_start = process.memory_info()
+    process = Process()
+    t_CPU_start = process_time()
+    t_RUNTIME_start = time()
 
     main()
 
-    m_end = process.memory_info()
-    t_RUNTIME_end = time.time()
-    t_CPU_end = time.process_time()
+    peak_memory_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    t_RUNTIME_end = time()
+    t_CPU_end = process_time()
     Specs.printRuntime(t_RUNTIME_end - t_RUNTIME_start)
     Specs.printCPUTime(t_CPU_end - t_CPU_start)
-    Specs.printMemoryUsage((m_end.rss - m_start.rss) / (1024 * 1024))
+    Specs.printMemoryUsage(peak_memory_kb / 1024)

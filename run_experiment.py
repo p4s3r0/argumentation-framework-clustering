@@ -11,6 +11,8 @@ EXP_TEST = f"{colorama.Fore.LIGHTBLACK_EX}[EXP]{colorama.Style.RESET_ALL}"
 
 testcases_path = "input/experiment"
 
+skip_tests = ["args-30-p-50-i-1.af"]
+
 
 class TestBench:
     def __init__(self) -> None:
@@ -59,7 +61,7 @@ def removePrefix(line):
 
 
 
-def extract_data_faithful(res):
+def extract_data_faithful(res, com):
     split_data = res.split("\n")
     temp = list()
     for line in split_data:
@@ -73,6 +75,9 @@ def extract_data_faithful(res):
         line = line.replace(' MB', '')
         line = line.replace('\x1b[0m', '')
         temp.append(line)
+
+    if len(temp) < 5:
+        print("\n", temp, com, end="\n\n")
 
     data = {
         "result": temp[0],
@@ -119,10 +124,10 @@ def writeTestResultToFile(data):
 
 
 
-def extractData(test, timeout, result, refinement):
+def extractData(test, timeout, result, refinement, semantics, BFSDFS, program, com):
     data = dict()
     if not timeout:
-        data = extract_data_faithful(result)
+        data = extract_data_faithful(result, com)
     else:
         data["result"] = "TIMEOUT"
         data["runtime"] = "X"
@@ -131,9 +136,9 @@ def extractData(test, timeout, result, refinement):
 
     data["test"] = test.concrete
     data["timestamp"] = time.strftime("%D %T", time.gmtime(time.time()))
-    data["program"] = "FAITHFUL"
-    data["semantics"] = "CF"
-    data["DFS/BFS"] = "BFS"
+    data["program"] = program
+    data["semantics"] = semantics
+    data["DFS/BFS"] = BFSDFS
     data["refinement"] = refinement
 
     temp = getDataFromFile(test.concrete)
@@ -144,8 +149,8 @@ def extractData(test, timeout, result, refinement):
     writeTestResultToFile(data)
 
 
-
 def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement):
+    global do_tests
     print(f"{EXP} Starting prog={program} gen={generator_approach} {BFS_DFS} {semantics} ref={refinement}")
 
     for i, test in enumerate(tests):
@@ -161,10 +166,10 @@ def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement)
             result = stdout
 
             os.system(f"kill {process.pid} > /dev/null 2>&1")
-            extractData(test, False, result, refinement=refinement)
+            extractData(test, False, result, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program=program, com=command)
         except subprocess.TimeoutExpired:
             os.system(f"kill {process.pid} > /dev/null 2>&1")
-            extractData(test, True, None, refinement=refinement)
+            extractData(test, True, None, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program=program, com=command)
 
         gc.collect()
     print(f"\n{EXP_OK} Finished Successfully")
@@ -172,16 +177,15 @@ def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement)
 
 
 
-
 def main():
     test_bench = init_testcases()
-    
+    do_tests = False
     # FAITHFUL ---------------------------------------------------------
     num_test = 1
-    for approach in ["random-based", "grid-based", "level-based"]:
+    for approach in ["level-based"]:#, "grid-based", "level-based", "random-based"
         for BFS_or_DFS in ["BFS", "DFS"]:
             #for semantics in ["ST", "AD", "CF"]:
-            for semantics in ["ST"]:
+            for semantics in ["CF"]:
                 for refinement in [True, False]:
                     tests = None
                     if approach == "random-based":
