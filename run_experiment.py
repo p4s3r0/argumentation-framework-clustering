@@ -106,7 +106,7 @@ def getDataFromFile(test):
 
 
 def writeTestResultToFile(data):
-    with open(f"input/experiment/tests-run/CF/results_faithful_grid-based.txt", 'a') as f:
+    with open(f"input/experiment/tests-run/CF/results_faithful_level-based.txt", 'a') as f:
         f.write(f"{data['timestamp']};")
         f.write(f"{data['program']};")
         f.write(f"{data['semantics']};")
@@ -184,7 +184,7 @@ def main():
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
     num_test = 1
-    for approach in ["grid-based"]:#, "grid-based", "level-based", "random-based"
+    for approach in ["level-based"]:#, "grid-based", "level-based", "random-based"
         for BFS_or_DFS in ["DFS", "BFS"]:
             #for semantics in ["ST", "AD", "CF"]:
             for semantics in ["CF"]:

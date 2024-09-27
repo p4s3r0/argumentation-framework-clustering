@@ -47,8 +47,8 @@ def sortTests(tests):
 
 def plotRefinementVSNoRef(tests, title):
     # REF vs NOREF ----------------------------------------------------------------------------------------
-    ref   = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "BFS"])
-    noref = sortTests([t for t in tests if t.refinement == False and t.DFS_BFS == "BFS"])
+    ref   = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "DFS"])
+    noref = sortTests([t for t in tests if t.refinement == False and t.DFS_BFS == "DFS"])
     
 
     for i, x in enumerate(ref): x.index = i
@@ -88,13 +88,13 @@ def plotBFSvsDFS(tests,title):
 
 
 def main():
-    #faithful_random_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_random-based.txt")
-    #plotRefinementVSNoRef(faithful_random_ST, "random ST REF vs NOREF")
-    #plotBFSvsDFS(faithful_random_ST, "random ST BFS vs DFS")
+    # faithful_random_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_random-based.txt")
+    # plotRefinementVSNoRef(faithful_random_ST, "random ST REF vs NOREF")
+    # plotBFSvsDFS(faithful_random_ST, "random ST BFS vs DFS")
 
-    #faithful_level_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_level-based.txt")
-    #plotRefinementVSNoRef(faithful_level_ST, "level ST REF vs NOREF")
-    #plotBFSvsDFS(faithful_level_ST, "level ST BFS vs DFS")
+    # faithful_level_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_level-based.txt")
+    # plotRefinementVSNoRef(faithful_level_ST, "level ST REF vs NOREF")
+    # plotBFSvsDFS(faithful_level_ST, "level ST BFS vs DFS")
 
 
     # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_grid-based.txt")
@@ -113,9 +113,13 @@ def main():
     # plotRefinementVSNoRef(faithful_grid_ST, "level AD REF vs NOREF")
     # plotBFSvsDFS(faithful_grid_ST, "level AD BFS vs DFS")
 
-    faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/CF/results_faithful_random-based.txt")
-    plotRefinementVSNoRef(faithful_grid_ST, "grid CF REF vs NOREF")
-    plotBFSvsDFS(faithful_grid_ST, "random CF BFS vs DFS")
+    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/CF/results_faithful_random-based.txt")
+    # plotRefinementVSNoRef(faithful_grid_ST, "random CF REF vs NOREF")
+    # plotBFSvsDFS(faithful_grid_ST, "random CF BFS vs DFS")
+
+    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/CF/results_faithful_grid-based.txt")
+    # plotRefinementVSNoRef(faithful_grid_ST, "grid CF REF vs NOREF")
+    # plotBFSvsDFS(faithful_grid_ST, "grid CF BFS vs DFS")
     
 
 

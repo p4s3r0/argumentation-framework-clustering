@@ -15,6 +15,7 @@ refinement = True
 
 def setRefinementTrue(val):
     global refinement
+    print(not val)
     refinement = not val
 
 
