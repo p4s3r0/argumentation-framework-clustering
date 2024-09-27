@@ -10,3 +10,5 @@ notes
 *.bcf
 main.out
 .vscode
+lib
+venv/

@@ -11,8 +11,6 @@ EXP_TEST = f"{colorama.Fore.LIGHTBLACK_EX}[EXP]{colorama.Style.RESET_ALL}"
 
 testcases_path = "input/experiment"
 
-skip_tests = ["args-30-p-50-i-1.af"]
-
 
 class TestBench:
     def __init__(self) -> None:
@@ -56,9 +54,6 @@ def init_testcases():
     return test_bench
 
 
-def removePrefix(line):
-    ...
-
 
 
 def extract_data_faithful(res, com):
@@ -78,6 +73,13 @@ def extract_data_faithful(res, com):
 
     if len(temp) < 5:
         print("\n", temp, com, end="\n\n")
+        data = {
+            "result": "TIMEOUT",
+            "runtime": "X",
+            "cpu_time": "X",
+            "memory": "X"
+        }
+        return data
 
     data = {
         "result": temp[0],
@@ -104,7 +106,7 @@ def getDataFromFile(test):
 
 
 def writeTestResultToFile(data):
-    with open(f"{testcases_path}/results_faithful.txt", 'a') as f:
+    with open(f"input/experiment/tests-run/CF/results_faithful_grid-based.txt", 'a') as f:
         f.write(f"{data['timestamp']};")
         f.write(f"{data['program']};")
         f.write(f"{data['semantics']};")
@@ -182,8 +184,8 @@ def main():
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
     num_test = 1
-    for approach in ["level-based"]:#, "grid-based", "level-based", "random-based"
-        for BFS_or_DFS in ["BFS", "DFS"]:
+    for approach in ["grid-based"]:#, "grid-based", "level-based", "random-based"
+        for BFS_or_DFS in ["DFS", "BFS"]:
             #for semantics in ["ST", "AD", "CF"]:
             for semantics in ["CF"]:
                 for refinement in [True, False]:

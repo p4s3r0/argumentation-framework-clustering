@@ -82,11 +82,13 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visuali
             return True
     else:
         while set_af_2 := solver_af_2.computeSets(1, algorithm=algorithm):
-            if not (cmp := solver_af_1.verifySet(set_af_2)):
+            cmp = solver_af_1.verifySet(set_af_2)
+            if cmp != True:
                 Out.Spurious(cmp[0])
                 return False
                 break
         else:
+
             Out.Faithful()
             return True
 

@@ -1,0 +1,1006 @@
+\chapter{Algorithm to obtain Faithful Clustering}
+In this chapter we have a closer look at the algorithms we designed and how they work.
+We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are mutated to singletons) is computed. The approach to compute faithful clustered AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}.
+
+\textit{TODO: Update when adding sections}
+
+\section{Encodings}
+\label{sec:Encodings}
+We previously defined the semantics in mathematical notation. But since we use SAT-Solving to compute extensions under a chosen semantics we develop in this section encodings in Boolean logic of the semantics of clustered AFs. We develop these encodings for (abstract) conflict-free, (abstract) admissible, and (abstract) stable extensions. For each semantics we present the corresponding Boolean encoding and an example.
+
+In general, given an AF $\hat{G}=(\hat{A}, \hat{R})$, we will use Boolean variables corresponding to arguments. That is, if $a \in \hat{A}$ is an argument, then $a$ is also a Boolean variable. The intended meaning is then that in a truth-value assignment a variable $a$ is \emph{true}, then there is a corresponding set of arguments with $a$ in the set. Formally, if $\tau$ is a truth-value assignment on the variables in $\hat{A}$, then the corresponding set of arguments is defined as $\{a \in A \mid \tau(a) = 1\}$.
+
+
+\paragraph{Conflict-Free} We begin with (abstract) conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, the empty set is always part of the conflict-free sets.
+
+\begin{definition}
+    Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. Where $\hat{A}$ are the representations of the arguments as Boolean variables and $\hat{R}$ are the the attacks between the arguments.
+    \begin{center}
+        \[ \hat{cf}(\hat{G})=
+        \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \bigl( \bigwedge_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \lnot \bigl( a \wedge b \bigl) \bigl)
+        \]
+    \end{center}
+    \label{def:booleanFormulaConflictFree}
+\end{definition}
+
+
+\begin{example}
+    Let us have a look at an example and define the abstract AF $\hat{G} = (\hat{A}, \hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsConflictFree}. With the arguments $\hat{A}=\{a, b, c, d\}$ and the attacks $\hat{R}=\big\{ (a,a)$, $(a,b)$, $(b,c)$, $(d,a)$, $(d,b)$, $(d,c)\big\}$.
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \ax{0}   \def \ay{-1}
+            \def \bx{1}   \def \by{-1}
+            \def \cx{2}   \def \cy{-1}
+            \def \dx{1}   \def \dy{0}
+            \def \hx{-0.4}    \def \hy{0}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e, f, g$};
+            \node at (\hx + 0.1, \hy+0.55) {$\hat{h}$};
+
+            % Attacks
+            \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
+            \DrawAttackHorizontal{R}{\bx}{\by}{\cx}{\cy}
+            \DrawAttackHorizontal{B}{\dx}{\dy}{\hx+0.3}{\hy}
+            \DrawSelfAttackLeftSingleton{\ax}{\ay}
+            \DrawAttackDiagonal{PRL}{\dx}{\dy}{\ax}{\ay}
+            \DrawAttackDiagonal{NLR}{\dx}{\dy}{\cx}{\cy}
+            \DrawAttackVertical{D}{\dx}{\dy}{\bx}{\by}
+        \end{tikzpicture}
+        \caption{Abstract AF $\hat{G}$}
+        \label{af:algorithmEncodingsConflictFree}
+    \end{figure}
+
+By applying the formula from \cref{def:booleanFormulaConflictFree} to the AF $\hat{G}$, we obtain the following Boolean expression.
+\begin{align*}
+    \psi =\ &
+    \lnot(b \land a)  \land
+    \lnot(b \land d)  \land
+    \lnot(a \land d)  \land
+    \lnot(a \land a)  \land
+    \\
+    & \lnot(c \land b)  \land
+    \lnot(c \land d)
+\end{align*}
+
+The models of $\psi$ in this example are $\bigl\{\{\}$ $\{b\}$, $\{c\}$, $\{d\}$, $\{\hat{h}\}$, $\{b, \hat{h}\}$, $\{c, \hat{h}\}$, $\{d, \hat{h}\}\bigl\}$.
+\end{example}
+
+If we compare the models of $\psi$ with the conflict-free sets of $\hat{G}$, we can observe that they are equal. In fact, \cref{def:booleanFormulaConflictFree} is a Boolean representation to obtain conflict-free sets from an AF. The formula can be applied to concrete and abstract AFs, because if no cluster is present, the formula corresponds to the previously defined conflict-free formula and only adds the layer of abstraction if atleast one cluster is present.
+
+
+\paragraph{Admissible} Next we continue with (abstract) admissible sets. Recall that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. For admissibility, the empty set does always satisfy the criteria and therefore is part of the admissible sets.
+
+\begin{definition}
+    Let $\hat{G}=(\hat{A}, \hat{R})$ be an abstract AF. Here the arguments as Boolean variables denote to $\hat{A}$ and the attacks of $G$ denote to $\hat{R}$.
+    \begin{center}
+        \[ \hat{adm}(\hat{G})=
+        \hat{cf}(\hat{G}) \land  \bigwedge_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)
+        \]
+    \end{center}
+    \label{def:booleanFormulaAdmissible}
+\end{definition}
+
+
+\begin{example}
+    Let us have a look at an example and define the AF $\hat{G}=(\hat{A},\hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsAdmissible}. Where the arguments are $\hat{A}=\{a, b, c, d, e\}$ and the attacks $\hat{R}=\big\{ (a,a), (a,b), (b,c), (d,a), (d,b), (d,d), (d, e), (e, d)\big\}$.
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \ax{0}   \def \ay{-1}
+            \def \bx{1}   \def \by{-1}
+            \def \cx{2}   \def \cy{-1}
+            \def \dx{1}   \def \dy{0}
+            \def \ex{0}   \def \ey{0}
+            \def \hx{2.1}    \def \hy{0}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+            \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$f, g$};
+            \node at (\hx + 0.1, \hy+0.55) {$\hat{h}$};
+
+            % Attacks
+            \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
+            \DrawAttackHorizontal{R}{\bx}{\by}{\cx}{\cy}
+            \DrawAttackHorizontal{B}{\dx}{\dy}{\ex}{\ey}
+            
+            \DrawAttackVertical{B}{\hx-0.1}{\hy}{\cx}{\cy}
+
+            \DrawSelfAttackLeftSingleton{\ax}{\ay}
+            \DrawSelfAttackRightSingleton{\dx}{\dy}
+            \DrawAttackDiagonal{PRL}{\dx}{\dy}{\ax}{\ay}
+            \DrawAttackVertical{D}{\dx}{\dy}{\bx}{\by}
+        \end{tikzpicture}
+        \caption{Abstract AF $\hat{G}$}
+        \label{af:algorithmEncodingsAdmissible}
+    \end{figure}
+
+By applying the formula defined in \cref{def:booleanFormulaAdmissible} to the AF $\hat{G}$, we obtain the following Boolean expression.
+\begin{align*}
+    \psi = \big(
+    \lnot (a \land a)
+    & \land \lnot (a \land d) \land \lnot (b \land d) \land \lnot (b \land c) \land \lnot (b \land d) \land \lnot (c \land b) \land \lnot (d \land e) \\
+    & \land \lnot (d \land d) \land \lnot (e \land d) \big) \\
+    & \land \bigl( a \rightarrow ((a \lor d) \land (e \lor d)) \land \bigl( b \rightarrow ((a \lor d) \land (b) \land (e \lor d)) \bigl) \bigl)\\
+    & \land \bigl( c \rightarrow ((a \lor c \lor d) \land (\hat{h})) \bigl) \land \bigl( d \rightarrow (d) \land (e \lor d) \bigl) \land \bigl( e \rightarrow (e \lor d) \bigl)
+\end{align*}
+
+The models of $\psi$ in this example are $\big\{\{\}$, $\{c\}$, $\{e\}$, $\{\hat{h}\}$, $\{c, e\}$, $\{c, \hat{h}\}$, $\{e, \hat{h}\}$, $\{c, e, \hat{h}\} \big\}$.
+\end{example}
+
+If we compare the models of $\psi$ with the admissible sets of $\hat{G}$, we can observe that they are equal. Indeed, \cref{def:booleanFormulaAdmissible} provides a Boolean representation that allows the derivation of admissible sets from an AF. If the AF $\hat{G}$ has no cluster, the formula reduces itself to the previously defined admissible formula.
+
+
+
+\paragraph{Stable} Finally we take a look at the (abstract) stable extensions. Recall, that a set of arguments is abstractly stable, if it is abstractly conflict-free and if an
+argument is not in the abstractly stable extension, it implies that an argument in the
+abstractly stable extension is attacking it. Furthermore if the abstractly stable extension
+is not attacking an argument, then every singleton attacking the argument is not in the
+abstractly stable extension. Other than conflict-free and admissible, the empty set is not part of the stable extension.
+
+\begin{definition}
+    Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. In this case, $\hat{A}$ represents the arguments as Boolean variables, and $\hat{R}$ represents the attacks of $\hat{G}$.
+    \begin{center}
+        \[ \hat{stb}(\hat{G})=
+        \hat{cf}(\hat{G}) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{\!S\!I\!N\!G\!L\!E}} \lnot c\big) \big)
+        \]
+    \end{center}
+    \label{def:booleanFormulaStable}
+\end{definition}
+
+
+\begin{example}
+    Let us have a look at an example and define the AF $\hat{G}=(\hat{A}, \hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsStable}. Where the arguments are $\hat{A}=\{a, b, c, d\}$ and the attacks $\hat{R}=\big\{ (a,a)$, $(a,b)$, $(a,d)$, $(b,a)$, $(b,d)$, $(c,b)$, $(d,a)\big\}$.
+
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \ax{2}   \def \ay{0}
+            \def \bx{1}   \def \by{0}
+            \def \cx{0}   \def \cy{0}
+            \def \dx{1}   \def \dy{-1}
+            \def \hx{0}   \def \hy{-1}
+
+            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e, f, g$};
+            \node at (\hx + 0.3, \hy+0.55) {$\hat{h}$};
+            % Attacks
+            \DrawSelfAttackRightSingleton{\ax}{\ay}
+            \DrawAttackHorizontal{R}{\cx}{\cy}{\bx}{\by}
+            \DrawAttackHorizontal{B}{\ax}{\ay}{\bx}{\by}
+            \DrawAttackVertical{D}{\bx}{\by}{\dx}{\dy}
+            \DrawAttackVertical{D}{\cx}{\cy}{\hx}{\hy}
+            \DrawAttackDiagonal{PLR}{\dx}{\dy}{\ax}{\ay}
+        \end{tikzpicture}
+        \caption{Abstract AF $\hat{G}$}
+        \label{af:algorithmEncodingsStable}
+    \end{figure}
+
+If we apply the encoded formula defined in \cref{def:booleanFormulaStable} to the AF $\hat{G}$, we obtain the following Boolean expression.
+\begin{align*}
+    \psi = \bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) 
+    & \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \bigl) \\
+    &\land \bigl( (a \lor a \lor b \lor d) \land (b \lor a \lor c) \land (d \lor b) \land (\hat{h} \lor c)\bigl) \\
+    &\land \bigl( ((a \land \lnot a \land \lnot b \land \lnot d) \rightarrow (\lnot a \land \lnot b)\bigl)\\
+    &\land \bigl((b \land \lnot a \land \lnot c) \rightarrow (\lnot a \land \lnot d)) \land ((d \land \lnot b) \rightarrow \lnot a)\bigl)
+\end{align*}
+
+
+The models of $\psi$ in this example are $\bigl\{$$\{c, d\}$, $\{c, d, \hat{h}\} \bigl\}$.
+\end{example}
+
+By comparing the models of $\psi$ with the stable sets of $\hat{G}$, we find that they are identical. Specifically, \cref{def:booleanFormulaStable} is a Boolean expression to derive admissible sets from an AF. If the AF has no clusters, the Boolean expression reduces to the admissible formula defined earlier.
+
+
+\section{Concretizing Singletons}
+\label{sec:ConcretizingSingletons}
+When operating on clustered AFs, a crucial mutation is to extract clustered arguments from a cluster and transform it to a singleton. This is called concretizing. When clustering singletons, the cluster inherits the attacks of the argument, concretizing is the inverse operation. This means, that it needs to revert the changes done by the clustering.
+Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\hat{F}$ to create a new AF $\hat{F}'$ and transforming it. The transformation is guided by five steps considering the unchanged abstract AF $\hat{F}$ and the concrete AF $F$. To improve the understanding of each step, we accompany the explanation with the example depicted in \cref{example:concretizationOfArguments}, where we concretize the arguments $a$ and $b$.
+
+\vspace{0.3cm}
+
+\vspace{0.3cm}
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+                \def \ax{0}   \def \ay{0}
+                \def \bx{1}   \def \by{0}
+                \def \cx{1}   \def \cy{-1}
+                \def \dx{2}   \def \dy{0}
+                \def \ex{2}   \def \ey{-1}
+                \def \fx{3}   \def \fy{-1}
+
+                \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+                \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+                \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+                \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+                \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+                \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+                % Attacks
+                \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
+                \DrawAttackHorizontal{L}{\dx}{\dy}{\bx}{\by}
+
+                \DrawAttackVertical{D}{\bx}{\by}{\cx}{\cy}
+                \DrawAttackVertical{U}{\ex}{\ey}{\dx}{\dy}
+
+                \DrawAttackDiagonal{NRL}{\cx}{\cy}{\ax}{\ay}
+        \end{tikzpicture}
+        \caption{Concrete AF $F$}
+        \label{fig:concrete_af}
+    \end{subfigure}%
+    \hfill
+    \begin{subfigure}[b]{0.475\textwidth}
+        \centering
+        \begin{tikzpicture}
+            % Singletons
+            \def \dx{1}   \def \dy{0}
+            \def \gx{0}   \def \gy{-1}
+            \def \hx{1.9}   \def \hy{-1}
+
+            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+            % Cluster
+
+            \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c$};
+            \node at (\gx + 0.1, \gy+0.5) {$\hat{g}$};
+
+            \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
+            \node at (\hx + 0.1, \hy+0.5) {$\hat{h}$};
+
+            % Attacks
+            \DrawAttackDiagonal{PRL}{\dx}{\dy}{\gx+0.1}{\gy+0.1}
+            \DrawAttackDiagonal{NRL}{\hx}{\hy+0.1}{\dx}{\dy}
+            \DrawSelfAttackLeftTopCluster{\gx-0.45}{\gy+0.3}
+        \end{tikzpicture}
+        \caption{Abstract AF $\hat{F}$}
+        \label{fig:abstract_af}
+    \end{subfigure}
+    \caption{Concrete and abstract AF}
+    \label{example:concretizationOfArguments}
+\end{figure}
+
+\paragraph{Step 1:} Each argument needing concretization is first removed from the parent cluster and added as a singleton in $\hat{F}'$.
+If an argument is not part of a cluster, we ignore it.
+We do not consider attacks in this step since they depend on the concrete- and abstract AFs. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep1} and the pseudo-code in \cref{alg:concretizingSingletonsStep1}.
+
+
+\vspace{0.3cm}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \dx{2}   \def \dy{0}
+        \def \gx{1}   \def \gy{-1}
+        \def \hx{2.9}   \def \hy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        % Cluster
+
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c$};
+        \node at (\gx + 0.1, \gy + 0.5) {$\hat{g}$};
+
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
+        \node at (\hx + 0.1, \hy + 0.5) {$\hat{h}$};
+
+        % Attacks
+        \DrawAttackDiagonal{PRL}{\dx}{\dy}{\gx+0.1}{\gy+0.1}
+        \DrawAttackDiagonal{NRL}{\hx}{\hy+0.1}{\dx}{\dy}
+        \DrawSelfAttackLeftTopCluster{\gx-0.45}{\gy+0.3}
+
+    \end{tikzpicture}
+    \caption{Concretized AF $\hat{F}'$ after Step 1}
+    \label{example:algorithmConcretizeSingletonsStep1}
+\end{figure}
+\vspace{-0.2cm}
+
+
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 1}\label{alg:concretizingSingletonsStep1}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \State $N$ $\gets$ $A$ \Comment{$N$ = Concretized Cluster}
+        \For{$a_i$ in $e$}
+            \For{$c_i$ in $A.clusters$}
+                \If{$a_i$ in $c_i$}
+                    \State $c_i.remove(a_i)$
+                \EndIf
+                \EndFor
+            \State $N.addSingleton(a_i)$
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+
+\paragraph{Step 2:} We add the new attacks from all concretized arguments to the remaining clusters and vice versa. We must do this after removing the arguments from the clusters because if an argument $a$ attacks argument $b$ in the concrete AF $F$, and $b$ is part of the cluster $\hat{g}$ in the abstract AF $\hat{F}$, by concretizing $b$, the attack $(a,\hat{g})$ would not be present anymore. The resulting AF $\hat{F}'$ is depicted in \cref{example:algorithmConcretizeSingletonsStep2} and the pseudo-code in \cref{alg:concretizingSingletonsStep2}
+
+
+\vspace{0.3cm}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \dx{2}   \def \dy{0}
+        \def \gx{1}   \def \gy{-1}
+        \def \hx{2.9}   \def \hy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        % Cluster
+
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$\phantom{a,} c\phantom{, b}$};
+        \node at (\gx + 0.74, \gy + 0.2) {$\hat{g}$};
+
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
+        \node at (\hx + 0.1, \hy + 0.5) {$\hat{h}$};
+
+        % Attacks
+        \DrawAttackDiagonal{PRL}{\dx}{\dy}{\gx+0.1}{\gy+0.1}
+        \DrawAttackDiagonal{NRL}{\hx}{\hy+0.1}{\dx}{\dy}
+        \DrawSelfAttackLeftTopCluster{\gx-0.45}{\gy+0.3}
+        \DrawAttackVertical{D}{\bx}{\by}{\gx}{\gy}
+        \DrawAttackDiagonal{NRL}{\gx-0.1}{\gy+0.1}{\ax}{\ay}
+
+
+    \end{tikzpicture}
+    \caption{Concretized AF $\hat{F}'$ after Step 2}
+    \label{example:algorithmConcretizeSingletonsStep2}
+\end{figure}
+\vspace{-0.2cm}
+
+
+
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 2}\label{alg:concretizingSingletonsStep2}
+    \begin{algorithmic}[1]
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$e_i$ in $e$}
+            \For{$att_i$ in $C[e_i].attacks$}
+                \If{$att_i$ to cluster $c_i$}
+                    \State $N.addAttack((e_i, c_i))$
+                \EndIf
+            \EndFor
+            \For{$def_i$ in $C[e_i].defends$}
+                \If{$def_i$ from cluster $c_i$}
+                    \State $N.addAttack((c_i, e_i))$
+                \EndIf
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+\paragraph{Step 3:} After adding the new attacks, we need to check which attacks from $\hat{F}$ are still present in $\hat{F}'$. If an attack does not persist through the concretization, we remove it in $\hat{F}'$. An attack is not present anymore; if we remove one of the arguments being attacked or attacked by argument $a$ from a cluster $\hat{f}$ and no other attack exists, s.t. $a$ is attacked from/attacking an argument within $\hat{f}$. Selfattacks of clusters could also change by the concretization of arguments. Therefore, we need to check the clusters from which the arguments are concretized. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep3} and the pseudo-code in \cref{alg:concretizingSingletonsStep3}.
+
+
+\vspace{0.3cm}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \dx{2}   \def \dy{0}
+        \def \gx{1}   \def \gy{-1}
+        \def \hx{2.9}   \def \hy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        % Cluster
+
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$\phantom{a,} c\phantom{, b}$};
+        \node at (\gx + 0.74, \gy + 0.2) {$\hat{g}$};
+
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
+        \node at (\hx + 0.1, \hy + 0.5) {$\hat{h}$};
+
+        % Attacks
+        \DrawAttackDiagonal{NRL}{\hx}{\hy+0.1}{\dx}{\dy}
+        \DrawAttackVertical{D}{\bx}{\by}{\gx}{\gy}
+        \DrawAttackDiagonal{NRL}{\gx-0.1}{\gy+0.1}{\ax}{\ay}
+    \end{tikzpicture}
+    \caption{Concretized AF $\hat{F}'$ after Step 3}
+    \label{example:algorithmConcretizeSingletonsStep3}
+\end{figure}
+\vspace{-0.2cm}
+
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 3}\label{alg:concretizingSingletonsStep3}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$r_i$ in $A_{r_1}$}
+            \If{$r_i.defender$ is cluster and $r_i.attacker$ is cluster}
+                \If{!($r_i.attacker$ attacks any of $C[r_i].defender$)}
+                    \State $N.removeAttack(r_i)$
+                    \State continue
+                \EndIf
+            \EndIf
+            \If{$r_i.defender$ is cluster}
+                \If{!($r_i.attacker$ attacks any of $C[r_i].defender$)}
+                    \State $N.removeAttack(r_i)$
+                    \State continue
+                \EndIf
+            \EndIf
+            \If{$r_i.attacker$ is cluster}
+                \If{!($r_i.defender$ defends against any $C[r_i].attacker$)}
+                    \State $N.removeAttack(r_i)$
+                    \State continue
+                \EndIf
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $\hat{F}$, we only have to take into consideration the attacks from or to the concretized singletons. So instead of iterating over all singletons of the AF $\hat{F}'$, we can limit the attack creation to the concretized singletons. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep4} and the pseudo-code in \cref{alg:concretizingSingletonsStep4}.
+
+
+\vspace{0.3cm}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \dx{2}   \def \dy{0}
+        \def \gx{1}   \def \gy{-1}
+        \def \hx{2.9}   \def \hy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        % Cluster
+
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$\phantom{a,} c\phantom{, b}$};
+        \node at (\gx + 0.74, \gy + 0.2) {$\hat{g}$};
+
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
+        \node at (\hx + 0.1, \hy + 0.5) {$\hat{h}$};
+
+        % Attacks
+        \DrawAttackDiagonal{NRL}{\hx}{\hy+0.1}{\dx}{\dy}
+        \DrawAttackVertical{D}{\bx}{\by}{\gx}{\gy}
+        \DrawAttackDiagonal{NRL}{\gx-0.1}{\gy+0.1}{\ax}{\ay}
+        \DrawAttackHorizontal{L}{\dx}{\dy}{\bx}{\by}
+        \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
+    \end{tikzpicture}
+    \caption{Concretized AF $\hat{F}'$ after Step 4}
+    \label{example:algorithmConcretizeSingletonsStep4}
+\end{figure}
+\vspace{-0.2cm}
+
+
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 4}\label{alg:concretizingSingletonsStep4}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$e_i$ in $e$}
+            \For{$a_i$ in $C[e_i].attacks$}
+                \If{$a_i$ is singleton and ($e_i$, $a_i$) not in $r_2$}
+                    \State $N.addAttack((e_i, a_i))$
+                \EndIf
+            \EndFor
+            \For{$a_i$ in $C[e_i].defends$}
+                \If{$a_i$ is singleton and ($a_i$, $e_i$) not in $r_2$}
+                    \State $N.addAttack((a_i, e_i))$
+                \EndIf
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+\paragraph{Step 5:} The last step is to clean up the argumentation framework $\hat{F}'$ by removing all empty clusters and mutating the clusters with exactly
+one singleton to the mentioned singleton. The resulting AF $\hat{F}'$ is depicted in \cref{example:algorithmConcretizeSingletonsStep5} and the pseudo-code in \cref{alg:concretizingSingletonsStep5}.
+
+
+\vspace{0.3cm}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \dx{2}   \def \dy{0}
+        \def \cx{1}   \def \cy{-1}
+        \def \hx{2.9}   \def \hy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
+        \node at (\hx + 0.1, \hy + 0.5) {$\hat{h}$};
+
+        % Attacks
+        \DrawAttackDiagonal{NRL}{\hx}{\hy+0.1}{\dx}{\dy}
+        \DrawAttackVertical{D}{\bx}{\by}{\cx}{\cy}
+        \DrawAttackDiagonal{NRL}{\cx}{\cy}{\ax}{\ay}
+        \DrawAttackHorizontal{L}{\dx}{\dy}{\bx}{\by}
+        \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
+    \end{tikzpicture}
+    \caption{Concretized AF $\hat{F}'$ after Step 5}
+    \label{example:algorithmConcretizeSingletonsStep5}
+\end{figure}
+\vspace{-0.2cm}
+
+\begin{algorithm}[H]
+    \caption{Concretizing Singletons Pseudocode Step 5}\label{alg:concretizingSingletonsStep5}
+    \begin{algorithmic}[1]
+        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
+        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
+        \Require $e: list(Arguments)$ \Comment{Concretizer List}
+        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \For{$c_i$ in $N.clusters$}
+            \If{$c_i.argAmount == 1$}
+                \State $c_i \gets Singleton$
+            \ElsIf{$c_i.argAmount == 0$}
+                \State $N.remove(c_i)$
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+\newpage
+\section{Computation of Concretizer List}
+\label{sec:ComputationOfConcretizerList}
+% Why do we need the algorithm
+When talking about clustering AFs, faithfulness is an important property. If an AF is spurious, we found atleast one semantics extension, which cannot be mapped to a concrete extension. Based on the spurious extensions, we try to mutate the clustered AF, to obtain faithfulness. This mutation is realized through the concretizer list.
+
+% What is concretizer list
+The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependend on the size of the set. We use a heuristicical approach, putting the main focus on local changes. Here we operate directly on the arguments and its attackers which make a set spurious, instead of applying global changes to the AF. Further, a minimal deviation of the abstract AF is usually desired, so small concretizer sets are checked first.
+
+% Input: spurious set
+The input to the computation of the concretizer list is a set of the arguments of all the spurious semantics extensions. The size and computation intensity of the concretizer list is highly dependent on the amount of attacks, each argument of the input set and its neighbours with depth 2 have. This is also the critical part of the faithful AF computation and makes some AFs infeasible to solve.
+
+% Example base
+Let us have a look at an example to demonstrate how the concretizer list is computed. The concrete AF $G$ is defined in \cref{af:algorithmConcretizer1} and the according abstract AF $\hat{G}$ in \cref{af:algorithmConcretizer2}.
+
+
+\vspace{0.3cm}
+\begin{figure}[h]
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{1}   \def \cy{-1}
+        \def \dx{2}   \def \dy{0}
+        \def \ex{3}   \def \ey{0}
+        \def \fx{3}   \def \fy{-1}
+        \def \gx{4}   \def \gy{0}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawAttackHorizontal{B}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackHorizontal{R}{\bx}{\by}{\dx}{\dy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
+        \DrawAttackHorizontal{R}{\ex}{\ey}{\gx}{\gy}
+        \DrawAttackVertical{B}{\bx}{\by}{\cx}{\cy}
+        \DrawAttackVertical{D}{\ex}{\ey}{\fx}{\fy}
+        \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
+    \end{tikzpicture}
+    \subcaption{Concrete AF $G$}
+    \label{af:algorithmConcretizer1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \bx{0}   \def \by{0}
+        \def \hx{2}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a, c, d, e, f, g$};
+        \node at (\hx + 0.1, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawAttackHorizontal{B}{\hx-0.85}{\hy}{\bx}{\by}
+        \DrawSelfAttackRightTopCluster{\hx+1}{\hy+0.29}
+
+    \end{tikzpicture}
+    \subcaption{Abstract AF $\hat{G}$}
+    \label{af:algorithmConcretizer2}
+\end{minipage}
+\caption{Concrete and abstract AF}
+\label{fig:comparison}
+\end{figure}
+\vspace{0.3cm}
+
+If we have a look at the stable extensions of the concrete AF $G$, e.g.\ 
+$\mathtt{stb=}\bigl\{\{b, c\}\bigl\}$ and at the abstractly stable extensions of the abstract AF $\hat{G}$, e.g.\ 
+$\mathtt{\hat{stb}=}\bigl\{\{b, \hat{h}\}, \{\hat{h}\}, \{b\}\bigl\}$, we can see that the abstractly stable extensions $\{\hat{h}\}$ and $\{b\}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\{b, \hat{h}\}$.
+
+% Filter Cluster out of spurious set, because we cant concretize cluster
+The first step is to filter out the clusters of the input, since clusters are not present in the concrete AF and therefore do not attack any singletons and are not being attacked. So we reduce the concretizer list from $\{b, \hat{h}\}$ to $\{b\}$. The pseudo-code is listed in \cref{alg:concretizerListPrefiltering}.
+
+\begin{algorithm}[H]
+    \caption{Computation of Concretizer list Algorithm: Prefiltering}\label{alg:concretizerListPrefiltering}
+    \begin{algorithmic}[1]
+        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
+        \Require $s: list(Arguments)$ \Comment{spurious arguments}
+        \For{$s_i$ in $s$}
+            \If{$s_i$ in $\hat{G}$ is cluster}
+                \State $s$.remove($s_i$)
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+% Get combination as attacker depth 2
+% Get combination as defender depth 2
+Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked by an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the direct arguments, which are being attacked by the argument. A depth $2$ argument is an argument, which has some attack relation (e.g.\ attacks the argument or is attacked by the argument) with a depth $1$ argument.
+
+We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in yellow and the attacker with the same depth, depicted in blue. The pseudo-code of this procedure is listed in \cref{alg:concretizerListNeighbours}. Some arguments can have multiple depths (e.g.\ argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), than the lower depth is chosen as the representative.
+
+%Depth 2 Attacker
+\vspace{0.1cm}
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{1}   \def \cy{-1}
+        \def \dx{2}   \def \dy{0}
+        \def \ex{3}   \def \ey{0}
+        \def \fx{3}   \def \fy{-1}
+        \def \gx{4}   \def \gy{0}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[cYellow] (\ax,\ay) circle (0.4);
+        \node[text=cYellow] at (\ax+0.33, \ay+0.45) {\footnotesize 1};
+
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[cRed] (\bx,\by) circle (0.4);
+        \node[text=cRed] at (\bx+0.33, \by+0.45) {\footnotesize 0};
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[cYellow] (\cx,\cy) circle (0.4);
+        \node[text=cYellow] at (\cx+0.55, \cy) {\footnotesize 1};
+
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[cBlue] (\dx,\dy) circle (0.4);
+        \node[text=cBlue] at (\dx+0.33, \dy+0.45) {\footnotesize 1};
+
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[cBlue] (\ex,\ey) circle (0.4);
+        \node[text=cBlue] at (\ex+0.33, \ey+0.45) {\footnotesize 2};
+
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+        \node at (\fx+0.45, \fy) {\footnotesize 3};
+
+        \draw[line width=0.3mm] (\gx, \gy) circle (0.3) node[anchor=center]{$g$};
+        \node at (\gx+0.33, \gy+0.45) {\footnotesize 3};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawSelfAttackLeftSingleton{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackHorizontal{R}{\bx}{\by}{\dx}{\dy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
+        \DrawAttackHorizontal{R}{\ex}{\ey}{\gx}{\gy}
+        \DrawAttackVertical{B}{\bx}{\by}{\cx}{\cy}
+        \DrawAttackVertical{D}{\ex}{\ey}{\fx}{\fy}
+        \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
+    \end{tikzpicture}
+    \caption{Singletons depth with $b$ as viewpoint}
+    \label{af:algorithmConcretizer3}
+\end{figure}
+\vspace{-0.2cm}
+
+\begin{algorithm}
+    \caption{Computation of Concretizer list Algorithm: Neighbours}\label{alg:concretizerListNeighbours}
+    \begin{algorithmic}[1]
+        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
+        \Require $s: list(Arguments)$ \Comment{Working List}
+        \State $N$ $\gets$ $[]$ \Comment{$N$ = list of neighbours}
+        \For{$s_i$ in $s$} \Comment{Get neighbours}
+            \For{$n(1)_i$ neighbour of $s_i$} \Comment{depth 1 attacker}
+                \For{$n(2)_i$ neighbour of $n(1)_i$} \Comment{depth 2 attacker}
+                    \State $N.append(n(1)_i$)
+                    \State $N.append(n(2)_i$)
+                \EndFor
+            \EndFor
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+Now the concretizer list is expanded with all the possible combinations of the neighbours. The neighbours of the current example are $\{a, c, d, e\}$. When building the combinations, we create the table defined in \cref{table:algorithmConcretizer1}.
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{ |c|c|c|c| }
+     \hline
+     size $1$ & size $2$ & size $3$ & size $4$\\
+     \hline
+     \hline
+     $\{a\}$ & $\{a, c\}$ & $\{a, c, d\}$ &$\{a, c, d, e\}$ \\
+     \hline
+     $\{c\}$ & $\{a, d\}$ & $\{a, d, e\}$ & \\
+     \hline
+     $\{d\}$ & $\{c, d\}$ & $\{c, d, e\}$ & \\
+     \hline
+      & $\{d, e\}$ &  & \\
+     \hline
+       &  &  & \\
+     \hline
+       &  &  & \\
+     \hline
+    \end{tabular}
+\caption{Combinations of $\{a, c, d, e\}$}
+\label{table:algorithmConcretizer1}
+
+\end{table}
+
+The combination table grows exponentially to the base of 2. Therefore, the size of the neighbours is crucial. If we have too many neighbours, the computation would need too much memory and turns infeasible to compute.
+
+% Add concretizer list defined by the user
+% deduplicate
+If the user has provided arguments which have to be concretized as program argument, we add them to each combination set. After adding them, we filter for duplicates to keep the concretizer list size to a minimum.
+
+% Filter singletons which are not in cluster, because cant concretize singletons
+% deduplicate
+Next, we need to filter out the arguments, which are not in clusters, since singletons are already concrete. This filtering could lead to some duplicates again, which we need to remove once again to minimize the memory consumption and reduce the amount of faitfhul checks. In our example, we remove the set $\{b\}$.
+
+Finally, we sort the list by the set size and return it. In the current example we would return the whole table, because no concretizer arguments were provided by the user. So the concretizer list would be
+$\bigl\{\{a\}$
+$\{c\}$
+$\{d\}$
+$\{a, c\}$
+$\{a, d\}$
+$\{c, d\}$
+$\{d, e\}$
+$\{a, c, d\}$
+$\{a, d, e\}$
+$\{c, d, e\}$
+$\{a, c, d, e\}\bigl\}$. The pseudo-code for the last step is stated in \cref{alg:concretizerListCombinationAndCleanup}.
+
+
+\begin{algorithm}
+    \caption{Computation of Concretizer list Algorithm: Combinations and Cleanup}\label{alg:concretizerListCombinationAndCleanup}
+    \begin{algorithmic}[1]
+        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
+        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
+        \Require $s: list(Arguments)$ \Comment{Working List}
+        \Require $ca: list(Arguments)$ \Comment{Concretize arguments parameter}
+
+        \State $C \gets$ combinations of N with $range(1, len(N)-1)$ \Comment{Combination List}
+
+        \For{$ca_i$ in $ca$} \Comment{Parameter Arguments to be concretized}
+            \For{$c_i$ in $C$}
+                \State $c_i.append(ca_i)$
+            \EndFor
+        \EndFor
+        \State $C.deduplicate()$
+
+        \For{$s_i$ in $C$} \Comment{Remove clusters}
+            \For{$a_i$ in $s_i$}
+                \If{$\hat{G}[a_i]$ is cluster}
+                    \State $s_i.remove(a_i)$
+                \EndIf
+            \EndFor
+        \EndFor
+        \State \Return $s.sortBySize()$
+    \end{algorithmic}
+\end{algorithm}
+
+\newpage
+
+\section{Algorithmic Approach to Compute Faifthul Clusterings}
+\label{sec:AlgorithmicApproachToComputeFaifthulClusterings}
+When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t.\ we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the according concrete AFs. Thus, we need to mutate the clustered AF, s.t.\ only correct solutions can be drawen, which we then call faithful. The algorithm we designed, takes as input a concrete AF denoted to $G$, and an abstract AF $\hat{G}$. First we determine, if the abstract AF $\hat{G}$ is spurious, by calculating the semantics extensions and attempting to find spurious set. If no spurious set can be found, the AF is faithful and no further mutations are needed.
+
+But if we find spurious extensions, we build the concretizer list as specified previously in \cref{sec:ComputationOfConcretizerList}. Recall, that the concretizer list operates with the depth of neighbours of $2$. This means, that depending on the AF, we can not guarantee to find a faithful AF. If the spurious extension of an AF $G$ has an argument $a$ with depth 3 to an argument $b$, and the only faithful AF is the concrete one, than we will not find the faithful AF.
+
+Finally, we concretize the concretizer list set after set and check for faithfulness. The algorithm is listed in \cref{alg:computeFaithfulClusters}.
+
+
+
+\begin{example}
+    Let us have a look at an example and define an AF $G=(A,R)$ with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{(a, a)$, $(a, c),$ $(b, a),$ $(c, b),$ $(c, d),$ $(d, c),$ $(e, b),$ $(b, e),$ $(f, f)\bigl\}$, depicted in \cref{af:computeFaithfulCluster1a}. When clustering the arguments $\{a, b, f\}$ we obtain the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ depicted in \cref{af:computeFaithfulCluster1b}. Where the arguments are $\hat{A}=\{c, d, e, \hat{h}\}$. The attacks of the abstract AF are $\hat{R}=\{(\hat{h},$ $\hat{h}),$ $(\hat{h}, c),$ $(c, d),$ $(d, c),$ $(\hat{h}, e),$ $(e, \hat{h})\}$ and the cluster $\hat{h}$ contains the arguments $\{a, b, f\}$.
+\end{example}
+
+\vspace{0.3cm}
+\begin{figure}[h]
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}   \def \ay{0}
+        \def \bx{1}   \def \by{0}
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{1}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \fx{2}   \def \fy{-1}
+
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
+
+        % Attacks
+        \DrawSelfAttackLeftSingleton{\ax}{\ay}
+        \DrawAttackVertical{D}{\ax}{\ay}{\cx}{\cy}
+        \DrawAttackHorizontal{L}{\bx}{\by}{\ax}{\ay}
+        \DrawAttackDiagonal{PLR}{\cx}{\cy}{\bx}{\by}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\bx}{\by}
+        \DrawSelfAttackRightSingleton{\fx}{\fy}
+    \end{tikzpicture}
+    \subcaption{Concrete AF $G$}
+    \label{af:computeFaithfulCluster1a}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \cx{0}   \def \cy{-1}
+        \def \dx{2}   \def \dy{-1}
+        \def \ex{2}   \def \ey{0}
+        \def \hx{0}   \def \hy{0}
+
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+
+        % Cluster
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a, b, f$};
+        \node at (\hx + 0.4, \hy + 0.55) {$\hat{h}$};
+        % Attacks
+        \DrawSelfAttackLeftTopCluster{\hx-0.45}{\hy+0.29}
+        \DrawAttackVertical{D}{\hx}{\hy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\dx}{\dy}{\cx}{\cy}
+        \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.3}{\hy}
+
+    \end{tikzpicture}
+    \subcaption{Abstract AF $\hat{G}$}
+    \label{af:computeFaithfulCluster1b}
+\end{minipage}
+\caption{Concrete and abstract AF}
+\label{fig:comparison}
+\end{figure}
+\vspace{0.3cm}
+
+
+When taking a look at the conflict-free sets of the concrete AF $G$ (e.g.\ $\bigl\{ \{\},$ $\{b\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{b, d\},$  $\{c, e\},$ $\{d, e\} \bigl\}$) and the abstractly conflict-free sets of the abstract AF $\hat{G}$ (e.g.\ $\bigl\{ \{\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{\hat{h}\},$ $\{c, e\},$ $\{c, \hat{h}\},$ $\{d, e\},$ $\{d, \hat{h}\},$ $\{e, \hat{h}\},$ $\{c, e, \hat{h}\},$ $\{e, d, \hat{h}\} \bigl\}$) we can observe, that the abstract AF $\hat{G}$ is spurious due to the sets $\bigl\{\{\hat{h}, d, e\},$ $\{\hat{h}, e\},$ $\{c, \hat{h}, e\},$ $\{c, \hat{h}\}\bigl\}$. Now we compute the concretizer list and obtain the sets $\bigl\{ \{a\}, \{b\}, \{a, b\}\bigl\}$. In this example, the only faithful solution we can obtain by concretizing is the concrete AF $G$. Thus, the set $\{a, b\}$ leads to a faithful AF.
+\vspace{0.5cm}
+
+\begin{algorithm}
+    \caption{Compute Faithful Clusters}\label{alg:computeFaithfulClusters}
+    \begin{algorithmic}[1]
+        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
+        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
+        \State $s_c \gets computeSemanticsExtension(G)$
+        \State $s_a \gets computeSemanticsExtension(\hat{G})$
+        \State $sp \gets computeSpuriousSemantics(s_c, s_a)$
+        \If{$sp.length == 0$}
+            \State \Return $\hat{G}$
+        \EndIf
+        \State $conc \gets computeConcretizerList(sp)$
+        \For{$set_i$ in $sp$}
+            \State $\hat{G}' \gets concretize(\hat{G}, set_i)$
+            \State $s_a \gets computeSemanticsExtension(\hat{G}')$
+            \If{$sp.length == 0$}
+                \State \Return $\hat{G}'$
+            \EndIf
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+
+
+\newpage
+\section{Heuristics and Refinements}
+\label{sec:HeuristicsAndRefinements}
+
+To speed up the process of computing semantics extensions, we came up with heuristics and refinements for specific scenarios. Some heuristics were already mentioned previously, like sorting the concretizer list by size to obtain a rather small mutation of the spurious AF. But we also implemented shortcuts and refinements, specific for every semantics.
+
+\paragraph{conflict-free} Let us begin with the refinement made for the conflict-free sets computation. When computing a single conflict-free set, with the amount of arguments greater than 1, we extract every subset, which is conflict-free as well. Formally, if $X$ is a conflict-free set and $|X|\geq 2$, then $\forall S \subseteq X$, $S$ is conflict-free. This property can be derived from the defintion of conflict-free. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, if there are no attacks between the arguments in $X$, and $S \subseteq X$, we can conclude that there are not attacks between the argument in $S$.
+
+\paragraph{admissible} Next, we will define the refinements made for the admissible semantics. Other than conflict-free sets, for (abstract) admissible sets we cannot derive directly information from the subsets. But we can decrease the computation time of showing faithfulness by adding the negated admissible formula for the concrete AF. This removes the faithful admissible sets which can be directly mapped from the abstract admissible sets to the concrete ones. The remaining sets to be computed are the spurious sets, or abstract admissible sets containing atleast one cluster (since the concrete AF does not possess clusters and are therefore not ignored).
+
+Recall, that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. We refine the formula from \cref{def:booleanFormulaAdmissible}, denoted as $\varphi_{\!A\!D\!M}$ with the refinement denoted as $\eta_{\!A\!D\!M}$.
+
+\vspace{0.1cm}
+
+$$
+    \hat{adm}=\ \varphi_{\!A\!D\!M}(\hat{F}) \land \eta_{\!A\!D\!M}(F)
+$$
+
+\vspace{0.1cm}
+
+Where $\eta_{\!A\!D\!M}(F)$ is defined as the negated admissible formula of the concrete AF.
+
+\vspace{0.1cm}
+
+$$
+    \eta_{\!A\!D\!M}(F)=\ \overline{cf}(F) \land \overline{def}(F)
+$$
+
+\vspace{0.1cm}
+
+The two new introduced components (i.e.\ $\overline{cf}$ and $\overline{def}$) define together the refinement. Here, $\overline{cf}$ stands for the negated part of the conflict-free sets from the concrete AF and $\overline{def}$ defines that we want to ignore all the sets from the concrete AF which are defending themselves from an attack.
+
+\begin{align*}
+    \overline{cf}(F)&=\ \bigvee_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \land b \big) \big)\\
+    \overline{def}(F)&=\ \big( \bigvee_{a \in A_{\!S\!I\!N\!G\!L\!E}}\big( a \land \bigvee_{b:(b,a)\in R} \big( \bigwedge_{c:(c, b)\in R} \lnot c\big)\big) \big)
+\end{align*}
+
+\paragraph{stable} For the stable semantics we apply the same principle as for abstract admissibility. Since we cannot conclude anything from the subsets of the computed (abstract) semantics, we need to add the negation of the stable formula for the concrete AF. With this, we reduce the semantics extensions which need to be computed drastically without losing crucial information. The eliminated abstract extensions are simply the extensions, which can be directly mapped to the concrete stable extensions, which have no impact on the spuriousness of the AF. The remaining extensions that need to be computed are either spurious extensions, or extensions which have atleast one cluster and need to be expanded and checked separately for spuriousness. Recall, that a set of
+arguments is abstractly stable, if it is abstractly conflict-free and if an argument is not in the abstractly stable extension, it implies that an argument in the abstractly stable extension is attacking it. Furthermore if the abstractly stable extension is not attacking an argument, then every singleton attacking the argument is not in the abstractly stable extension. We refine this formula from \cref{def:booleanFormulaStable}, denoted as $\varphi_{\!S\!T\!B}$ with the refinement denoted as $\eta_{S\!T\!B}$.
+
+
+\vspace{0.3cm}
+
+$$ \hat{stb}=\  \varphi_{\!S\!T\!B}(\hat{F}) \land \eta_{S\!T\!B}(F) $$
+
+\vspace{0.3cm}
+
+Here $\eta_{S\!T\!B}$ is defined as the negated stable formula of the concrete AF.
+
+\vspace{0.3cm}
+
+$$
+\eta_{S\!T\!B}(F) =\ \overline{cf}(F) \land \overline{att}(F) \land \overline{con}(F)
+$$
+
+\vspace{0.3cm}
+
+The three components (i.e.\ $\overline{cf}$, $\overline{att}$, $\overline{con}$) represent three different conditions which together define the refinement. Here, $\overline{cf}$ is the negated part of conflict-freeness of the concrete AF, $\overline{att}$ describes, that we want to ignore the concrete stable sets which impliy that if and argument being outside the stable set, has an attacker inside the stable set. Finally, $\overline{con}$ is the negated form of if the stable extension is not attacking an argument, then every singleton atacking the argument is not in the abstractly stable extension.
+
+\begin{align*}
+    \overline{cf}(F)&=\ \bigvee_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \land b \big) \big)\\[0.2cm]
+    \overline{att}(F)&=\ \bigvee_{a \in A} \big( \lnot a \bigwedge_{b:(b,a)\in R} \lnot b \big)\\[0.2cm]
+    \overline{con}(F)&=\ \bigvee_{a \in A} \big( \big( a \bigwedge_{b:(b,a)\in R} \lnot b) \land \big(\bigvee_{c:(a,c), c\in A_{\!S\!I\!N\!G\!L\!E}} c\big) \big)
+\end{align*}

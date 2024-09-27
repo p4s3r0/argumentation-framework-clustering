@@ -13,6 +13,8 @@ from utils import Out
 from time import time, process_time
 from psutil import Process
 
+from semantic import SemanticHelper
+
 experiment_file = "input/experiment/results.txt"
 
 class ProgramArguments:
@@ -68,6 +70,7 @@ def main():
 
     Out.SET_OUT_DEBUG(args.verbose)
     Info.SET_INFO_DEBUG(args.verbose)
+    SemanticHelper.setRefinementTrue(args.no_ref)
 
     Info.info("Program Arguments Parsed")
 

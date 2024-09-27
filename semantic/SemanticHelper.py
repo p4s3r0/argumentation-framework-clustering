@@ -11,6 +11,12 @@ from utils import Out
 
 current_semantic = ""
 
+refinement = True
+
+def setRefinementTrue(val):
+    global refinement
+    refinement = not val
+
 
 def getSemanticSolver(semantic: str, AF: dict[str, Argument.Argument], no_refinement: bool, AF_main: dict[str, Argument.Argument]=None, all_sets=False):
     global current_semantic
@@ -42,7 +48,7 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
         current_solver.solution.append(sol)
 
 
-        if current_semantic != "CF":
+        if current_semantic != "CF" or refinement == False:
             current_solver.solver.add(Solver.negatePreviousModel(arguments=current_solver.AF, model=model))
         else:
             # if conflict free, add also subsets of calculated solution
@@ -98,6 +104,7 @@ def verifySet(current_solver, verify_set: list):
                     current_solver.solver.add(current_solver.AF[argument].z3_value == False)
             if Solver.solve(current_solver.solver):
                 current_solver.solver.pop()
+
                 return True
             else:
                 current_solver.solver.pop()
