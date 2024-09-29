@@ -23,11 +23,14 @@ class test:
         self.result = result if result != 'X' else None
         self.runtime = float(runtime) if runtime != 'X' else timeout
         self.CPU_time = float(CPU_time) if CPU_time != 'X' else None
-        self.memory_consumption = float(memory_consumption) if memory_consumption != 'X' else None
+        if memory_consumption == 'X' or memory_consumption == '\n':
+            self.memory_consumption = None
+        else:
+            self.memory_consumption = float(memory_consumption)/1000
 
 
 
-def readInFileFaithful(filename):
+def readInTestFiles(filename):
     ret = list()
     with open(filename, 'r') as f:
         f.readline()
@@ -43,31 +46,43 @@ def sortTests(tests):
     return sorted(tests, key=lambda x: (x.param_generator_arg_amount, x.input_file_concrete_attacks_amount))
         
 
+def sortTestsRuntime(tests):
+    return sorted(tests, key=lambda x: (x.runtime))
 
 
-def plotRefinementVSNoRef(tests, title):
+def plotRefinementVSNoRef(tests, title, ax):
     # REF vs NOREF ----------------------------------------------------------------------------------------
-    ref   = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "DFS"])
-    noref = sortTests([t for t in tests if t.refinement == False and t.DFS_BFS == "DFS"])
-    
+    ref   = sortTests([t for t in tests if t.refinement == False and t.DFS_BFS == "BFS"])
+    noref = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "BFS"])
 
     for i, x in enumerate(ref): x.index = i
     for i, x in enumerate(noref): x.index = i
 
-    fig, ax = plt.subplots()
     ref_line,   = ax.plot([x.index for x in ref],   [y.runtime for y in ref],   linewidth=2.0, label='ref')
     noref_line, = ax.plot([x.index for x in noref], [y.runtime for y in noref], linewidth=2.0, label='no-ref')
 
-    legend = plt.legend(handles=[ref_line, noref_line], loc=2, fontsize='small', fancybox=True)
     ax.set_title(title)
-
     print("ref:", len(ref)," - noref:", len(noref))
-    plt.show()
 
 
 
+def plotMemoryConsumption(tests, title, ax):
+    # memory ------------------------------------------------------------------------------------------
+    bfs = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "BFS"])
+    dfs = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "DFS"])
 
-def plotBFSvsDFS(tests,title):
+    for i, x in enumerate(bfs): x.index = i
+    for i, x in enumerate(dfs): x.index = i
+
+    bfs_line, = ax.plot([x.index for x in bfs], [y.memory_consumption for y in bfs], linewidth=2.0, label='bfs')
+    dfs_line, = ax.plot([x.index for x in dfs], [y.memory_consumption for y in dfs], linewidth=2.0, label='dfs')
+
+    ax.set_title(title)
+    print("bfs:", len(bfs)," - dfs:", len(dfs))
+
+
+
+def plotBFSvsDFS(tests, title, ax):
     # BFS vs DFS ------------------------------------------------------------------------------------------
     bfs = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "BFS"])
     dfs = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "DFS"])
@@ -75,52 +90,115 @@ def plotBFSvsDFS(tests,title):
     for i, x in enumerate(bfs): x.index = i
     for i, x in enumerate(dfs): x.index = i
 
-    fig, ax = plt.subplots()
     bfs_line, = ax.plot([x.index for x in bfs], [y.runtime for y in bfs], linewidth=2.0, label='bfs')
     dfs_line, = ax.plot([x.index for x in dfs], [y.runtime for y in dfs], linewidth=2.0, label='dfs')
 
-    legend = plt.legend(handles=[bfs_line, dfs_line], loc=2, fontsize='small', fancybox=True)
     ax.set_title(title)
     print("bfs:", len(bfs)," - dfs:", len(dfs))
-    plt.show()
+
+
+
+def plotSemantics(tests, title, ax):
+    # Semantics ------------------------------------------------------------------------------------------
+    cf = sortTestsRuntime(tests["CF"])
+    ad = sortTestsRuntime(tests["AD"])
+    st = sortTestsRuntime(tests["ST"])
+
+    for i, x in enumerate(cf): x.index = i
+    for i, x in enumerate(ad): x.index = i
+    for i, x in enumerate(st): x.index = i
+
+    cf_line, = ax.plot([x.index for x in cf], [y.runtime for y in cf], linewidth=2.0, label='CF')
+    ad_line, = ax.plot([x.index for x in ad], [y.runtime for y in ad], linewidth=2.0, label='AD')
+    st_line, = ax.plot([x.index for x in st], [y.runtime for y in st], linewidth=2.0, label='ST')
+
+    print("cf:", len(cf)," - ad:", len(ad), " - st:", len(st))
 
 
 
 
 def main():
-    # faithful_random_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_random-based.txt")
-    # plotRefinementVSNoRef(faithful_random_ST, "random ST REF vs NOREF")
-    # plotBFSvsDFS(faithful_random_ST, "random ST BFS vs DFS")
 
-    # faithful_level_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_level-based.txt")
-    # plotRefinementVSNoRef(faithful_level_ST, "level ST REF vs NOREF")
-    # plotBFSvsDFS(faithful_level_ST, "level ST BFS vs DFS")
-
-
-    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/ST/results_faithful_grid-based.txt")
-    # plotRefinementVSNoRef(faithful_grid_ST, "grid ST REF vs NOREF")
-    # plotBFSvsDFS(faithful_grid_ST, "grid ST BFS vs DFS")
-
-    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/AD/results_faithful_random-based.txt")
-    # plotRefinementVSNoRef(faithful_grid_ST, "grid AD REF vs NOREF")
-    # plotBFSvsDFS(faithful_grid_ST, "random AD BFS vs DFS")
-
-    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/AD/results_faithful_grid-based.txt")
-    # plotRefinementVSNoRef(faithful_grid_ST, "grid AD REF vs NOREF")
-    # plotBFSvsDFS(faithful_grid_ST, "grid AD BFS vs DFS")
-
-    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/AD/results_faithful_level-based.txt")
-    # plotRefinementVSNoRef(faithful_grid_ST, "level AD REF vs NOREF")
-    # plotBFSvsDFS(faithful_grid_ST, "level AD BFS vs DFS")
-
-    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/CF/results_faithful_random-based.txt")
-    # plotRefinementVSNoRef(faithful_grid_ST, "random CF REF vs NOREF")
-    # plotBFSvsDFS(faithful_grid_ST, "random CF BFS vs DFS")
-
-    # faithful_grid_ST = readInFileFaithful("input/experiment/tests-run/CF/results_faithful_grid-based.txt")
-    # plotRefinementVSNoRef(faithful_grid_ST, "grid CF REF vs NOREF")
-    # plotBFSvsDFS(faithful_grid_ST, "grid CF BFS vs DFS")
+    random_ST = readInTestFiles("input/experiment/tests-run/ST/results_faithful_random-based.txt")
+    grid_ST = readInTestFiles("input/experiment/tests-run/ST/results_faithful_grid-based.txt")
+    level_ST = readInTestFiles("input/experiment/tests-run/ST/results_faithful_level-based.txt")
     
+    random_AD = readInTestFiles("input/experiment/tests-run/AD/results_faithful_random-based.txt")
+    grid_AD = readInTestFiles("input/experiment/tests-run/AD/results_faithful_grid-based.txt")
+    level_AD = readInTestFiles("input/experiment/tests-run/AD/results_faithful_level-based.txt")
+
+    random_CF = readInTestFiles("input/experiment/tests-run/CF/results_faithful_random-based.txt")
+    grid_CF = readInTestFiles("input/experiment/tests-run/CF/results_faithful_grid-based.txt")
+    level_CF = readInTestFiles("input/experiment/tests-run/CF/results_faithful_level-based.txt")
+
+    fig, ax = plt.subplots(3, 3)
+    # STABLE
+    plotBFSvsDFS(random_ST, "random ST ", ax[0][0])    
+    plotBFSvsDFS(grid_ST, "grid ST ", ax[1][0])
+    plotBFSvsDFS(level_ST, "level ST ", ax[2][0])
+    # ADMISSIBLE
+    plotBFSvsDFS(random_AD, "random AD ", ax[0][1])
+    plotBFSvsDFS(grid_AD, "grid AD ", ax[1][1])
+    plotBFSvsDFS(level_AD, "level AD ", ax[2][1])
+    # CONFLICT-FREE
+    plotBFSvsDFS(random_CF, "random CF", ax[0][2])
+    plotBFSvsDFS(grid_CF, "grid CF", ax[1][2])
+    plotBFSvsDFS(level_CF, "grid CF", ax[2][2])
+    # SETTINGS
+    fig.suptitle('BFS vs DFS')
+    handles, labels = ax[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='right')
+
+
+    fig, ax = plt.subplots(3, 3)
+    # STABLE
+    plotRefinementVSNoRef(random_ST, "random ST", ax[0][0])
+    plotRefinementVSNoRef(grid_ST, "grid ST", ax[1][0])
+    plotRefinementVSNoRef(level_ST, "level ST", ax[2][0])
+    # ADMISSIBLE
+    plotRefinementVSNoRef(random_AD, "random AD", ax[0][1])
+    plotRefinementVSNoRef(grid_AD, "grid AD", ax[1][1])
+    plotRefinementVSNoRef(level_AD, "level AD", ax[2][1])
+    # CONFLICT-FREE
+    plotRefinementVSNoRef(random_CF, "random CF", ax[0][2])
+    plotRefinementVSNoRef(grid_CF, "grid CF", ax[1][2])
+    plotRefinementVSNoRef(level_CF, "level CF", ax[2][2])
+    # SETTINGS
+    fig.suptitle('REF vs NO-REF')
+    handles, labels = ax[0][0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='right')
+
+ 
+    fig, ax = plt.subplots(1)
+    plotSemantics({"CF": random_CF + grid_CF + level_CF,
+                   "AD": random_AD + grid_AD + level_AD,
+                   "ST": random_ST + grid_ST + level_ST},"Semantics", ax)
+    # SETTINGS
+    fig.suptitle('Semantics')
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='right')
+
+    plt.show()
+
+
+
+    # fig, ax = plt.subplots(3, 3)
+    # # STABLE
+    # plotMemoryConsumption(random_ST, "random ST", ax[0][0])
+    # plotMemoryConsumption(grid_ST, "grid ST", ax[1][0])
+    # plotMemoryConsumption(level_ST, "level ST", ax[2][0])
+    # # ADMISSIBLE
+    # plotMemoryConsumption(random_AD, "random AD", ax[0][1])
+    # plotMemoryConsumption(grid_AD, "grid AD", ax[1][1])
+    # plotMemoryConsumption(level_AD, "level AD", ax[2][1])
+    # # CONFLICT-FREE
+    # plotMemoryConsumption(random_CF, "random CF", ax[0][2])
+    # plotMemoryConsumption(grid_CF, "grid CF", ax[1][2])
+    # plotMemoryConsumption(level_CF, "level CF", ax[2][2])
+    # # SETTINGS
+    # fig.suptitle('Memory Consumption BFS vs DFS')
+    # handles, labels = ax[0][0].get_legend_handles_labels()
+    # fig.legend(handles, labels, loc='right')
 
 
     

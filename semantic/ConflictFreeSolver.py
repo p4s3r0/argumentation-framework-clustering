@@ -15,6 +15,7 @@ class ConflictFreeSolver:
         self.setRulesConflictFree()
         self.name = "CF"
         self.no_refinement = no_refinement
+        
 
 
 

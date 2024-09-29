@@ -183,11 +183,9 @@ def main():
     test_bench = init_testcases()
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
-    num_test = 1
-    for approach in ["level-based"]:#, "grid-based", "level-based", "random-based"
+    for approach in ["grid-based", "level-based", "random-based"]:
         for BFS_or_DFS in ["DFS", "BFS"]:
-            #for semantics in ["ST", "AD", "CF"]:
-            for semantics in ["CF"]:
+            for semantics in ["ST", "AD", "CF"]:
                 for refinement in [True, False]:
                     tests = None
                     if approach == "random-based":
@@ -198,7 +196,6 @@ def main():
                         tests = test_bench.level_based_testcases
 
                     RUN_TEST(tests, "CHECK", approach, BFS_or_DFS, semantics, refinement)
-                    num_test += 1
 
     # CONCRETIZE ------------------------------------------------------
 
