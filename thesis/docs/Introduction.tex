@@ -12,7 +12,7 @@ If an argument $a$ is a counterargument of another argument $b$, we can say that
 
 % Semantics with AFs
 % Computation
-Semantics define subsets of arguments that have a certain relation to each other. Dung defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free (cf), admissible (adm) and stable (stb). To be precise, conflict-free and admissible are semantical properties but we will treat them as semantics. According to Dung's definitions, a set \textit{S} is conflict-free if there are no attacks between the arguments in \textit{S}. The defintion of conflict-freeness is mainly a building block for the other semantics.
+Semantics define subsets of arguments that have a certain relation to each other. Dung defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free (cf), admissible (adm) and stable (stb). To be precise, conflict-free and admissible are semantical properties but we will treat them as semantics. According to Dung's definitions, a set \textit{S} is conflict-free if there are no attacks between the arguments in \textit{S}. The definition of conflict-freeness is mainly a building block for the other semantics.
 A stable extension, is a conflict-free set, if every argument, which is not in \textit{S}, has an attacker which is in \textit{S}.
 Finally, an admissible set is a conflict-free set, where each argument in \textit{S} has a defender in \textit{S}. A defender is this context means an argument which attacks an attacker of an argument in \textit{S}.
 
@@ -40,7 +40,7 @@ For instance, let us consider a real-world example like the weather. We can defi
     \item $f$: Observations can alter, depending on the time.
 \end{itemize}
 
-With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \cref{af:introExample1}. An opposing statement in this context would be for instance the argument $a$ (i.e.\ \emph{The sky is blue}) and $e$ (i.e.\ \emph{At sunrise the sky appears to be orange}). Since both statements can not be true at the same time, they are contradicting, or in other words, attacking each other. If we apply another layer of abstraction, we obtain, e.g.\ the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ defined in \cref{af:introExample2}. We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the arguments $\{a, b, c, e, f\}$.
+With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abstract the arguments into nodes and transform the opposing statement into attacks as shown in \cref{fig:IntroductionComparison}(a). An opposing statement in this context would be for instance the argument $a$ (i.e.\ \emph{The sky is blue}) and $e$ (i.e.\ \emph{At sunrise the sky appears to be orange}). Since both statements can not be true at the same time, they are contradicting, or in other words, attacking each other. If we apply another layer of abstraction, we obtain, e.g.\ the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ defined in \cref{fig:IntroductionComparison}(b). We call arguments which are clustered, \emph{clustered arguments} and arguments which are not in clusters \emph{singletons}. Here, we created a single cluster consisting of the arguments $\{a, b, c, e, f\}$.
 
 
 
@@ -96,18 +96,18 @@ With this knowledge basis, we can create a concrete AF $G=(A, R)$. Where we abst
         \label{af:introExample2}
     \end{minipage}
     \caption{Concrete and abstract AF}
-    \label{fig:comparison}
+    \label{fig:IntroductionComparison}
 \end{figure}
 
 
 
 
 
-Now we can compute the sets of the according semantics (cf, adm, stb). The definitions of the semantics are defined in the \cref{ch:Background}. To reduce cluttering, we keep this example to the stable semantics. The stable extensions of the AF $G$ are $\mathtt{stb=}\bigl\{\{d, e\}, \{b, d, f\}\bigl\}$.
+Now we can compute the sets of the according semantics (cf, adm, stb). The definitions of the semantics are defined in the \cref{ch:Background}. To reduce cluttering, we keep this example to the stable semantics. The stable extensions of the AF $G$ are $stb(G) = \bigl\{\{d, e\}, \{b, d, f\}\bigl\}$.
 
-By computing the stable extensions of the abstract AF $\hat{G}$ $\mathtt{stb=}\bigl\{\{d\}, \{d, \hat{g}\}\bigl\}$, we can observe that the AF is spurious due to the extension $\{d\}$, since the abstract stable extension cannot be mapped to one of the concrete stable extensions.
+By computing the stable extensions of the abstract AF $\hat{G}$ $stb(G) = \bigl\{\{d\}, \{d, \hat{g}\}\bigl\}$, we can observe that the AF is spurious due to the extension $\{d\}$, since the abstract stable extension cannot be mapped to one of the concrete stable extensions.
 
-When concretizing (i.e. removing an argument from the cluster) the argument $c$, we create a new AF $\hat{G}' = (\hat{A}', \hat{R}')$ depicted in \cref{af:introExample3}, which has the following stable extensions $\mathtt{stb=}\{\hat{g}, d\}$. This extension can be mapped to both stable extensions of the concrete AF $G$, by mutating the cluster $\hat{g}$ with $\{e\}$ or $\{b, f\}$. Thus, we created a faithful abstract AF.
+When concretizing (i.e. removing an argument from the cluster) the argument $c$, we create a new AF $\hat{G}' = (\hat{A}', \hat{R}')$ depicted in \cref{af:introExample3}, which has the following stable extensions $stb(G) = \{\hat{g}, d\}$. This extension can be mapped to both stable extensions of the concrete AF $G$, by mutating the cluster $\hat{g}$ with $\{e\}$ or $\{b, f\}$. Thus, we created a faithful abstract AF.
 
 \begin{figure}[h]
     \centering

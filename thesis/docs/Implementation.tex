@@ -1,11 +1,11 @@
 \chapter{Implementations}
-In this chapter we dive into the implementation part and discuss different approaches. First, we specify on how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. Next we explain two different settings to optimize the spurious/faithful check in \cref{sec:ImplementationsBFSandDFSApproach}. In \cref{sec:ImplementationsGeneratingSemanticsSets} is the explanation on how we generated the semantics extensions and finally, we will tackle refuted theories in \cref{sec:ImplementationsRefutedTheories}.
+In this chapter we dive into the implementation part and discuss different approaches. First, we specify how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. Next we explain two different settings to optimize the spurious/faithful check in \cref{sec:ImplementationsBFSandDFSApproach}. In \cref{sec:ImplementationsGeneratingSemanticsSets} we explain how we generated the semantics extensions and finally, we discuss disproved assumptions in \cref{sec:ImplementationsDisprovedAssumptions}.
 
 \section{Creating AFs}
 \label{sec:ImplementationsCreatingAFs}
-We created three different approaches to generate AFs. Each of them has a different idea and generates AFs with different properties. While the random-based approach generates chaotic AFs, which are typically not similar to real-world problems, the grid-based approach has structure and is therefore more related to real-world problems. The level-based approach has even more structure and assures that we can not derive to many neighbours from a problematic argument. For each approach, we provide an additional figure for better visualization and example AFs generated with the algorithm.
+We created three different approaches to generate AFs. Each of them has a different idea and generates AFs with different properties. While the random-based approach generates AFs, which are typically not similar to real-world problems, the grid-based approach has more structure. The level-based approach has even more structure and assures that we can not derive too many neighbours from a problematic argument. For each approach, we provide an additional figure for better visualization and example AFs generated with the algorithm.
 
-\paragraph{random-based} Let us begin with the random-based approach. The arguments of the script are \texttt{<arg\_amount>} and \texttt{<p>}. The \texttt{<arg\_amount>} specifies how many arguments the AF has and the argument \texttt{<p>} defines the probability of an attack between two arguments. This approach creates chaotic AFs with no structure. Basically, if we take a look at \cref{fig:LevelBasedApproach} we can see a graph with potential attacks depicted with dotted arrows. Every potential attack has a a probability of \texttt{<p>} to be an actual attack of the generated AF.
+\paragraph{Random-based} Let us begin with the random-based approach. The arguments of the script are \texttt{<arg\_amount>} and \texttt{<p>}. The \texttt{<arg\_amount>} specifies how many arguments the AF has and the argument \texttt{<p>} defines the probability of an attack between two arguments. Basically, if we take a look at \cref{fig:LevelBasedApproach} we can see a graph with potential attacks depicted with dotted arrows. Every potential attack has a a probability of \texttt{<p>} to be an actual attack of the generated AF.
 
 
 \begin{figure}[h!]
@@ -13,11 +13,12 @@ We created three different approaches to generate AFs. Each of them has a differ
     \begin{tikzpicture}
         \def \rectSize{0.7cm}
         \def \rectSpace{1.8cm}
+        \def \rectCircleAdaption{0.1cm}
         
-        \node[rectangle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (0, 0) {};
-        \node[rectangle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\rectSpace, 0) {};
-        \node[rectangle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (0, \rectSpace) {};
-        \node[rectangle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\rectSpace, \rectSpace) {};
+        \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (0, 0) {};
+        \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\rectSpace, 0) {};
+        \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (0, \rectSpace) {};
+        \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\rectSpace, \rectSpace) {};
 
         % bottom
         \draw[dotted,<->, line width=0.3mm, >={To[length=4, width=5]}]
@@ -33,13 +34,13 @@ We created three different approaches to generate AFs. Each of them has a differ
         (\rectSpace, 0 + \rectSize/2) -- (\rectSpace , \rectSpace - \rectSize/2);
         % center positive
         \draw[dotted,<->, line width=0.3mm, >={To[length=4, width=5]}]
-        (0 + \rectSize/2, 0 + \rectSize/2) -- (\rectSpace - \rectSize/2, \rectSpace-\rectSize/2);
+        (0 + \rectSize/2 - \rectCircleAdaption, 0 + \rectSize/2 - \rectCircleAdaption) -- (\rectSpace - \rectSize/2 + \rectCircleAdaption, \rectSpace-\rectSize/2 + \rectCircleAdaption);
         % center negative
         \draw[dotted,<->, line width=0.3mm, >={To[length=4, width=5]}]
-        (0 + \rectSize/2, \rectSpace - \rectSize/2) -- (\rectSpace - \rectSize/2, \rectSize/2);
+        (0 + \rectSize/2-\rectCircleAdaption, \rectSpace - \rectSize/2+\rectCircleAdaption) -- (\rectSpace - \rectSize/2+\rectCircleAdaption, \rectSize/2-\rectCircleAdaption);
 
     \end{tikzpicture}
-    \caption{Random-Based Approach. $Amount=4$}
+    \caption{Random-based approach with $Amount=4$ and $p=1$}
     \label{fig:LevelBasedApproach}
 \end{figure}
 
@@ -157,13 +158,13 @@ Random-based generated AFs have the property (depending on the probability value
 
 
 
-\paragraph{grid-based} Next we are going to discuss the grid-based approach. The arguments for the script are \texttt{<arg\_amount>}, being the amount of arguments the AF has and \texttt{<p>}, which is the probability that an attack between two arguments occurs. Different to the random-based approach, attacks can only happen between the direct neighbours of the grid (i.e.\ top, bottom, right, left). The grid is a $n \times n$ grid, with $n$ being equal to $\lfloor (\sqrt{\texttt{<arg\_amount>}}) \rfloor$. An example grid can be seen in \cref{fig:GridBasedApproach}.
+\paragraph{Grid-based} Next we are going to discuss the grid-based approach. The arguments for the script are \texttt{<arg\_amount>}, being the amount of arguments the AF has and \texttt{<p>}, which is the probability that an attack between two arguments occurs. Different to the random-based approach, attacks can only happen between the direct neighbours of the grid (i.e.\ top, bottom, right, left). The grid is an $n \times n$ grid, with $n$ being equal to $\lfloor (\sqrt{\texttt{<arg\_amount>}}) \rfloor$. An example grid can be seen in \cref{fig:GridBasedApproach}.
 
 \begin{figure}[h!]
     \centering
     \begin{tikzpicture}
         \def \rectSize{0.7cm}
-        \def \rectSpace{0.5cm}
+        \def \rectSpace{0.8cm}
 
         \foreach \row in {0,1,2,3} {
             \foreach \col in {0,1,2,3} {
@@ -175,7 +176,7 @@ Random-based generated AFs have the property (depending on the probability value
                 \def \yArrowEnd{\y+\rectSize/2+\rectSpace}
 
                 % Rectangle
-                \node[rectangle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\x, \y) {};
+                \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\x, \y) {};
 
                 \ifnum\col<3
                     % Arrow
@@ -189,7 +190,7 @@ Random-based generated AFs have the property (depending on the probability value
             }
         }
     \end{tikzpicture}
-    \caption{Grid-Based Approach. $Amount=16$}
+    \caption{Grid-based approach with $Amount=16$ and $p=1$}
     \label{fig:GridBasedApproach}
 \end{figure}
 
@@ -318,14 +319,14 @@ With the grid-based approach, we obtain a more structured AF. Structured in this
 
 
 
-\paragraph{level-based} The last algorithm to create concrete AFs we provide, is the level-based approach. The arguments for this script are \texttt{<arg\_amount>}, \texttt{<level>} and \texttt{<p>}. Same as for the grid-based and random-based approach, \texttt{<arg\_amount>} defines how many arguments the computed AF has. The \texttt{<level>} argument restricts the height of the grid to the provided value and \texttt{<p>} is again the probability that an attack between to arguments occurs. The difference to the grid-based approach is the dimension of the grid. While the grid-based approach uses a $n \times n$ grid, in the level-based approach we use a $\texttt{<level>} \times n$ grid. In this context, $n$ is equal to $\lceil \texttt{<arg\_amount>}/\texttt{<level>} \rceil$. An example grid is depicted in \cref{fig:LevelBasedApproach}.
+\paragraph{Level-based} The last algorithm to create concrete AFs we provide, is the level-based approach. The arguments for this script are \texttt{<arg\_amount>}, \texttt{<level>} and \texttt{<p>}. Same as for the grid-based and random-based approach, \texttt{<arg\_amount>} defines how many arguments the computed AF has. The \texttt{<level>} argument restricts the height of the grid to the provided value and \texttt{<p>} is again the probability that an attack between to arguments occurs. The difference to the grid-based approach is the dimension of the grid. While the grid-based approach uses a $n \times n$ grid, in the level-based approach we use a $\texttt{<level>} \times n$ grid. In this context, $n$ is equal to $\lceil \texttt{<arg\_amount>}/\texttt{<level>} \rceil$. An example grid is depicted in \cref{fig:LevelBasedApproach}.
 
 
 \begin{figure}[h!]
     \centering
     \begin{tikzpicture}
         \def \rectSize{0.7cm}
-        \def \rectSpace{0.5cm}
+        \def \rectSpace{0.8cm}
 
         \foreach \row in {0,1} {
             \foreach \col in {0,1,2,3,4,5,6,7} {
@@ -337,7 +338,7 @@ With the grid-based approach, we obtain a more structured AF. Structured in this
                 \def \yArrowEnd{\y+\rectSize/2+\rectSpace}
 
                 % Rectangle
-                \node[rectangle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\x, \y) {};
+                \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\x, \y) {};
 
                 \ifnum\col<7
                     % Arrow
@@ -351,7 +352,7 @@ With the grid-based approach, we obtain a more structured AF. Structured in this
             }
         }
     \end{tikzpicture}
-    \caption{Level-Based Approach. $Level=2$ and $Amount=16$}
+    \caption{Level-based approach with $Level=2$, $Amount=16$ and $p=1$}
     \label{fig:LevelBasedApproach}
 \end{figure}
 
@@ -442,7 +443,7 @@ With the level-based approach, we obtain the same structured AF as for the grid-
 \newpage
 \section{BFS and DFS Approach}
 \label{sec:ImplementationsBFSandDFSApproach}
-Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algorithms to traverse graphs. Where BFS visits each node in order of distance to the start, DFS follows a direct path and only backtracks, if is has to. We, however, are not using the two approaches to traverse a graph, but we are using a similar principle to compute faithfulness of an abstract AF. The BFS approach in our implementation first computes all the semantics extensions of the abstract AF, then computes all the semantics extensions of the concrete AF and finally compares them to check for spuriousness.
+Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algorithms to traverse graphs. Where BFS visits each node in order of distance to the start, DFS follows a direct path and only backtracks, if it has to. We, however, are not using the two approaches to traverse a graph, but we are using a similar principle to compute faithfulness of an abstract AF. The BFS approach in our implementation first computes all the semantics extensions of the abstract AF, then computes all the semantics extensions of the concrete AF and finally compares them to check for spuriousness.
 
 \begin{figure}[h!]
     \centering
@@ -452,7 +453,7 @@ Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algo
         \def \computeBlockY{0}
         \def \computeBlockWidth{3cm}
         \def \computeBlockHeight{4cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\computeBlockWidth, minimum height=\computeBlockHeight , text width=\computeBlockWidth, align=center] at (\computeBlockX, \computeBlockY) {COMPUTE ALL ABSTRACT EXTENSIONS};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\computeBlockWidth, minimum height=\computeBlockHeight , text width=\computeBlockWidth, align=center] at (\computeBlockX, \computeBlockY) {Compute all abstract extensions};
 
 
         % Check Block
@@ -460,7 +461,7 @@ Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algo
         \def \checkBlockY{0}
         \def \checkBlockWidth{2.5cm}
         \def \checkBlockHeight{4cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {CECK IF SPURIOUS};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {Check if spurious};
         
         % Brace
         \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (1.8,-2) --  (1.8,2);
@@ -474,7 +475,7 @@ Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algo
         \def \compBlockY{0}
         \def \compBlockWidth{3cm}
         \def \compBlockHeight{4cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\compBlockWidth, minimum height=\compBlockHeight , text width=\compBlockWidth, align=center] at (\compBlockX, \compBlockY) {COMPUTE ALL CONCRETE EXTENSIONS};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\compBlockWidth, minimum height=\compBlockHeight , text width=\compBlockWidth, align=center] at (\compBlockX, \compBlockY) {Compute all concrete extensions};
     \end{tikzpicture}
     \caption{BFS visualization}
     \label{fig:ImplementationBFSVisualization}
@@ -495,7 +496,7 @@ On the other hand, we have the DFS approach depicted in \cref{fig:Implementation
         % Block 1
         \def \cbIX{0}
         \def \cbIY{1.5cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIX, \cbIY) {COMPUTE ABSTRACT EXTENSION};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIX, \cbIY) {Compute abstract extensions};
 
         % Block connection dotted
         \draw[dotted,-, line width=0.5mm, >={To[length=4, width=5]}]
@@ -504,14 +505,14 @@ On the other hand, we have the DFS approach depicted in \cref{fig:Implementation
         % Block 2
         \def \cbIIX{0}
         \def \cbIIY{-1.5cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIX, \cbIIY) {COMPUTE ABSTRACT EXTENSION};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIX, \cbIIY) {Compute abstract extensions};
 
 
 
         % Block 3
         \def \cbIIIX{4}
         \def \cbIIIY{1.5cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIX, \cbIIIY) {VERIFY ON CONCRETE AF};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIX, \cbIIIY) {Verify on concrete AF};
         \DrawAttackHorizontal{R}{1.3}{1.5cm}{2.7}{1.5cm}
 
         % Block connection dotted
@@ -521,7 +522,7 @@ On the other hand, we have the DFS approach depicted in \cref{fig:Implementation
         % Block 4
         \def \cbIIIIX{4}
         \def \cbIIIIY{-1.5cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIIX, \cbIIIIY) {VERIFY ON CONCRETE AF};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIIX, \cbIIIIY) {Verify on concrete AF};
         \DrawAttackHorizontal{R}{1.3}{-1.5cm}{2.7}{-1.5cm}
 
 
@@ -534,7 +535,7 @@ On the other hand, we have the DFS approach depicted in \cref{fig:Implementation
         \def \checkBlockY{0}
         \def \checkBlockWidth{2.5cm}
         \def \checkBlockHeight{4cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {IF ANY VERIFY BLOCK IS UNSAT, RETURN SPURIOUS};
+        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {If any verify block is \emph{UNSAT}, return spurious};
     \end{tikzpicture}
     \caption{DFS visualization}
     \label{fig:ImplementationDFSVisualization}
@@ -613,98 +614,3 @@ $$
 $$
 
 
-\section{Refuted Theories}
-\label{sec:ImplementationsRefutedTheories}
-
-When developing the tool, we came up with different theories. Some theories were discarded immediately, some were implemented (recall \cref{sec:HeuristicsAndRefinements}) and others had to be proven wrong. This section describes the most promising theory which turned out to be wrong.
-
-We came up with the theory, that every subset of a stable spurious extension, is spurious as well. Formally, if $S$ is a spurious stable set of the abstract AF $\hat{G}$. Then for every subset $T \subseteq S$, $T$ is spurious as well. This would reduce the computation time of finding spurious sets drastically. Unfortunately, we can disprove this theory with a counter-example.
-
-\begin{example}
-    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(d, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{af:implementationRefutedTheoryA}. The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined with the arguments $\hat{A}=\{\hat{g}, f\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, e\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g})$, $(\hat{g}, f)\bigl\}$ depicted in \cref{af:implementationRefutedTheoryB}.
-
-
-\vspace{0.3cm}
-\begin{figure}[h]
-    \begin{minipage}{.5\textwidth}
-        \centering
-        \begin{tikzpicture}
-            \def \ax{0}   \def \ay{0}
-            \def \bx{0}   \def \by{-1}
-            \def \cx{1}   \def \cy{0}
-            \def \dx{1}   \def \dy{-1}
-            \def \ex{2}   \def \ey{0}
-            \def \fx{2}   \def \fy{-1}
-
-            \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
-            \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
-            \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
-            \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
-            \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
-            \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
-            % Attacks
-            \DrawAttackHorizontal{R}{\ax}{\ay}{\cx}{\cy}
-            \DrawAttackHorizontal{R}{\cx}{\cy}{\ex}{\ey}
-            \DrawAttackHorizontal{R}{\dx}{\dy}{\fx}{\fy}
-            \DrawAttackVertical{U}{\bx}{\by}{\ax}{\ay}
-            \DrawAttackDiagonal{NLR}{\ax}{\ay}{\dx}{\dy}
-            \DrawAttackDiagonal{NLR}{\cx}{\cy}{\fx}{\fy}
-        \end{tikzpicture}
-        \subcaption{Concrete AF}
-        \label{af:implementationRefutedTheoryA}
-    \end{minipage}
-\begin{minipage}{.5\textwidth}
-    \centering
-    \begin{tikzpicture}
-        \def \fx{2}   \def \fy{0}
-        \def \gx{0}   \def \gy{0}
-
-        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a, b, c, d, e$};
-        \node at (\gx + 0.1, \gy+0.55) {$\hat{g}$};
-        % Attacks
-        \DrawAttackHorizontal{R}{\gx+0.63}{\gy}{\fx}{\fy}
-        \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy+0.3}
-
-    \end{tikzpicture}
-    \subcaption{Spurious abstract AF}
-    \label{af:implementationRefutedTheoryB}
-\end{minipage}%
-\caption{Concrete and spurious abstract AF}
-\label{fig:ImplementationRefutedTheoryDefinition}
-\end{figure}
-\vspace{0.3cm}
-
-When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extensions $\bigl\{ \{\hat{g}\}, \{\hat{g}, f\}\bigl\}$. Since atleast one of the abstractly stable extensions are spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When concretizing the subset a subset of $\{\hat{g}\}$, e.g.\ $\{a, c\}$ we obtain the AF $\hat{G}'$ depicted in \cref{af:ImplementationRefutedTheoryDefinitionSpurious}.
-
-
-\vspace{0.3cm}
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-        \def \ax{0}   \def \ay{-1}
-        \def \cx{1.5}   \def \cy{-1}
-        \def \fx{1.5}   \def \fy{0}
-        \def \gx{0}   \def \gy{0}
-
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$b, e, d$};
-        \node at (\gx + 0.1, \gy+0.55) {$\hat{g}$};
-
-        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
-        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
-        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
-        % Attacks
-        \DrawAttackHorizontal{R}{\ax}{\ay}{\cx}{\cy}
-        \DrawAttackVertical{B}{\gx}{\gy}{\ax}{\ay}
-        \DrawAttackVertical{U}{\cx}{\cy}{\fx}{\fy}
-        \DrawAttackDiagonal{NRL}{\cx}{\cy}{\gx+0.35}{\gy-0.05}
-        \DrawSelfAttackLeftSingleton{\ax}{\ay}
-    \end{tikzpicture}
-\caption{Concretized AF $\hat{G}'$}
-\label{af:ImplementationRefutedTheoryDefinitionSpurious}
-\end{figure}
-\vspace{0.3cm}
-
-Now we compute the abstractly stable extensions of $\hat{G}'$ and obtain $\{\hat{g}, c\}$, which after expanding the cluster $\hat{g}=\{b, d\}$ we can map the abstract extension to the concrete extension. Thus, we found a faithful AF by concretizing a subset of a spurious stable extension which disproves the theory.
-
-\end{example}
