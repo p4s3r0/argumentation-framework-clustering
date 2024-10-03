@@ -178,7 +178,6 @@ def main():
     handles, labels = ax.get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
 
-    plt.show()
 
 
 
@@ -200,6 +199,7 @@ def main():
     # handles, labels = ax[0][0].get_legend_handles_labels()
     # fig.legend(handles, labels, loc='right')
 
+    plt.show()
 
     
 
