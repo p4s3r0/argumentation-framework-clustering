@@ -846,7 +846,8 @@ Finally, we concretize the concretizer list set after set and check for faithful
 
 \vspace{0.3cm}
 \begin{figure}[h]
-\begin{minipage}{.5\textwidth}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
     \centering
     \begin{tikzpicture}
         % Singletons
@@ -875,14 +876,14 @@ Finally, we concretize the concretizer list set after set and check for faithful
     \end{tikzpicture}
     \subcaption{Concrete AF $G$}
     \label{af:computeFaithfulCluster1a}
-\end{minipage}%
-\begin{minipage}{.5\textwidth}
+\end{subfigure}%
+\begin{subfigure}[t]{0.45\textwidth}
     \centering
     \begin{tikzpicture}
         % Singletons
         \def \cx{0}   \def \cy{-1}
-        \def \dx{2}   \def \dy{-1}
-        \def \ex{2}   \def \ey{0}
+        \def \dx{1.3}   \def \dy{-1}
+        \def \ex{1.3}   \def \ey{0}
         \def \hx{0}   \def \hy{0}
 
         \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
@@ -901,7 +902,7 @@ Finally, we concretize the concretizer list set after set and check for faithful
     \end{tikzpicture}
     \subcaption{Abstract AF $\hat{G}$}
     \label{af:computeFaithfulCluster1b}
-\end{minipage}
+\end{subfigure}
 \caption{Concrete and abstract AF}
 \label{fig:AlgorhtmAlgorithmicApproachCopmuteFaithfulClusteringDouble}
 \end{figure}
@@ -1010,7 +1011,8 @@ We came up with the theory, that every subset of a stable spurious extension, is
 
 \vspace{0.3cm}
 \begin{figure}[h]
-    \begin{minipage}{.5\textwidth}
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \begin{tikzpicture}
             \def \ax{0}   \def \ay{0}
@@ -1036,8 +1038,8 @@ We came up with the theory, that every subset of a stable spurious extension, is
         \end{tikzpicture}
         \subcaption{Concrete AF}
         \label{af:implementationRefutedTheoryA}
-    \end{minipage}
-\begin{minipage}{.5\textwidth}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
     \centering
     \begin{tikzpicture}
         \def \fx{2}   \def \fy{0}
@@ -1053,7 +1055,7 @@ We came up with the theory, that every subset of a stable spurious extension, is
     \end{tikzpicture}
     \subcaption{Spurious abstract AF}
     \label{af:implementationRefutedTheoryB}
-\end{minipage}%
+    \end{subfigure}%
 \caption{Concrete and spurious abstract AF}
 \label{fig:AlgorithmRefutedTheoryDefinition}
 \end{figure}
