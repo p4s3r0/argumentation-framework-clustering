@@ -106,7 +106,7 @@ def getDataFromFile(test):
 
 
 def writeTestResultToFile(data):
-    with open(f"input/experiment/tests-run/CF/results_faithful_level-based.txt", 'a') as f:
+    with open(f"input/experiment/results_concretize.txt", 'a') as f:
         f.write(f"{data['timestamp']};")
         f.write(f"{data['program']};")
         f.write(f"{data['semantics']};")
@@ -151,14 +151,13 @@ def extractData(test, timeout, result, refinement, semantics, BFSDFS, program, c
     writeTestResultToFile(data)
 
 
-def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement):
-    global do_tests
-    print(f"{EXP} Starting prog={program} gen={generator_approach} {BFS_DFS} {semantics} ref={refinement}")
+def RUN_TEST_FAITHFUL(tests, generator_approach, BFS_DFS, semantics, refinement):
+    print(f"{EXP} Starting prog=CHECK gen={generator_approach} {BFS_DFS} {semantics} ref={refinement}")
 
     for i, test in enumerate(tests):
-        command = f"python3 main.py {program} {test.abstract} -c {test.concrete} -exp -a {BFS_DFS} -s {semantics}"
+        command = f"python3 main.py CHECK {test.abstract} -c {test.concrete} -exp -a {BFS_DFS} -s {semantics}"
 
-        command = ["python3", "main.py", program, test.abstract, "-c", test.concrete, "-exp", "-a", BFS_DFS, "-s", semantics]
+        command = ["python3", "main.py", "CHECK", test.abstract, "-c", test.concrete, "-exp", "-a", BFS_DFS, "-s", semantics]
         if not refinement: command.append("-noref")
         print(f"{EXP_TEST} Running Test {i+1}/{len(tests)} {test.concrete}", end="\r")
         try:
@@ -168,10 +167,10 @@ def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement)
             result = stdout
 
             os.system(f"kill {process.pid} > /dev/null 2>&1")
-            extractData(test, False, result, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program=program, com=command)
+            extractData(test, False, result, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program="CHECK", com=command)
         except subprocess.TimeoutExpired:
             os.system(f"kill {process.pid} > /dev/null 2>&1")
-            extractData(test, True, None, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program=program, com=command)
+            extractData(test, True, None, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program="CHECK", com=command)
 
         gc.collect()
     print(f"\n{EXP_OK} Finished Successfully")
@@ -179,11 +178,44 @@ def RUN_TEST(tests, program, generator_approach, BFS_DFS, semantics, refinement)
 
 
 
+def RUN_TEST_CONCRETIZE(tests, generator_approach, BFS_DFS, semantics, refinement):
+    print(f"{EXP} Starting prog=CONCRETIZE gen={generator_approach} {BFS_DFS} {semantics} ref={refinement}")
+    for i, test in enumerate(tests):
+        concretize_arguments = list()
+        with open(test.abstract, 'r') as f:
+            f.readline(); f.readline();
+            concretize = f.readline().split()
+            if concretize[1] != "concretize:":
+                print("something wrong with concretize line of", test.abstract)
+            concretize_arguments = concretize[2:]
+
+        command = ["python3", "main.py", "CONCRETIZE", test.abstract, "-c", test.concrete, "-exp", "-a", BFS_DFS, "-s", semantics, "-p"]
+        for arg in concretize_arguments:
+            command.append(arg)
+        if not refinement: command.append("-noref")
+        print(f"{EXP_TEST} Running Test {i+1}/{len(tests)} {test.concrete}", end="\r")
+        try:
+            process = subprocess.Popen(command, stdout=subprocess.
+            PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate(timeout=10)
+            result = stdout
+
+            os.system(f"kill {process.pid} > /dev/null 2>&1")
+            extractData(test, False, result, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program="CHECK", com=command)
+        except subprocess.TimeoutExpired:
+            os.system(f"kill {process.pid} > /dev/null 2>&1")
+            extractData(test, True, None, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program="CHECK", com=command)
+
+        gc.collect()
+        print(f"\n{EXP_OK} Finished Successfully")
+        exit()
+
+
 def main():
     test_bench = init_testcases()
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
-    for approach in ["grid-based", "level-based", "random-based"]:
+    for approach in ["random-based", "level-based", "grid-based"]:
         for BFS_or_DFS in ["DFS", "BFS"]:
             for semantics in ["ST", "AD", "CF"]:
                 for refinement in [True, False]:
@@ -195,7 +227,8 @@ def main():
                     else:
                         tests = test_bench.level_based_testcases
 
-                    RUN_TEST(tests, "CHECK", approach, BFS_or_DFS, semantics, refinement)
+                    #RUN_TEST_FAITHFUL(tests, approach, BFS_or_DFS, semantics, refinement)
+                    RUN_TEST_CONCRETIZE(tests, approach, BFS_or_DFS, semantics, refinement)
 
     # CONCRETIZE ------------------------------------------------------
 

@@ -87,12 +87,26 @@ def main():
         else:
             print("SPURIOUS")
 
+
     elif args.function == "CONCRETIZE":
         if args.concretize is None:
             Error.programArgumentsInvalid("Function = CONCRETIZE, but concretize list is missing")
         if args.compare_input_file is None:
             Error.programArgumentsInvalid("Function = CONCRETIZE, but concrete AF is missing.")
-        Programs.concretizeAF(concrete_file=args.compare_input_file, abstract_file=args.input_file, semantic=args.semantic, algorithm=args.algorithm, concretize=args.concretize, visualize=args.visualize, no_refinement=args.no_ref)
+
+        out_file = None
+        if args.experiment:
+            out_file = f"{args.input_file[:args.input_file.find('abstract')]}solution/{args.semantic}/{ args.input_file[args.input_file.find('args'):]}"
+
+        res = Programs.concretizeAF(concrete_file=args.compare_input_file, abstract_file=args.input_file, semantic=args.semantic, algorithm=args.algorithm, concretize=args.concretize, visualize=args.visualize, no_refinement=args.no_ref, solution_out=out_file)
+        if res == "too_many":
+            print("ABORTED")
+        elif res == True:
+            print("FOUND-SOLUTION")
+        elif res == False:
+            print("NO-SOLUTION-FOUND")
+        else:
+            print("WTF")
 
     elif args.function == "FAITHFUL":
         if args.compare_input_file is None:

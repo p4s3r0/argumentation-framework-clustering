@@ -235,9 +235,9 @@ def createConcretizerList(af_concrete: ArgumentationFramework, af_abstract: Argu
     if len(pre_deduplication) >= 25:
         #TODO: Do something here. Dirty solution
         pre_deduplication = pre_deduplication[:12] + pre_deduplication[len(pre_deduplication)-12:]
-        print("Too many neighbours.")
-        print("problematic-sing:", p_singletons, "mix:", len(pre_deduplication))
-        [print("STILL IN", i) for i in pre_deduplication]
+        #print("Too many neighbours.")
+        #print("problematic-sing:", p_singletons, "mix:", len(pre_deduplication))
+        #[print("STILL IN", i) for i in pre_deduplication]
 
 
 
@@ -287,12 +287,11 @@ def concretizeCluster(set_to_concretize: list, abstract_af: ArgumentationFramewo
     # Create new concretize AF
     abstract_abstract_af = copy.deepcopy(abstract_af)
 
-
     # add concretized arguments
     for arg in set_to_concretize:
         abstract_abstract_af.arguments[arg] = Argument.Argument(name=str(arg))
 
-    # remove argument from clustered_arguments 
+    # remove argument from clustered_arguments
     for arg in abstract_abstract_af.arguments.keys():
         if not abstract_abstract_af.arguments[arg].is_singleton:
             for concretize_arg in set_to_concretize:

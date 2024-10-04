@@ -2,9 +2,9 @@ from colorama import Fore, Back, Style
 
 OUT_MESSAGE = f"{Style.BRIGHT + Fore.GREEN}[OUT  ]{Style.RESET_ALL} ->   "
 
-DEBUG = True
-EXPERIMENT_FAITHFUL = True
-sol_print = True
+DEBUG = False
+EXPERIMENT_FAITHFUL = False
+sol_print = False
 
 def OUT(func):
     def wrapper(*args, **kwargs):
