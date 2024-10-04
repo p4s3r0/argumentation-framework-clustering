@@ -9,7 +9,7 @@ We previously defined the semantics in mathematical notation. But since we use S
 
 In general, given an AF $\hat{G}=(\hat{A}, \hat{R})$, we will use Boolean variables corresponding to arguments. That is, if $a \in \hat{A}$ is an argument, then $a$ is also a Boolean variable. The intended meaning is then that in a truth-value assignment a variable $a$ is \emph{true}, then there is a corresponding set of arguments with $a$ in the set. Formally, if $\tau$ is a truth-value assignment on the variables in $\hat{A}$, then the corresponding set of arguments is defined as $\{a \in A \mid \tau(a) = 1\}$, where $1$ is the numerical equivalent to the Boolean \emph{true}.
 
-We further define a subset of arguments, denoted ad $\hat{A}_{\!S\!I\!N\!G\!L\!E} \subset \hat{A}$ consisting of the the singletons arguments of the the AF $G$, which effectively excludes each cluster.
+We further define a subset of arguments, denoted ad $\hat{A}_{\mathit{Single}} \subset \hat{A}$ consisting of the the singletons arguments of the the AF $G$, which effectively excludes each cluster.
 
 
 \paragraph{Conflict-Free} We begin with (abstract) conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, the empty set is always part of the conflict-free sets.
@@ -18,7 +18,7 @@ We further define a subset of arguments, denoted ad $\hat{A}_{\!S\!I\!N\!G\!L\!E
     Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. We can now define the following formula.
     \begin{center}
         \[ \varphi_{cf}(\hat{G}) =
-        \bigwedge_{a \in \hat{A}_{\!S\!I\!N\!G\!L\!E}} \bigl( \bigwedge_{b:(b,a)\in \hat{R}, b \in \hat{A}_{\!S\!I\!N\!G\!L\!E}} \lnot \bigl( a \wedge b \bigl) \bigl)
+        \bigwedge_{a \in \hat{A}_{\mathit{Single}}} \bigl( \bigwedge_{b:(b,a)\in \hat{R}, b \in \hat{A}_{\mathit{Single}}} \lnot \bigl( a \wedge b \bigl) \bigl)
         \]
     \end{center}
     \label{def:booleanFormulaConflictFree}
@@ -82,7 +82,7 @@ If we compare the models of $\hat{cf}(\hat{G})$ with the conflict-free sets of $
     Let $\hat{G}=(\hat{A}, \hat{R})$ be an abstract AF. We can now define the following formula.
     \begin{center}
         \[ \varphi_{adm}(\hat{G})=
-        \varphi_{cf}(\hat{G}) \land  \bigwedge_{a \in \hat{A}_{\!S\!I\!N\!G\!L\!E}} \big( a \rightarrow \bigwedge_{b:(b,a) \in \hat{R}} \big( \bigvee_{c:(c,b) \in \hat{R}} c\big) \big)
+        \varphi_{cf}(\hat{G}) \land  \bigwedge_{a \in \hat{A}_{\mathit{Single}}} \big( a \rightarrow \bigwedge_{b:(b,a) \in \hat{R}} \big( \bigvee_{c:(c,b) \in \hat{R}} c\big) \big)
         \]
     \end{center}
     \label{def:booleanFormulaAdmissible}
@@ -154,7 +154,7 @@ abstractly stable extension. Other than conflict-free and admissible, the empty 
     Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. We can now define the following formula.
     \begin{center}
         \[ \varphi_{stb}(\hat{G}) =
-        \varphi_{cf}(\hat{G}) \land \bigwedge_{a \in \hat{A}} \big( a \bigvee_{b:(b,a)\in \hat{R}} b\big) \land \bigwedge_{a \in \hat{A}} \big( \big(  a \bigwedge_{b:(b,a) \in \hat{R}} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in \hat{A}_{\!S\!I\!N\!G\!L\!E}} \lnot c\big) \big)
+        \varphi_{cf}(\hat{G}) \land \bigwedge_{a \in \hat{A}} \big( a \bigvee_{b:(b,a)\in \hat{R}} b\big) \land \bigwedge_{a \in \hat{A}} \big( \big(  a \bigwedge_{b:(b,a) \in \hat{R}} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in \hat{A}_{\mathit{Single}}} \lnot c\big) \big)
         \]
     \end{center}
     \label{def:booleanFormulaStable}
@@ -969,8 +969,8 @@ $$
 The two new introduced components (i.e.\ $\overline{cf}$ and $\overline{def}$) define together the refinement. Here, $\overline{cf}$ stands for the negated part of the conflict-free sets from the concrete AF and $\overline{def}$ defines that we want to ignore all the sets from the concrete AF which are defending themselves from an attack.
 
 \begin{align*}
-    \overline{cf}(F)&=\ \bigvee_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \land b \big) \big)\\
-    \overline{def}(F)&=\ \big( \bigvee_{a \in A_{\!S\!I\!N\!G\!L\!E}}\big( a \land \bigvee_{b:(b,a)\in R} \big( \bigwedge_{c:(c, b)\in R} \lnot c\big)\big) \big)
+    \overline{cf}(F)&=\ \bigvee_{a \in A_{\mathit{Single}}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\mathit{Single}}} \big( a \land b \big) \big)\\
+    \overline{def}(F)&=\ \big( \bigvee_{a \in A_{\mathit{Single}}}\big( a \land \bigvee_{b:(b,a)\in R} \big( \bigwedge_{c:(c, b)\in R} \lnot c\big)\big) \big)
 \end{align*}
 
 \paragraph{Stable} For the stable semantics we apply the same principle as for abstract admissibility. Since we cannot conclude anything from the subsets of the computed (abstract) semantics, we need to add the negation of the stable formula for the concrete AF. With this, we reduce the semantics extensions which need to be computed for showing spuriousness or faithfulness drastically, without losing crucial information. The eliminated abstract extensions are simply the extensions, which can be directly mapped to the concrete stable extensions. The remaining extensions that need to be computed are either spurious extensions, or extensions which have at least one cluster and need to be expanded and checked separately for spuriousness. Recall, that a set of
@@ -992,9 +992,9 @@ $$
 The three components (i.e.\ $\overline{cf}$, $\overline{att}$, $\overline{con}$) represent three different conditions which together define the refinement. Here, $\overline{cf}$ is the negated part of conflict-freeness of the concrete AF, $\overline{att}$ describes, that we want to ignore the concrete stable sets which impliy that if and argument being outside the stable set, has an attacker inside the stable set. Finally, $\overline{con}$ is the negated form of if the stable extension is not attacking an argument, then every singleton atacking the argument is not in the abstractly stable extension.
 
 \begin{align*}
-    \overline{cf}(F)&=\ \bigvee_{a \in A_{\!S\!I\!N\!G\!L\!E}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\!S\!I\!N\!G\!L\!E}} \big( a \land b \big) \big)\\[0.2cm]
+    \overline{cf}(F)&=\ \bigvee_{a \in A_{\mathit{Single}}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\mathit{Single}}} \big( a \land b \big) \big)\\[0.2cm]
     \overline{att}(F)&=\ \bigvee_{a \in A} \big( \lnot a \bigwedge_{b:(b,a)\in R} \lnot b \big)\\[0.2cm]
-    \overline{con}(F)&=\ \bigvee_{a \in A} \big( \big( a \bigwedge_{b:(b,a)\in R} \lnot b) \land \big(\bigvee_{c:(a,c), c\in A_{\!S\!I\!N\!G\!L\!E}} c\big) \big)
+    \overline{con}(F)&=\ \bigvee_{a \in A} \big( \big( a \bigwedge_{b:(b,a)\in R} \lnot b) \land \big(\bigvee_{c:(a,c), c\in A_{\mathit{Single}}} c\big) \big)
 \end{align*}
 
 

@@ -455,29 +455,29 @@ Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algo
         \def \computeBlockX{0}
         \def \computeBlockY{0}
         \def \computeBlockWidth{3cm}
-        \def \computeBlockHeight{4cm}
+        \def \computeBlockHeight{1.8cm}
         \node[rectangle, draw, line width=0.3mm, minimum width=\computeBlockWidth, minimum height=\computeBlockHeight , text width=\computeBlockWidth, align=center] at (\computeBlockX, \computeBlockY) {Compute all abstract extensions};
 
 
         % Check Block
         \def \checkBlockX{4}
         \def \checkBlockY{0}
-        \def \checkBlockWidth{2.5cm}
-        \def \checkBlockHeight{4cm}
+        \def \checkBlockWidth{2cm}
+        \def \checkBlockHeight{1.8cm}
         \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {Check if spurious};
         
         % Brace
-        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (1.8,-2) --  (1.8,2);
-        \DrawAttackHorizontal{R}{1.7}{0}{2.9}{0}
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (1.8, - \checkBlockHeight/2) --  (1.8, \checkBlockHeight/2);
+        \DrawAttackHorizontal{R}{1.7}{0}{3.15}{0}
 
-        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt}] (6.2,-2) --  (6.2,2);
-        \DrawAttackHorizontal{L}{6.3}{0}{5.1}{0}
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt}] (6.2,- \checkBlockHeight/2) --  (6.2,\checkBlockHeight/2);
+        \DrawAttackHorizontal{L}{6.3}{0}{4.85}{0}
 
         % Compute Block
         \def \compBlockX{8}
         \def \compBlockY{0}
         \def \compBlockWidth{3cm}
-        \def \compBlockHeight{4cm}
+        \def \compBlockHeight{1.8cm}
         \node[rectangle, draw, line width=0.3mm, minimum width=\compBlockWidth, minimum height=\compBlockHeight , text width=\compBlockWidth, align=center] at (\compBlockX, \compBlockY) {Compute all concrete extensions};
     \end{tikzpicture}
     \caption{BFS visualization}
@@ -498,46 +498,46 @@ On the other hand, we have the DFS approach depicted in \cref{fig:Implementation
         \def \bheight{1.5cm}
         % Block 1
         \def \cbIX{0}
-        \def \cbIY{1.5cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIX, \cbIY) {Compute abstract extensions};
+        \def \cbIY{1.1cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIX, \cbIY) {Compute abstract extension};
 
         % Block connection dotted
-        \draw[dotted,-, line width=0.5mm, >={To[length=4, width=5]}]
-        (0cm, 0.45cm) -- (0cm, -0.45cm);
+        \draw[densely dotted,-, line width=0.3mm, >={To[length=4, width=5]}]
+        (\cbIX, 0.25cm) -- (\cbIX, -0.25cm);
 
         % Block 2
         \def \cbIIX{0}
-        \def \cbIIY{-1.5cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIX, \cbIIY) {Compute abstract extensions};
+        \def \cbIIY{-1.1cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIX, \cbIIY) {Compute abstract extension};
 
 
 
         % Block 3
         \def \cbIIIX{4}
-        \def \cbIIIY{1.5cm}
+        \def \cbIIIY{1.1cm}
         \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIX, \cbIIIY) {Verify on concrete AF};
-        \DrawAttackHorizontal{R}{1.3}{1.5cm}{2.7}{1.5cm}
+        \DrawAttackHorizontal{R}{1.3}{\cbIIIY}{2.7}{\cbIIIY}
 
         % Block connection dotted
-        \draw[dotted,-, line width=0.5mm, >={To[length=4, width=5]}]
-        (4.2cm, 0.45cm) -- (4.2cm, -0.45cm);
+        \draw[densely dotted,-, line width=0.3mm, >={To[length=4, width=5]}]
+        (\cbIIIX, 0.25cm) -- (\cbIIIX, -0.25cm);
 
         % Block 4
         \def \cbIIIIX{4}
-        \def \cbIIIIY{-1.5cm}
+        \def \cbIIIIY{-1.1cm}
         \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIIX, \cbIIIIY) {Verify on concrete AF};
-        \DrawAttackHorizontal{R}{1.3}{-1.5cm}{2.7}{-1.5cm}
+        \DrawAttackHorizontal{R}{1.3}{\cbIIIIY}{2.7}{\cbIIIIY}
 
 
         % Brace
-        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (5.8,-2.25) --  (5.8,2.25);
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (5.8,-1.85) --  (5.8,1.85);
         \DrawAttackHorizontal{R}{5.7}{0}{6.9}{0}
 
         % Check Block
         \def \checkBlockX{8}
         \def \checkBlockY{0}
         \def \checkBlockWidth{2.5cm}
-        \def \checkBlockHeight{4cm}
+        \def \checkBlockHeight{3.5cm}
         \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {If any verify block is \emph{UNSAT}, return spurious};
     \end{tikzpicture}
     \caption{DFS visualization}
@@ -550,70 +550,5 @@ DFS has some overhead, due to the context switches resulting with a longer compu
 
 
 
-
-
-
-\section{Generating Semantics Sets}
-\label{sec:ImplementationsGeneratingSemanticsSets}
-
-To be able to create semantics extensions with a SAT-Solver, we need to encode the semantics (previously defined in \cref{sec:Encodings} and the according refinements in \cref{sec:HeuristicsAndRefinements}) into Boolean logic. Since the semantics definitions are written in an generelazide form, we need to unpack the n-ary con-/disjunction and encode them appropriately.
-
-
-\begin{example}
-Let us have a look at a concrete example with an abstract clustered AF $\hat{G}=(\hat{A}, \hat{R})$ defined in \cref{af:implementationSATExample1}. The arguments of the AF are $\hat{A}=\{c, d, e, \hat{h}\}$, with the cluster $\hat{h}$ containing the arguments $\{a, b\}$ and the rules being $\hat{R}=\bigl\{ (\hat{h}, c)$, $(c, c)$, $(c, d)$, $(c, e)$, $(e, d)$, $(d, e)\bigl\}$.
-
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-        % Singletons
-        \def \cx{1}     \def \cy{0}
-        \def \dx{2}     \def \dy{0}
-        \def \ex{1}     \def \ey{-1}
-        \def \hx{0}     \def \hy{0}
-
-        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a,b$};
-        \node at (0, 0.55) {$\hat{h}$};
-        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
-        \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
-        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
-
-        % Attacks
-        \DrawAttackHorizontal{R}{\hx+0.1}{\hy}{\cx}{\cy}
-        \DrawSelfAttackRightSingleton{\cx}{\cy}
-        \DrawAttackHorizontal{R}{\cx}{\cy}{\dx}{\dy}
-        \DrawAttackVertical{D}{\cx}{\cy}{\ex}{\ey}
-        \DrawAttackDiagonal{PB}{\dx}{\dy}{\ex}{\ey}
-    \end{tikzpicture}
-    \caption{Abstract AF $\hat{G}$}
-    \label{af:implementationSATExample1}
-\end{figure}
-
-
-\paragraph{n-ary conjunction} To concatinate all the arguments with a Boolean AND of the AF \emph{$\hat{G}$}, we use the n-ary conjunction operator. We select an argument \emph{a} from the singletons of the AF \emph{$\hat{G}$} and concatinate them conjunctively. Note, that with the subscript \emph{SINGLE} we only include the singletons of the AF.
-
-$$
-\bigwedge_{a \in \hat{G}_{\!S\!I\!N\!G\!L\!E}} a = c \land d \land e
-$$
-
-
-\paragraph{n-ary disjunction} To concatinate all the arguments of the AF \emph{$\hat{G}$} with a Boolean OR, we use the n-ary disjunction operator. By iterating over all the arguments of the AF \emph{$\hat{G}$} and concatinating them disjunctively we generate the Boolean formula for the SAT-Solver. Note, that this time we do not have the subscript \emph{SINGLE}, so we include the clusters as well.
-
-$$
-\bigvee_{a \in \hat{G}} a = c \lor d \lor e \lor \hat{h}
-$$
-
-\paragraph{extracting attacks} We can also iterate over every attack of the AF $\hat{G}$. We can extract both arguments \emph{a} (being the attacker) and \emph{b} (being the defender) from the attacks by selecting the tuples from \emph{$\hat{R}$}.
-
-$$
-\bigwedge_{(a, b) \in \hat{R}, a\in \hat{G}_{\!S\!I\!N\!G\!L\!E}} \big( a \lor b \big) = (c \lor c) \land
-(c \lor d) \land (c \lor e) \land (e \lor d) \land (d \lor e)
-$$
-\end{example}
-
-With this encoding, we can compute a model with the SAT-Solver and extract a semantics set. If we try to compute another extension, we first have to add a new Boolean rule. This rule removes the previously found model from the satisfiable solutions by adding the negated disjunction of the arguments from the extension. Or formally, if $S$ is the previously found extension, we add the following formula conjunctively to the previous rule set.
-
-$$
-\bigvee_{a \in S} \lnot a
-$$
 
 
