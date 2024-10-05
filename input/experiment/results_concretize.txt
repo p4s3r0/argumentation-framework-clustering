@@ -1,2 +1,7 @@
 timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generator_arg_amount;param_generator_p;param_generator_level;input_file_concrete;input_file_concrete_attacks_amount;input_file_abstract;concretize_args;output_found_solution;output_file_concretized;ran_into_timeout;runtime;CPU_time;memory_consumption;
 
+10/05/24 12:31:00;CHECK;CF;BFS;False;random-based;30;0.5;X;input/experiment/random-based/concrete/args-30-p-50-i-0.af;446;input/experiment/random-based/abstract/args-30-p-50-i-0.af;SPURIOUS;1.303;1.303;195.77734;
+10/05/24 12:31:02;CHECK;CF;BFS;False;random-based;30;0.5;X;input/experiment/random-based/concrete/args-30-p-50-i-1.af;438;input/experiment/random-based/abstract/args-30-p-50-i-1.af;SPURIOUS;0.944;0.944;120.27734;
+10/05/24 12:36:02;CHECK;CF;BFS;False;random-based;30;0.5;X;input/experiment/random-based/concrete/args-30-p-50-i-2.af;440;input/experiment/random-based/abstract/args-30-p-50-i-2.af;TIMEOUT;X;X;X;
+10/05/24 12:36:07;CHECK;CF;BFS;False;random-based;30;0.5;X;input/experiment/random-based/concrete/args-30-p-50-i-3.af;450;input/experiment/random-based/abstract/args-30-p-50-i-3.af;SPURIOUS;1.021;0.679;127.47656;
+10/05/24 12:38:07;CHECK;CF;BFS;False;random-based;30;0.5;X;input/experiment/random-based/concrete/args-30-p-50-i-4.af;453;input/experiment/random-based/abstract/args-30-p-50-i-4.af;SPURIOUS;1.121;0.679;210.47656;
