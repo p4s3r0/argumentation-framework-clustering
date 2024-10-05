@@ -207,11 +207,11 @@ def main():
 
     fig, ax = plt.subplots(1)
     # STABLE
-    plotKaktusBFSandDFS({"random": random_CF + random_AD + random_ST,
-                   "grid": grid_CF + grid_AD + grid_ST,
-                   "level": level_CF + level_AD + level_ST}, ax)
+    plotKaktusBFSandDFS({"random": random_AD + random_ST,
+                   "grid": grid_AD + grid_ST,
+                   "level":  level_AD + level_ST}, ax)
     # SETTINGS
-    fig.suptitle('Memory Consumption BFS vs DFS')
+    fig.suptitle('Kaktus Plot faithful check. x=BFS y=DFS')
     handles, labels = ax.get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
 

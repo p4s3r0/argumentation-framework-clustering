@@ -40,8 +40,6 @@ timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generato
 09/20/24 16:18:17;CHECK;ST;BFS;False;grid-based;20;0.5;X;input/experiment/grid-based/concrete/args-20-p-50-i-0.af;38;input/experiment/grid-based/abstract/args-20-p-50-i-0.af;SPURIOUS;0.181;0.181;104.00391;
 09/20/24 16:18:18;CHECK;ST;BFS;False;grid-based;15;0.5;X;input/experiment/grid-based/concrete/args-15-p-50-i-0.af;22;input/experiment/grid-based/abstract/args-15-p-50-i-0.af;SPURIOUS;0.139;0.139;104.50781;
 09/20/24 16:18:23;CHECK;ST;BFS;False;grid-based;25;0.5;X;input/experiment/grid-based/concrete/args-25-p-50-i-1.af;45;input/experiment/grid-based/abstract/args-25-p-50-i-1.af;SPURIOUS;4.793;4.793;861.86328;
-
-
 09/24/24 12:12:35;CHECK;ST;DFS;True;grid-based;10;0.5;X;input/experiment/grid-based/concrete/args-10-p-50-i-0.af;17;input/experiment/grid-based/abstract/args-10-p-50-i-0.af;SPURIOUS;0.127;0.084;94588.00000;
 09/24/24 12:12:36;CHECK;ST;DFS;True;grid-based;15;0.5;X;input/experiment/grid-based/concrete/args-15-p-50-i-1.af;20;input/experiment/grid-based/abstract/args-15-p-50-i-1.af;SPURIOUS;0.126;0.108;95056.00000;
 09/24/24 12:12:37;CHECK;ST;DFS;True;grid-based;10;0.5;X;input/experiment/grid-based/concrete/args-10-p-50-i-4.af;13;input/experiment/grid-based/abstract/args-10-p-50-i-4.af;SPURIOUS;0.077;0.077;94944.00000;

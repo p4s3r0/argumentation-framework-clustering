@@ -217,8 +217,8 @@ def main():
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
     for approach in ["grid-based"]:
-        for BFS_or_DFS in ["BFS"]:
-            for semantics in ["CF"]:
+        for BFS_or_DFS in ["DFS"]:
+            for semantics in ["ST"]:
                 for refinement in [True, False]:
                     tests = None
                     if approach == "random-based":
@@ -228,8 +228,8 @@ def main():
                     else:
                         tests = test_bench.level_based_testcases
 
-                    #RUN_TEST_FAITHFUL(tests, approach, BFS_or_DFS, semantics, refinement)
-                    RUN_TEST_CONCRETIZE(tests, approach, BFS_or_DFS, semantics, refinement)
+                    RUN_TEST_FAITHFUL(tests, approach, BFS_or_DFS, semantics, refinement)
+                    #RUN_TEST_CONCRETIZE(tests, approach, BFS_or_DFS, semantics, refinement)
 
     # CONCRETIZE ------------------------------------------------------
 
