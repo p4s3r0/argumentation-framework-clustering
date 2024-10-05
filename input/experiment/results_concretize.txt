@@ -1,5 +1,2 @@
 timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generator_arg_amount;param_generator_p;param_generator_level;input_file_concrete;input_file_concrete_attacks_amount;input_file_abstract;concretize_args;output_found_solution;output_file_concretized;ran_into_timeout;runtime;CPU_time;memory_consumption;
 
-10/04/24 23:40:37;CHECK;CF;BFS;True;grid-based;10;0.5;X;input/experiment/grid-based/concrete/args-10-p-50-i-0.af;17;input/experiment/grid-based/abstract/args-10-p-50-i-0.af;TIMEOUT;X;X;X;
-10/04/24 23:40:43;CHECK;CF;BFS;True;grid-based;15;0.5;X;input/experiment/grid-based/concrete/args-15-p-50-i-1.af;20;input/experiment/grid-based/abstract/args-15-p-50-i-1.af;TIMEOUT;X;X;X;
-10/04/24 23:40:45;CHECK;CF;BFS;True;grid-based;10;0.5;X;input/experiment/grid-based/concrete/args-10-p-50-i-4.af;13;input/experiment/grid-based/abstract/args-10-p-50-i-4.af;TIMEOUT;X;X;X;
