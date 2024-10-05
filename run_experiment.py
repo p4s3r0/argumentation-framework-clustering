@@ -214,9 +214,9 @@ def main():
     test_bench = init_testcases()
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
-    for approach in ["grid-based"]:
+    for approach in ["random-based"]:
         for BFS_or_DFS in ["BFS", "DFS"]:
-            for semantics in ["CF"]:
+            for semantics in ["AD"]:
                 for refinement in [True, False]:
                     tests = None
                     if approach == "random-based":
