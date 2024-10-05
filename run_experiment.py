@@ -197,7 +197,7 @@ def RUN_TEST_CONCRETIZE(tests, generator_approach, BFS_DFS, semantics, refinemen
         try:
             process = subprocess.Popen(command, stdout=subprocess.
             PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = process.communicate(timeout=10)
+            stdout, stderr = process.communicate(timeout=300)
             result = stdout
 
             os.system(f"kill {process.pid} > /dev/null 2>&1")
@@ -207,17 +207,16 @@ def RUN_TEST_CONCRETIZE(tests, generator_approach, BFS_DFS, semantics, refinemen
             extractData(test, True, None, refinement=refinement, semantics=semantics, BFSDFS=BFS_DFS, program="CHECK", com=command)
 
         gc.collect()
-        print(f"\n{EXP_OK} Finished Successfully")
-        exit()
+    print(f"\n{EXP_OK} Finished Successfully")
 
 
 def main():
     test_bench = init_testcases()
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
-    for approach in ["random-based", "level-based", "grid-based"]:
-        for BFS_or_DFS in ["DFS", "BFS"]:
-            for semantics in ["ST", "AD", "CF"]:
+    for approach in ["grid-based"]:
+        for BFS_or_DFS in ["BFS", "DFS"]:
+            for semantics in ["CF"]:
                 for refinement in [True, False]:
                     tests = None
                     if approach == "random-based":

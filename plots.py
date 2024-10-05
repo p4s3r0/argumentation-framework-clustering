@@ -119,17 +119,17 @@ def plotSemantics(tests, title, ax):
 
 def main():
 
-    random_ST = readInTestFiles("input/experiment/tests-run/ST/results_faithful_random-based.txt")
-    grid_ST = readInTestFiles("input/experiment/tests-run/ST/results_faithful_grid-based.txt")
-    level_ST = readInTestFiles("input/experiment/tests-run/ST/results_faithful_level-based.txt")
+    random_ST = readInTestFiles("input/experiment/tests-run/faithful/ST/results_faithful_random-based.txt")
+    grid_ST = readInTestFiles("input/experiment/tests-run/faithful/ST/results_faithful_grid-based.txt")
+    level_ST = readInTestFiles("input/experiment/tests-run/faithful/ST/results_faithful_level-based.txt")
     
-    random_AD = readInTestFiles("input/experiment/tests-run/AD/results_faithful_random-based.txt")
-    grid_AD = readInTestFiles("input/experiment/tests-run/AD/results_faithful_grid-based.txt")
-    level_AD = readInTestFiles("input/experiment/tests-run/AD/results_faithful_level-based.txt")
+    random_AD = readInTestFiles("input/experiment/tests-run/faithful/AD/results_faithful_random-based.txt")
+    grid_AD = readInTestFiles("input/experiment/tests-run/faithful/AD/results_faithful_grid-based.txt")
+    level_AD = readInTestFiles("input/experiment/tests-run/faithful/AD/results_faithful_level-based.txt")
 
-    random_CF = readInTestFiles("input/experiment/tests-run/CF/results_faithful_random-based.txt")
-    grid_CF = readInTestFiles("input/experiment/tests-run/CF/results_faithful_grid-based.txt")
-    level_CF = readInTestFiles("input/experiment/tests-run/CF/results_faithful_level-based.txt")
+    random_CF = readInTestFiles("input/experiment/tests-run/faithful/CF/results_faithful_random-based.txt")
+    grid_CF = readInTestFiles("input/experiment/tests-run/faithful/CF/results_faithful_grid-based.txt")
+    level_CF = readInTestFiles("input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
 
     fig, ax = plt.subplots(3, 3)
     # STABLE
