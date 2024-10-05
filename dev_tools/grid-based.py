@@ -170,7 +170,7 @@ def writeGridToAFFile(filename, grid, p):
 
 def main():
     if len(sys.argv) != 3 and len(sys.argv) != 4:
-        print("usage: python3 createAFGridBased.py <arg_amount> <p> (<af_amount>)")
+        print("usage: python3 grid-based.py <arg_amount> <p> (<af_amount>)")
         exit()
 
     arg_amount = int(sys.argv[1])
