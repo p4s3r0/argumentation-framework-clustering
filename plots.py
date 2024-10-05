@@ -44,7 +44,7 @@ def readInTestFiles(filename):
 
 def sortTests(tests):
     return sorted(tests, key=lambda x: (x.param_generator_arg_amount, x.input_file_concrete_attacks_amount))
-        
+
 
 def sortTestsRuntime(tests):
     return sorted(tests, key=lambda x: (x.runtime))
@@ -66,19 +66,40 @@ def plotRefinementVSNoRef(tests, title, ax):
 
 
 
-def plotMemoryConsumption(tests, title, ax):
-    # memory ------------------------------------------------------------------------------------------
-    bfs = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "BFS"])
-    dfs = sortTests([t for t in tests if t.refinement == True and t.DFS_BFS == "DFS"])
+def sortEqualTests(a, b):
+    a_out = list()
+    b_out = list()
+    for t in a:
+        a_out.append(t)
+        for t_ in b:
+            if t_.input_file_concrete[39:] == t.input_file_concrete[39:] and t_.refinement == t.refinement:
+                b_out.append(t_)
+                break
+    return a_out, b_out
 
-    for i, x in enumerate(bfs): x.index = i
-    for i, x in enumerate(dfs): x.index = i
 
-    bfs_line, = ax.plot([x.index for x in bfs], [y.memory_consumption for y in bfs], linewidth=2.0, label='bfs')
-    dfs_line, = ax.plot([x.index for x in dfs], [y.memory_consumption for y in dfs], linewidth=2.0, label='dfs')
 
-    ax.set_title(title)
-    print("bfs:", len(bfs)," - dfs:", len(dfs))
+def plotKaktusBFSandDFS(tests, ax):
+    # BFS and DFS kaktus ------------------------------------------------------------------------------
+    random = sortTests(tests["random"])
+    grid = sortTests(tests["grid"])
+    level = sortTests(tests["level"])
+
+    random_bfs = [t for t in random if t.DFS_BFS == "BFS"]
+    random_dfs = [t for t in random if t.DFS_BFS == "DFS"]
+    random_bfs, random_dfs = sortEqualTests(random_bfs, random_dfs)
+
+    grid_bfs = [t for t in grid if t.DFS_BFS == "BFS"]
+    grid_dfs = [t for t in grid if t.DFS_BFS == "DFS"]
+    grid_bfs, grid_dfs = sortEqualTests(grid_bfs, grid_dfs)
+
+    level_bfs = [t for t in level if t.DFS_BFS == "BFS"]
+    level_dfs = [t for t in level if t.DFS_BFS == "DFS"]
+    level_bfs, level_dfs = sortEqualTests(level_bfs, level_dfs)
+
+    ax.scatter([t.runtime for t in random_bfs], [t.runtime for t in random_dfs], marker='+', label='random')
+    ax.scatter([t.runtime for t in grid_bfs], [t.runtime for t in grid_dfs], marker='o', label='grid')
+    ax.scatter([t.runtime for t in level_bfs], [t.runtime for t in level_dfs], marker='*', label='level')
 
 
 
@@ -116,13 +137,14 @@ def plotSemantics(tests, title, ax):
 
 
 
-
 def main():
+
+
 
     random_ST = readInTestFiles("input/experiment/tests-run/faithful/ST/results_faithful_random-based.txt")
     grid_ST = readInTestFiles("input/experiment/tests-run/faithful/ST/results_faithful_grid-based.txt")
     level_ST = readInTestFiles("input/experiment/tests-run/faithful/ST/results_faithful_level-based.txt")
-    
+
     random_AD = readInTestFiles("input/experiment/tests-run/faithful/AD/results_faithful_random-based.txt")
     grid_AD = readInTestFiles("input/experiment/tests-run/faithful/AD/results_faithful_grid-based.txt")
     level_AD = readInTestFiles("input/experiment/tests-run/faithful/AD/results_faithful_level-based.txt")
@@ -131,9 +153,11 @@ def main():
     grid_CF = readInTestFiles("input/experiment/tests-run/faithful/CF/results_faithful_grid-based.txt")
     level_CF = readInTestFiles("input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
 
+
+
     fig, ax = plt.subplots(3, 3)
     # STABLE
-    plotBFSvsDFS(random_ST, "random ST ", ax[0][0])    
+    plotBFSvsDFS(random_ST, "random ST ", ax[0][0])
     plotBFSvsDFS(grid_ST, "grid ST ", ax[1][0])
     plotBFSvsDFS(level_ST, "level ST ", ax[2][0])
     # ADMISSIBLE
@@ -181,23 +205,15 @@ def main():
 
 
 
-    # fig, ax = plt.subplots(3, 3)
-    # # STABLE
-    # plotMemoryConsumption(random_ST, "random ST", ax[0][0])
-    # plotMemoryConsumption(grid_ST, "grid ST", ax[1][0])
-    # plotMemoryConsumption(level_ST, "level ST", ax[2][0])
-    # # ADMISSIBLE
-    # plotMemoryConsumption(random_AD, "random AD", ax[0][1])
-    # plotMemoryConsumption(grid_AD, "grid AD", ax[1][1])
-    # plotMemoryConsumption(level_AD, "level AD", ax[2][1])
-    # # CONFLICT-FREE
-    # plotMemoryConsumption(random_CF, "random CF", ax[0][2])
-    # plotMemoryConsumption(grid_CF, "grid CF", ax[1][2])
-    # plotMemoryConsumption(level_CF, "level CF", ax[2][2])
-    # # SETTINGS
-    # fig.suptitle('Memory Consumption BFS vs DFS')
-    # handles, labels = ax[0][0].get_legend_handles_labels()
-    # fig.legend(handles, labels, loc='right')
+    fig, ax = plt.subplots(1)
+    # STABLE
+    plotKaktusBFSandDFS({"random": random_CF + random_AD + random_ST,
+                   "grid": grid_CF + grid_AD + grid_ST,
+                   "level": level_CF + level_AD + level_ST}, ax)
+    # SETTINGS
+    fig.suptitle('Memory Consumption BFS vs DFS')
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='right')
 
     plt.show()
 

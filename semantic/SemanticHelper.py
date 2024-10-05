@@ -56,6 +56,7 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
             current_solver.negateSolutions(current_solver.solution[-1])
             for subset in subsets:
                 if not Solver.checkIfSetInSolution(solver=current_solver, sol_set=subset):
+                    # TODO: Check at DFS setting for every solution for spuriousness
                     k += 1
                     Out.CurrSolution(k)
                     current_solver.solution.append(subset)

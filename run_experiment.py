@@ -181,6 +181,8 @@ def RUN_TEST_FAITHFUL(tests, generator_approach, BFS_DFS, semantics, refinement)
 def RUN_TEST_CONCRETIZE(tests, generator_approach, BFS_DFS, semantics, refinement):
     print(f"{EXP} Starting prog=CONCRETIZE gen={generator_approach} {BFS_DFS} {semantics} ref={refinement}")
     for i, test in enumerate(tests):
+        test.abstract = "input/experiment/random-based/abstract/args-10-p-50-i-0.af"
+        test.concrete = "input/experiment/random-based/concrete/args-10-p-50-i-0.af"
         concretize_arguments = list()
         with open(test.abstract, 'r') as f:
             f.readline(); f.readline();
@@ -215,7 +217,7 @@ def main():
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
     for approach in ["random-based"]:
-        for BFS_or_DFS in ["BFS", "DFS"]:
+        for BFS_or_DFS in ["BFS"]:
             for semantics in ["AD"]:
                 for refinement in [True, False]:
                     tests = None
