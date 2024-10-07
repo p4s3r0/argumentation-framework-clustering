@@ -72,7 +72,6 @@ def extract_data_faithful(res, com):
         temp.append(line)
 
     if len(temp) < 5:
-        print("\n", temp, com, end="\n\n")
         data = {
             "result": "TIMEOUT",
             "runtime": "X",
@@ -106,7 +105,7 @@ def getDataFromFile(test):
 
 
 def writeTestResultToFile(data):
-    with open(f"input/experiment/results_concretize.txt", 'a') as f:
+    with open(f"input/experiment/results_faithful.txt", 'a') as f:
         f.write(f"{data['timestamp']};")
         f.write(f"{data['program']};")
         f.write(f"{data['semantics']};")
@@ -181,8 +180,6 @@ def RUN_TEST_FAITHFUL(tests, generator_approach, BFS_DFS, semantics, refinement)
 def RUN_TEST_CONCRETIZE(tests, generator_approach, BFS_DFS, semantics, refinement):
     print(f"{EXP} Starting prog=CONCRETIZE gen={generator_approach} {BFS_DFS} {semantics} ref={refinement}")
     for i, test in enumerate(tests):
-        test.abstract = "input/experiment/random-based/abstract/args-10-p-50-i-0.af"
-        test.concrete = "input/experiment/random-based/concrete/args-10-p-50-i-0.af"
         concretize_arguments = list()
         with open(test.abstract, 'r') as f:
             f.readline(); f.readline();
@@ -216,9 +213,9 @@ def main():
     test_bench = init_testcases()
     do_tests = False
     # FAITHFUL ---------------------------------------------------------
-    for approach in ["random-based"]:
-        for BFS_or_DFS in ["BFS"]:
-            for semantics in ["AD"]:
+    for approach in ["grid-based"]:
+        for BFS_or_DFS in ["BFS", "DFS"]:
+            for semantics in ["ST"]:
                 for refinement in [True, False]:
                     tests = None
                     if approach == "random-based":
