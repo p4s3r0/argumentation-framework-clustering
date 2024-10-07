@@ -83,7 +83,6 @@ timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generato
 09/27/24 09:26:47;CHECK;AD;DFS;False;grid-based;25;0.5;X;input/experiment/grid-based/concrete/args-25-p-50-i-4.af;47;input/experiment/grid-based/abstract/args-25-p-50-i-4.af;FAITHFUL;1.805;1.802;93856.00000;
 09/27/24 09:26:48;CHECK;AD;DFS;False;grid-based;25;0.5;X;input/experiment/grid-based/concrete/args-25-p-50-i-0.af;38;input/experiment/grid-based/abstract/args-25-p-50-i-0.af;SPURIOUS;0.353;0.351;94756.00000;
 09/27/24 09:26:54;CHECK;AD;DFS;False;grid-based;20;0.5;X;input/experiment/grid-based/concrete/args-20-p-50-i-1.af;33;input/experiment/grid-based/abstract/args-20-p-50-i-1.af;FAITHFUL;5.198;5.135;93948.00000;
-timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generator_arg_amount;param_generator_p;param_generator_level;input_file_concrete;input_file_concrete_attacks_amount;input_file_abstract;result;runtime;CPU_time;memory_consumption;
 10/07/24 13:12:22;CHECK;AD;BFS;True;grid-based;30;0.5;X;input/experiment/grid-based/concrete/args-30-p-50-i-3.af;55;input/experiment/grid-based/abstract/args-30-p-50-i-3.af;TIMEOUT;X;X;X;
 10/07/24 13:17:22;CHECK;AD;BFS;True;grid-based;30;0.5;X;input/experiment/grid-based/concrete/args-30-p-50-i-2.af;56;input/experiment/grid-based/abstract/args-30-p-50-i-2.af;TIMEOUT;X;X;X;
 10/07/24 13:22:22;CHECK;AD;BFS;True;grid-based;30;0.5;X;input/experiment/grid-based/concrete/args-30-p-50-i-1.af;49;input/experiment/grid-based/abstract/args-30-p-50-i-1.af;TIMEOUT;X;X;X;

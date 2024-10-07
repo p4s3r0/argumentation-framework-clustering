@@ -9,6 +9,7 @@ timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generato
 09/20/24 18:08:04;CHECK;AD;BFS;True;level-based;10;0.5;X;input/experiment/level-based/concrete/args-10-p-50-i-4.af;12;input/experiment/level-based/abstract/args-10-p-50-i-4.af;FAITHFUL;1.422;0.369;103.87891;
 09/20/24 18:08:16;CHECK;AD;BFS;True;level-based;20;0.5;X;input/experiment/level-based/concrete/args-20-p-50-i-2.af;25;input/experiment/level-based/abstract/args-20-p-50-i-2.af;FAITHFUL;10.857;10.555;109.64453;
 09/20/24 18:13:16;CHECK;AD;BFS;True;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-0.af;39;input/experiment/level-based/abstract/args-30-p-50-i-0.af;TIMEOUT;X;X;X;
+09/20/24 18:13:16;CHECK;AD;BFS;True;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-1.af;39;input/experiment/level-based/abstract/args-30-p-50-i-1.af;TIMEOUT;X;X;X;
 09/20/24 18:13:18;CHECK;AD;BFS;True;level-based;15;0.5;X;input/experiment/level-based/concrete/args-15-p-50-i-2.af;12;input/experiment/level-based/abstract/args-15-p-50-i-2.af;SPURIOUS;2.191;2.188;107.25391;
 09/20/24 18:13:20;CHECK;AD;BFS;True;level-based;15;0.5;X;input/experiment/level-based/concrete/args-15-p-50-i-4.af;25;input/experiment/level-based/abstract/args-15-p-50-i-4.af;SPURIOUS;1.253;1.250;116.05469;
 09/20/24 18:13:42;CHECK;AD;BFS;True;level-based;25;0.5;X;input/experiment/level-based/concrete/args-25-p-50-i-4.af;34;input/experiment/level-based/abstract/args-25-p-50-i-4.af;FAITHFUL;21.777;21.774;168.63281;
@@ -33,6 +34,7 @@ timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generato
 09/20/24 18:40:18;CHECK;AD;BFS;False;level-based;10;0.5;X;input/experiment/level-based/concrete/args-10-p-50-i-4.af;12;input/experiment/level-based/abstract/args-10-p-50-i-4.af;FAITHFUL;0.365;0.365;103.75391;
 09/20/24 18:40:29;CHECK;AD;BFS;False;level-based;20;0.5;X;input/experiment/level-based/concrete/args-20-p-50-i-2.af;25;input/experiment/level-based/abstract/args-20-p-50-i-2.af;FAITHFUL;10.851;10.851;109.51953;
 09/20/24 18:45:29;CHECK;AD;BFS;False;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-0.af;39;input/experiment/level-based/abstract/args-30-p-50-i-0.af;TIMEOUT;X;X;X;
+09/20/24 18:45:29;CHECK;AD;BFS;False;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-1.af;39;input/experiment/level-based/abstract/args-30-p-50-i-1.af;TIMEOUT;X;X;X;
 09/20/24 18:45:32;CHECK;AD;BFS;False;level-based;15;0.5;X;input/experiment/level-based/concrete/args-15-p-50-i-2.af;12;input/experiment/level-based/abstract/args-15-p-50-i-2.af;SPURIOUS;2.195;2.187;107.07812;
 09/20/24 18:45:34;CHECK;AD;BFS;False;level-based;15;0.5;X;input/experiment/level-based/concrete/args-15-p-50-i-4.af;25;input/experiment/level-based/abstract/args-15-p-50-i-4.af;SPURIOUS;1.212;1.212;116.00391;
 09/20/24 18:45:55;CHECK;AD;BFS;False;level-based;25;0.5;X;input/experiment/level-based/concrete/args-25-p-50-i-4.af;34;input/experiment/level-based/abstract/args-25-p-50-i-4.af;FAITHFUL;21.394;21.393;168.37891;
@@ -70,6 +72,7 @@ timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generato
 09/27/24 09:44:16;CHECK;AD;DFS;True;level-based;20;0.5;X;input/experiment/level-based/concrete/args-20-p-50-i-4.af;22;input/experiment/level-based/abstract/args-20-p-50-i-4.af;SPURIOUS;0.105;0.101;94516.00000;
 09/27/24 09:44:17;CHECK;AD;DFS;True;level-based;10;0.5;X;input/experiment/level-based/concrete/args-10-p-50-i-3.af;18;input/experiment/level-based/abstract/args-10-p-50-i-3.af;FAITHFUL;0.084;0.079;94900.00000;
 09/27/24 09:49:17;CHECK;AD;DFS;True;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-0.af;39;input/experiment/level-based/abstract/args-30-p-50-i-0.af;TIMEOUT;X;X;X;
+09/20/24 18:45:29;CHECK;AD;BFS;False;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-1.af;39;input/experiment/level-based/abstract/args-30-p-50-i-1.af;TIMEOUT;X;X;X;
 09/27/24 09:49:18;CHECK;AD;DFS;True;level-based;15;0.5;X;input/experiment/level-based/concrete/args-15-p-50-i-2.af;12;input/experiment/level-based/abstract/args-15-p-50-i-2.af;FAITHFUL;0.095;0.095;94652.00000;
 09/27/24 09:49:20;CHECK;AD;DFS;True;level-based;25;0.5;X;input/experiment/level-based/concrete/args-25-p-50-i-4.af;34;input/experiment/level-based/abstract/args-25-p-50-i-4.af;FAITHFUL;1.285;1.282;95136.00000;
 09/27/24 09:54:20;CHECK;AD;DFS;True;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-4.af;44;input/experiment/level-based/abstract/args-30-p-50-i-4.af;TIMEOUT;X;X;X;
@@ -94,6 +97,7 @@ timestamp;program;semantics;DFS/BFS;refinement;generator_approach;param_generato
 09/27/24 10:10:37;CHECK;AD;DFS;False;level-based;20;0.5;X;input/experiment/level-based/concrete/args-20-p-50-i-4.af;22;input/experiment/level-based/abstract/args-20-p-50-i-4.af;SPURIOUS;0.388;0.383;93660.00000;
 09/27/24 10:10:38;CHECK;AD;DFS;False;level-based;10;0.5;X;input/experiment/level-based/concrete/args-10-p-50-i-3.af;18;input/experiment/level-based/abstract/args-10-p-50-i-3.af;FAITHFUL;0.057;0.056;94636.00000;
 09/27/24 10:15:35;CHECK;AD;DFS;False;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-0.af;39;input/experiment/level-based/abstract/args-30-p-50-i-0.af;FAITHFUL;295.711;295.357;968740.00000;
+09/20/24 18:45:29;CHECK;AD;BFS;False;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-1.af;39;input/experiment/level-based/abstract/args-30-p-50-i-1.af;TIMEOUT;X;X;X;
 09/27/24 10:15:36;CHECK;AD;DFS;False;level-based;15;0.5;X;input/experiment/level-based/concrete/args-15-p-50-i-2.af;12;input/experiment/level-based/abstract/args-15-p-50-i-2.af;FAITHFUL;0.098;0.096;94272.00000;
 09/27/24 10:15:38;CHECK;AD;DFS;False;level-based;25;0.5;X;input/experiment/level-based/concrete/args-25-p-50-i-4.af;34;input/experiment/level-based/abstract/args-25-p-50-i-4.af;FAITHFUL;1.292;1.287;96680.00000;
 09/27/24 10:20:38;CHECK;AD;DFS;False;level-based;30;0.5;X;input/experiment/level-based/concrete/args-30-p-50-i-4.af;44;input/experiment/level-based/abstract/args-30-p-50-i-4.af;TIMEOUT;X;X;X;
