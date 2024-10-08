@@ -1,6 +1,6 @@
 \chapter{Introduction}
 % Argumentation in general and in research.
-We all encounter arguments in our lives frequently. When talking to friends, listening to political discussions, or even making decisions in our head. These arguments can get heated and complex since humans have different beliefs and motivations. Finding a common ground or a ''correct`` conclusion is complicated and sometimes impossible. However, these imperfections are what make us humans. \ac{AI}, conversely, needs to act precisely and logically \cite{DBLP:journals/frai/DietzKM24}. To do so, the data needs to be stored and structured in a way, that AI can extract informations from it. This is part of knowledge representation and reasoning and that is why much research is being done in that field \cite{DBLP:journals/dagstuhl-manifestos/DelgrandeG0TW24, DBLP:journals/inffus/PopescuD23}.
+We all encounter arguments in our lives frequently. When talking to friends, listening to political discussions, or even making decisions in our head. These arguments can get heated and complex since humans have different beliefs and motivations. Finding a common ground or a ''correct`` conclusion is complicated and sometimes impossible. However, these imperfections are what make us humans. Artificial Intelligence (AI), conversely, needs to act precisely and logically \cite{DBLP:journals/frai/DietzKM24}. To do so, the data needs to be stored and structured in a way, that AI can extract informations from it. This is part of knowledge representation and reasoning and that is why much research is being done in that field \cite{DBLP:journals/dagstuhl-manifestos/DelgrandeG0TW24, DBLP:journals/inffus/PopescuD23}.
 
 % Abstraction of Argumentation -> promises and conclusions, attacks
 Arguments can have many forms \cite{Toulmin_2003}. For instance, arguments can be seen as derivations of conclusions, based on assumptions or premises. Such premises can be facts or defeasible assumptions. Relations among arguments are key for driving (automated) argumentative reasoning. A prominent relation between arguments is that of an attack relation, or counter-argument relation. For instance, an argument might attack another. As an example, one argument might conclude that a square is red, while another is concluding that a square is blue. These two arguments are conflicting, and mutually attack each other. Another example would be that an argument is based on a witness statement, while a counter-argument to this one claims that the witness is not truthful, leading to a one-directional attack.
@@ -21,7 +21,7 @@ Finally, an admissible set is a conflict-free set, where each argument in \texti
 Since AFs can get very big and complicated, another layer of abstraction can be added. This abstraction layer is called \emph{clustering} and generalizes multiple arguments into one bundled cluster \cite{DBLP:conf/kr/SaribaturW21}. In this thesis we refer to the clustered AF as \emph{abstract AF} and the original AF, where no clustering occurs is called \emph{concrete AF}.
 Clustering of arguments is a technique to reduce the number of arguments and to provide a high-level view of a given AF. Here, clustering means that arguments can be clustered together in clusters (or clustered arguments). In general, as is the case with many abstraction techniques, clustering can change conclusions that can be drawn from an abstracted formalism. A clustering is said to be \emph{faithful} if no erroneous conclusions can be drawn that is not part of the original, non-abstracted, structure. Otherwise, if conclusions can be drawn that are not there on the original structure, we say that these are \emph{spurious} conclusions.
 
-In our case, the semantics of conflict-free, admissibility, and stable semantics were "lifted`` to the case with clustered arguments. That is, a clustered (abstracted) version of conflict-free sets, admissible sets, and stable extensions was defined on clustered AFs. These semantics respect the clustering of arguments. Then, e.g., an abstract admissible set is spurious if there is no (concrete, non-abstract) admissible set matching this one in the concrete AF. If no such spurious sets exist, then the clustered AF is said to be faithful, w.r.t.\ the concrete AF.
+In our case, the semantics of conflict-free, admissibility, and stable semantics were "lifted`` to the case with clustered arguments. That is, a clustered (abstracted) version of conflict-free sets, admissible sets, and stable extensions was defined on abstract AFs. These semantics respect the clustering of arguments. Then, e.g., an abstract admissible set is spurious if there is no (concrete, non-abstract) admissible set matching this one in the concrete AF. If no such spurious sets exist, then the abstract AF is said to be faithful, w.r.t.\ the concrete AF.
 
 
 
@@ -144,27 +144,26 @@ Creating abstract, faithful AFs can be challenging and is the main focus of this
 We created one of the first tools to produce an abstract AFs based on a concrete AFs. We cover different setups and usages, including different semantics and base functionalities. The main contributions of this thesis are as follows.
 
 \begin{itemize}
-    \item We provide algorithms for computing abstract semantics of a given clustered AF. That is, our algorithms are capable of computing or enumerating all extensions under abstract conflict-free, admissible, and stable semantics.
+    \item We provide algorithms for computing abstract semantics of a given abstract AF. That is, our algorithms are capable of computing or enumerating all extensions under abstract conflict-free, admissible, and stable semantics.
 
-    \item Based on our algorithms for computing abstract semantics, we provide algorithmic solutions for checking faithfulness of a given clustered AF. We develop two approaches in this regard: (i) one of based on breadth-first-search (BFS) and (ii) one based on depth-first search (DFS). While the algorithm based on BFS first calculates all original extensions and abstract extensions of a given AF and clustered AF, respectively, the DFS variant iteratively computes abstract extensions of the clustered AF and verifies (non-)spuriousness of this extension.
-
-    \item Towards user-interaction, for a given AF and clustered AF, we provide an algorithm for concretization, by which we mean that a user can select arguments inside clusters to be made concrete (singletons). We then refine the clustered AF until faithfulness is reached, since the extraction of the user-defined arguments may result in spurious reasoning.
+    \item Based on our algorithms for computing abstract semantics, we provide algorithmic solutions for checking faithfulness of a given clustered AF. We develop two approaches in this regard: (i) one of based on breadth-first-search (BFS) and (ii) one based on depth-first search (DFS). While the algorithm based on BFS first calculates all original extensions and abstract extensions of a given AF and abstract AF, respectively, the DFS variant iteratively computes abstract extensions of the abstract AF and verifies (non-)spuriousness of this extension.
     
-    \item We implemented our algorithms in TODO how? and provide the implementations in open-source.
-    \item In an experimental evaluation, $\cdots$ TODO results.
-    \item $\cdots$
+    \item In regard of computing faithfulness or spuriousness, we developed different refinements for the corresponding semantics.
+
+    \item Towards user-interaction, for a given AF and abstract AF, we provide an algorithm for concretization, by which we mean that a user can select arguments inside clusters to be made concrete (singletons). We then refine the abstract AF until faithfulness is reached, since the extraction of the user-defined arguments may result in spurious reasoning.
+
+    \item Furthermore, we provide an algorithm to transform a given spurious abstract AF into a faithful abstract AF by concretizing arguments into singletons.
+
+    \item We implemented our algorithms in python3 with the SAT-Solver z3, created by Microsoft and provide the implementations in open-source.
+
+    \item In an experimental evaluation, we tested the efficiency of the tool on the various algorithms and provided a deep insight on the impact of different approaches (BFS, DFS, refinements and no-refinements).
 \end{itemize}
 
-We provide an open source implementation of the previously listed tools \cite{Pasero2024-AFClustering-Repo}.
+We provide an open-source implementation of the previously listed tools \cite{Pasero2024-AFClustering-Repo}.
 
 \begin{center}
     \url{https://github.com/p4s3r0/argumentation-framework-clustering}
 \end{center}
 
-\noindent
 
-\textit{TODO: Further contributions}
-
-\textit{TODO: Choice of methods to obtain results}
-
-\textit{TODO: How big AFs are still feasible to solve}
+Our tool can still solve most of the argumentation frameworks with a total argument size of $30$. We can even go further, but it is highly dependend on the structure of the argumentation framework and the semantic.

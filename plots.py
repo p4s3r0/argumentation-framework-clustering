@@ -242,7 +242,6 @@ def main():
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_random-based.txt")
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_grid-based.txt")
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
-    
     #plotBFSvsDFS(fai_tests, "CONCRETIZE program BFS vs DFS")
     # plotRefinementVSNoRef(fai_tests, "CONCRETIZE program REF vs NO-REF")
     # plotBFSvsDFSDirect(fai_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
@@ -269,7 +268,7 @@ def main():
 
     plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
     # plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
-    # plotBFSvsDFSDirect(con_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
+    # plotBFSvsDFSDirect(con_tests, "CONCRETIZE program BFS vs DFS")
     plt.show()
     calculateValues(con_tests)
 

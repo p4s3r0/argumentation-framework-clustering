@@ -98,6 +98,7 @@ def main():
         if args.experiment:
             out_file = f"{args.input_file[:args.input_file.find('abstract')]}solution/{args.semantic}/{ args.input_file[args.input_file.find('args'):]}"
 
+
         res = Programs.concretizeAF(concrete_file=args.compare_input_file, abstract_file=args.input_file, semantic=args.semantic, algorithm=args.algorithm, concretize=args.concretize, visualize=args.visualize, no_refinement=args.no_ref, solution_out=out_file)
         if res == "too_many":
             print("ABORTED")

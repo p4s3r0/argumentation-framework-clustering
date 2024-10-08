@@ -46,7 +46,7 @@ AFs are represented by a directed graph, where the nodes are an abstraction of t
             \DrawAttackDiagonal{PLR}{\cx}{\cy}{\dx}{\dy}
             \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
         \end{tikzpicture}
-        \caption{\ac{AF} $G$}
+        \caption{AF $G$}
         \label{af:backgroundAFexample1}
     \end{figure}
 \end{example}
@@ -106,7 +106,7 @@ To be able to conclude something, out of an abstract AF, we need to define seman
 \end{example}
 
 
-The specific rules of a semantics can also be defined via a Boolean formula \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}. Which then can be used to encode the AFs to be solvable with different solvers like \ac{ASP} \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a \ac{SAT-Solver} \cite{DBLP:journals/amai/AmgoudD13}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be ''beyond`` NP to decide whether an argument is acceptable (whether there exists, e.g., an admissible set containing a queried argument) under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}.
+The specific rules of a semantics can also be defined via a Boolean formula \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}. Which then can be used to encode the AFs to be solvable with different solvers like Answer Set Programming (ASP) \cite{DBLP:journals/corr/abs-1301-1388} or, as in our case, with a SAT-Solver \cite{DBLP:journals/amai/AmgoudD13}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be ''beyond`` NP to decide whether an argument is acceptable (whether there exists, e.g., an admissible set containing a queried argument) under a specific argumentation semantics \cite{DBLP:journals/ai/DvorakGRW23}.
 
 
 
@@ -137,7 +137,7 @@ Clustered abstract AFs can also be modelled with graphs. One can represent each 
         \DrawAttackHorizontal{R}{\hx+0.5}{\hy}{\dx}{\dy}
         \DrawAttackHorizontal{B}{\ex}{\ey}{\dx}{\dy}
     \end{tikzpicture}
-    \caption{\ac{AF} $\hat{G}$ clustered}
+    \caption{AF $\hat{G}$ clustered}
     \label{af:backgroundExampleClusterSpurious}
 \end{figure}
 
