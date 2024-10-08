@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 
 timeout = 300
-
+out_f = 0
 
 class test:
     def __init__(self, timestamp, program, semantics, DFS_BFS, refinement, generator_approach, param_generator_arg_amount, param_generator_p, param_generator_level, input_file_concrete, input_file_concrete_attacks_amount, input_file_abstract, result, runtime, CPU_time, memory_consumption) -> None:
@@ -53,74 +53,32 @@ def sortTestsRuntime(tests):
 
 
 
-def sortEqualTests(a, b):
-    a_out = list()
-    b_out = list()
-
-    print("as", len(a))
-
-    for t in a:
-        a_out.append(t)
-        for t_ in b:
-            if t_.input_file_concrete[39:] == t.input_file_concrete[39:] and t_.refinement == t.refinement:
-                b_out.append(t_)
-                break
-    return a_out, b_out
-
-
-
-def plotKaktusBFSandDFS(tests, ax):
-    # BFS and DFS kaktus ------------------------------------------------------------------------------
-    random = sortTests(tests["random"])
-    grid = sortTests(tests["grid"])
-    level = sortTests(tests["level"])
-
-
-    random, grid = sortEqualTests(random, grid)
-    print(len(random), len(grid))
-    grid, level = sortEqualTests(grid, random)
-
-    random_bfs = [t for t in random if t.DFS_BFS == "BFS"]
-    random_dfs = [t for t in random if t.DFS_BFS == "DFS"]
-    random_bfs, random_dfs = sortEqualTests(random_bfs, random_dfs)
-
-    grid_bfs = [t for t in grid if t.DFS_BFS == "BFS"]
-    grid_dfs = [t for t in grid if t.DFS_BFS == "DFS"]
-    grid_bfs, grid_dfs = sortEqualTests(grid_bfs, grid_dfs)
-
-    level_bfs = [t for t in level if t.DFS_BFS == "BFS"]
-    level_dfs = [t for t in level if t.DFS_BFS == "DFS"]
-    level_bfs, level_dfs = sortEqualTests(level_bfs, level_dfs)
-
-    print(len(grid_bfs))
-
-    ax.scatter([t.runtime for t in random_bfs], [t.runtime for t in random_dfs], marker='+', label='random')
-    ax.scatter([t.runtime for t in grid_bfs], [t.runtime for t in grid_dfs], marker='o', label='grid')
-    ax.scatter([t.runtime for t in level_bfs], [t.runtime for t in level_dfs], marker='*', label='level')
-
-    ax.set_ylabel("Runtime BFS [s]")
-    ax.set_xlabel("Runtime DFS [s]")
 
 
 
 
-def plotSemantics(tests, title, ax):
-    # Semantics ------------------------------------------------------------------------------------------
-    cf = sortTestsRuntime(tests["CF"])
-    ad = sortTestsRuntime(tests["AD"])
-    st = sortTestsRuntime(tests["ST"])
+def plotSemantics(test_runs, title):
+    fig, ax = plt.subplots()
 
-    for i, x in enumerate(cf): x.index = i
-    for i, x in enumerate(ad): x.index = i
-    for i, x in enumerate(st): x.index = i
+    data = {"CF": list(), "AD": list(), "ST": list()}
+    for sem in ["CF", "AD", "ST"]:
+        for gen in ["random-based", "grid-based", "level-based"]:
+            for file in test_runs[gen]:
+                    for DFS_BFS in ["BFS", "DFS"]:
+                        for ref in ["True", "False"]:
+                            data[sem].append(test_runs[gen][file][sem][DFS_BFS][ref].runtime)
+    data["CF"] = sorted(data["CF"])
+    data["AD"] = sorted(data["AD"])
+    data["ST"] = sorted(data["ST"])
 
-    cf_line, = ax.plot([x.index for x in cf], [y.runtime for y in cf], linewidth=2.0, label='CF')
-    ad_line, = ax.plot([x.index for x in ad], [y.runtime for y in ad], linewidth=2.0, label='AD')
-    st_line, = ax.plot([x.index for x in st], [y.runtime for y in st], linewidth=2.0, label='ST')
-
-    print("cf:", len(cf)," - ad:", len(ad), " - st:", len(st))
-
-
+    cf_line, = ax.plot(data["CF"], range(len(data["CF"])), linewidth=2.0, label='CF')
+    ad_line, = ax.plot(data["AD"], range(len(data["AD"])), linewidth=2.0, label='AD')
+    st_line, = ax.plot(data["ST"], range(len(data["ST"])), linewidth=2.0, label='ST')
+    
+    ax.set_ylabel("Testrun numeration")
+    ax.set_xlabel("Runtime [s]")
+    ax.set_title(title)
+    plt.show()
 
 
 
@@ -131,7 +89,6 @@ def readTestFile(test_runs, file_name):
             if line == '\n':
                 continue
             line = line.split(';')
-            print(line)
             t = test(line[0], line[1], line[2], line[3], line[4], line[5], line[6], line[7], line[8], line[9], line[10], line[11], line[12], line[13], line[14], line[15])
 
             if t.generator_approach not in test_runs:
@@ -158,11 +115,8 @@ def plotBFSvsDFS(test_runs, title):
         for x, sem in enumerate(["CF", "AD", "ST"]):
             data = list()
             for file in test_runs[gen]:
-                try:
-                    data.append((test_runs[gen][file][sem]["BFS"]["True"], test_runs[gen][file][sem]["DFS"]["True"]))
-                    data.append((test_runs[gen][file][sem]["BFS"]["False"], test_runs[gen][file][sem]["DFS"]["False"]))
-                except:
-                    print(gen, file, sem)
+                data.append((test_runs[gen][file][sem]["BFS"]["True"], test_runs[gen][file][sem]["DFS"]["True"]))
+                data.append((test_runs[gen][file][sem]["BFS"]["False"], test_runs[gen][file][sem]["DFS"]["False"]))
             # sort data over BFS runtime
             sorted_data = sorted(data, key=lambda t: (t[0].runtime, t[1].runtime))
             ax[y][x].plot([y[0].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='BFS')
@@ -170,12 +124,14 @@ def plotBFSvsDFS(test_runs, title):
             ax[y][x].set_ylabel("Testrun numeration")
             ax[y][x].set_xlabel("Runtime [s]")
             ax[y][x].set_title(f"{gen} {sem}")
+            printForThesis([y[0].runtime for y in sorted_data], range(len(sorted_data)))
+            printForThesis([y[1].runtime for y in sorted_data], range(len(sorted_data)))
+
 
     fig.suptitle(title)
     handles, labels = ax[0][0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
-    plt.show()
-
+    #plt.show()
 
 
 def plotRefinementVSNoRef(test_runs, title):
@@ -186,10 +142,7 @@ def plotRefinementVSNoRef(test_runs, title):
             data = list()
             for file in test_runs[gen]:
                 for BFS_DFS in ["BFS", "DFS"]:
-                    try:
-                        data.append((test_runs[gen][file][sem][BFS_DFS]["True"], test_runs[gen][file][sem][BFS_DFS]["False"]))
-                    except:
-                        print(gen, file, sem)
+                    data.append((test_runs[gen][file][sem][BFS_DFS]["True"], test_runs[gen][file][sem][BFS_DFS]["False"]))
             # sort data over BFS runtime
             sorted_data = sorted(data, key=lambda t: (t[0].runtime, t[1].runtime))
             ax[y][x].plot([y[0].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='REF')
@@ -233,6 +186,49 @@ def plotBFSvsDFSDirect(test_runs, title):
 
 
 
+
+def calculateValues(test_runs):
+    for sem in ["CF", "AD", "ST"]:
+        runtime_per_arg = {
+            "10": [0, 0, 0],
+            "15": [0, 0, 0],
+            "20": [0, 0, 0],
+            "25": [0, 0, 0],
+            "30": [0, 0, 0],
+        }
+        timeout_amount = 0
+        tests_amount = 0
+
+        for gen in ["random-based", "grid-based", "level-based"]:
+            for file in test_runs[gen]:
+                    for BFS_DFS in ["BFS", "DFS"]:
+                        for ref in ["True", "False"]:
+                            t = test_runs[gen][file][sem][BFS_DFS][ref]
+                            runtime_per_arg[str(t.param_generator_arg_amount)][0] += t.runtime
+                            runtime_per_arg[str(t.param_generator_arg_amount)][1] += 1
+                            if t.runtime == timeout:
+                                runtime_per_arg[str(t.param_generator_arg_amount)][2] += 1
+                                timeout_amount += 1
+                            tests_amount += 1
+
+        print(f"STATS for {sem}")
+        for arg in runtime_per_arg:
+            print(f"{arg}: {runtime_per_arg[arg][0]/runtime_per_arg[arg][1]:0.2f} (timeout: {runtime_per_arg[arg][2]}/{runtime_per_arg[arg][1]})")
+        print(f"timeout: {timeout_amount}/{tests_amount}")
+
+
+
+
+def printForThesis(x, y):
+    global out_f
+    out_f += 1
+    with open(f"plot/out_plot_{out_f}.dat", "w") as f:
+        f.write("x y\n")
+        for i in range(len(x)):
+            f.write(f"{x[i]} {y[i]}\n")
+
+
+
 def main():
     fai_tests = dict()
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/ST/results_faithful_random-based.txt")
@@ -247,12 +243,12 @@ def main():
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_grid-based.txt")
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
     
-    plotBFSvsDFS(fai_tests, "CONCRETIZE program BFS vs DFS")
-    plotRefinementVSNoRef(fai_tests, "CONCRETIZE program REF vs NO-REF")
-    plotBFSvsDFSDirect(fai_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
-    plt.show()
+    #plotBFSvsDFS(fai_tests, "CONCRETIZE program BFS vs DFS")
+    # plotRefinementVSNoRef(fai_tests, "CONCRETIZE program REF vs NO-REF")
+    # plotBFSvsDFSDirect(fai_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
+    # plotSemantics(fai_tests, "Runtime of Testruns per Semantic")
 
-    exit()
+
 
 
 
@@ -271,10 +267,11 @@ def main():
     readTestFile(con_tests, "input/experiment/tests-run/concretize/CF/results_concretize_level-based.txt")
 
 
-    #plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
-    #plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
+    plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
+    # plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
     # plotBFSvsDFSDirect(con_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
     plt.show()
+    calculateValues(con_tests)
 
 
 

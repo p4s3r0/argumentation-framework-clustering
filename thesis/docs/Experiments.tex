@@ -4,10 +4,9 @@
 \textit{TODO: Explain how program is called}
 
 \section{Setup}
-The experiment was conducted on a personal computer environment. The exact specification can be seen in \cref{table:ExperimentSpecs}. Generally, we used an AMD CPU with 6 cores and 12 Threads running the \textit{x86\_64} architecture. We had a total RAM memory of 16GB, which sometimes was not enough and we had to add another 16GB of SWAP memory. Every testrun was conducted on the same setup, running Linux as primarily OS.
+The experiment was conducted on a personal computer environment. The exact specification can be seen in \cref{table:ExperimentSpecs}. Generally, we used an AMD CPU with 6 cores and 12 Threads running the \textit{x86\_64} architecture. We had a total RAM memory of 16GB, which sometimes was not enough and we had to add another 16GB of SWAP memory. Every testrun was conducted on the same setup, running Linux as primary OS.
 
-
-\begin{table}[htb]
+\begin{table}[H]
     \centering
     \caption{Experiment Setup Specifications}
     \begin{tabular}{ |l|l| }
@@ -25,8 +24,600 @@ The experiment was conducted on a personal computer environment. The exact speci
 \label{table:ExperimentSpecs}
 \end{table}
 
-\section{DFS and BFS comparison}
-\textit{TODO: Compare DFS with BFS}
 
-\section{Different AF types comparison}
-\textit{TODO: Compare Grid Based, Random, Level Approach}
+
+
+\section{Comparison of BFS and DFS Approach for Spurious Check}
+
+
+\begin{table}[htb]
+    \centering
+    \caption{Testruns Statistics spurious check mean runtime}
+    \begin{tabular}{ |l|l|l|l| }
+        \hline
+            arguments amount & CF [s] (timeout)& AD [s] (timeout)& ST [s] (timeout)\\
+        \hline
+            10 &   0.29 \hfill(0/60)  &   0.20 \hfill (0/60)  &   0.09 \hfill (0/60) \\
+            15 &   3.91 \hfill(0/60)  &   0.81 \hfill (0/60)  &   0.13 \hfill (0/60) \\
+            20 &  87.47 \hfill(13/60) &   6.56 \hfill (0/60)  &   0.34 \hfill (0/60) \\
+            25 & 109.23 \hfill(20/60) &  37.69 \hfill (0/60)  &   4.72 \hfill (0/60) \\
+            30 & 150.07 \hfill(26/60) & 175.41 \hfill (32/60) &  39.88 \hfill (6/60) \\
+        \hline
+    \end{tabular}
+\label{table:ExperimentStatisticsConcretize}
+\end{table}
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            xlabel={Runtime [s]},
+            ylabel={Testrun},
+            xmin=0, xmax=310,
+            ymin=38, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/CF/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over conflict-free semantics}
+    \label{fig:expfaithful/BFSvsDFS/random/CF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=38, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/AD/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over admissible semantics}
+    \label{fig:expfaithful/BFSvsDFS/random/AD}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=38, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/ST/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over stable semantics}
+    \label{fig:expfaithful/BFSvsDFS/random/ST}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/CF/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over conflict-free semantics}
+    \label{fig:expfaithful/BFSvsDFS/grid/CF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/AD/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over admissible semantics}
+    \label{fig:expfaithful/BFSvsDFS/grid/AD}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            xlabel={Runtime [s]},
+            ylabel={Testrun},
+            xmin=0, xmax=310,
+            ymin=38, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/ST/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over stable semantics}
+    \label{fig:expfaithful/BFSvsDFS/grid/ST}
+\end{figure}
+
+
+
+
+
+
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/CF/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over conflict-free semantics}
+    \label{fig:expfaithful/BFSvsDFS/level/ST}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/AD/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over admissible semantics}
+    \label{fig:expfaithful/BFSvsDFS/level/AD}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            xlabel={Runtime [s]},
+            ylabel={Testrun},
+            xmin=0, xmax=310,
+            ymin=38, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/ST/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over stable semantics}
+    \label{fig:expfaithful/BFSvsDFS/level/ST}
+\end{figure}
+
+
+
+\section{Comparison of BFS and DFS Approach for Concretizing Arguments}
+
+
+\begin{table}[H]
+    \centering
+    \caption{Testruns Statistics concretize arguments mean runtime}
+    \begin{tabular}{ |l|l|l|l| }
+        \hline
+            arguments amount & CF [s] (timeout)& AD [s] (timeout)& ST [s] (timeout)\\
+        \hline
+            10 & 27.52 \hfill (2/60) & 33.07 \hfill (0/60) & 33.20 \hfill (0/60) \\
+            15 & 18.00 \hfill (0/60) & 83.31 \hfill (6/60) & 78.02 \hfill (6/60) \\
+            20 & 142.78 \hfill (20/60) & 96.07 \hfill (16/60) & 81.18 \hfill (16/60) \\
+            25 & 152.27 \hfill (27/60) & 144.33 \hfill (24/60) & 130.02 \hfill (22/60) \\
+            30 & 241.91 \hfill (47/60) & 231.94 \hfill (43/60) & 131.60 \hfill (24/60) \\
+        \hline
+    \end{tabular}
+\label{table:ExperimentStatisticsConcretize}
+\end{table}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            xlabel={Runtime [s]},
+            ylabel={Testrun},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/BFSvsDFS/random/CF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over admissible semantics}
+    \label{fig:expconcretize/BFSvsDFS/randomAD}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over stable semantics}
+    \label{fig:expconcretize/BFSvsDFS/random/ST}
+\end{figure}
+
+
+
+
+
+
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            xlabel={Runtime [s]},
+            ylabel={Testrun},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/BFSvsDFS/grid/CF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over admissible semantics}
+    \label{fig:expconcretize/BFSvsDFS/grid/AD}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over stable semantics}
+    \label{fig:expconcretize/BFSvsDFS/grid/ST}
+\end{figure}
+
+
+
+
+
+
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/BFSvsDFS/level/ST}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            ylabel={Testrun},
+            xlabel={Runtime [s]},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over admissible semantics}
+    \label{fig:expconcretize/BFSvsDFS/level/AD}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\textwidth,
+            height=5cm,
+            xlabel={Runtime [s]},
+            ylabel={Testrun},
+            xmin=0, xmax=310,
+            ymin=0, ymax=50,
+            xtick={100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=blue, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/BFS.dat};
+        \addplot[color=red, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over stable semantics}
+    \label{fig:expconcretize/BFSvsDFS/level/ST}
+\end{figure}
+
+
+
