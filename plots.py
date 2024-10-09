@@ -131,7 +131,7 @@ def plotBFSvsDFS(test_runs, title):
     fig.suptitle(title)
     handles, labels = ax[0][0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
-    #plt.show()
+    plt.show()
 
 
 def plotRefinementVSNoRef(test_runs, title):
@@ -178,12 +178,42 @@ def plotBFSvsDFSDirect(test_runs, title):
     ax.scatter([y[0].runtime for y in data["grid-based"]], [y[1].runtime for y in data["grid-based"]], marker='+', label='grid')
     ax.scatter([y[0].runtime for y in data["level-based"]], [y[1].runtime for y in data["level-based"]], marker='+', label='level')
 
+    ax.set_ylabel("DFS Runtime [s]")
+    ax.set_xlabel("BFS Runtime [s]")
 
     fig.suptitle(title)
     handles, labels = ax.get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
     plt.show()
 
+
+
+def plotRefinementSDirect(test_runs, title):
+    fig, ax = plt.subplots()
+    data = {"CF": list(), "AD": list(), "ST": list()}
+    for gen in test_runs:
+        for file in test_runs[gen]:
+            for sem in ["CF", "AD", "ST"]:
+                for ref in ["BFS", "DFS"]:
+                    data[sem].append((test_runs[gen][file][sem][ref]["True"], test_runs[gen][file][sem][ref]["False"]))
+
+    # sort data over BFS runtime
+    data["CF"] = sorted(data["CF"], key=lambda t: (t[0].runtime, t[1].runtime))
+    data["AD"] = sorted(data["AD"], key=lambda t: (t[0].runtime, t[1].runtime))
+    data["ST"] = sorted(data["ST"], key=lambda t: (t[0].runtime, t[1].runtime))
+
+    ax.scatter([y[0].runtime for y in data["CF"]], [y[1].runtime for y in data["CF"]], marker='+', label='conflict-free')
+    ax.scatter([y[0].runtime for y in data["AD"]], [y[1].runtime for y in data["AD"]], marker='*', label='admissible')
+    ax.scatter([y[0].runtime for y in data["ST"]], [y[1].runtime for y in data["ST"]], marker='o', label='stable')
+
+
+    ax.set_ylabel("NO-REF Runtime [s]")
+    ax.set_xlabel("REF Runtime [s]")
+
+    fig.suptitle(title)
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='right')
+    plt.show()
 
 
 
@@ -220,6 +250,7 @@ def calculateValues(test_runs):
 
 
 def printForThesis(x, y):
+    return
     global out_f
     out_f += 1
     with open(f"plot/out_plot_{out_f}.dat", "w") as f:
@@ -242,10 +273,11 @@ def main():
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_random-based.txt")
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_grid-based.txt")
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
-    #plotBFSvsDFS(fai_tests, "CONCRETIZE program BFS vs DFS")
-    # plotRefinementVSNoRef(fai_tests, "CONCRETIZE program REF vs NO-REF")
-    # plotBFSvsDFSDirect(fai_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
-    # plotSemantics(fai_tests, "Runtime of Testruns per Semantic")
+    plotBFSvsDFS(fai_tests, "CONCRETIZE program BFS vs DFS")
+    plotRefinementVSNoRef(fai_tests, "CONCRETIZE program REF vs NO-REF")
+    plotBFSvsDFSDirect(fai_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
+    plotSemantics(fai_tests, "Runtime of Testruns per Semantic")
+    calculateValues(fai_tests)
 
 
 
@@ -267,9 +299,9 @@ def main():
 
 
     plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
-    # plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
-    # plotBFSvsDFSDirect(con_tests, "CONCRETIZE program BFS vs DFS")
-    plt.show()
+    plotBFSvsDFSDirect(con_tests, "CONCRETIZE program BFS vs DFS")
+    plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
+    plotRefinementSDirect(con_tests, "CONCRETIZE program Refinement")
     calculateValues(con_tests)
 
 
