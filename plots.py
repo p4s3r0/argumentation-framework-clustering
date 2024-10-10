@@ -52,11 +52,6 @@ def sortTestsRuntime(tests):
 
 
 
-
-
-
-
-
 def plotSemantics(test_runs, title):
     fig, ax = plt.subplots()
 
@@ -66,7 +61,8 @@ def plotSemantics(test_runs, title):
             for file in test_runs[gen]:
                     for DFS_BFS in ["BFS", "DFS"]:
                         for ref in ["True", "False"]:
-                            data[sem].append(test_runs[gen][file][sem][DFS_BFS][ref].runtime)
+                            if test_runs[gen][file][sem][DFS_BFS][ref].runtime < 300:
+                                data[sem].append(test_runs[gen][file][sem][DFS_BFS][ref].runtime)
     data["CF"] = sorted(data["CF"])
     data["AD"] = sorted(data["AD"])
     data["ST"] = sorted(data["ST"])
@@ -78,6 +74,41 @@ def plotSemantics(test_runs, title):
     ax.set_ylabel("Testrun numeration")
     ax.set_xlabel("Runtime [s]")
     ax.set_title(title)
+    plt.show()
+
+
+def plotSemanticsSplit(test_runs, title):
+    fig, ax = plt.subplots()
+
+    data = {"CF-F": list(), "CF-T": list(), "AD": list(), "ST": list()}
+    for sem in ["CF", "AD", "ST"]:
+        for gen in ["random-based", "grid-based", "level-based"]:
+            for file in test_runs[gen]:
+                    for DFS_BFS in ["BFS", "DFS"]:
+                        for ref in ["True"]:
+                            if sem == "CF":
+                                if test_runs[gen][file][sem][DFS_BFS][ref].runtime < 300:
+                                    data["CF-T"].append(test_runs[gen][file][sem][DFS_BFS]["True"].runtime)
+                                    data["CF-F"].append(test_runs[gen][file][sem][DFS_BFS]["False"].runtime)
+
+                            else:
+                                if test_runs[gen][file][sem][DFS_BFS][ref].runtime < 300:
+                                    data[sem].append(test_runs[gen][file][sem][DFS_BFS][ref].runtime)
+    data["CF-T"] = sorted(data["CF-T"])
+    data["CF-F"] = sorted(data["CF-F"])
+    data["AD"] = sorted(data["AD"])
+    data["ST"] = sorted(data["ST"])
+
+    cfT_line, = ax.plot(data["CF-T"], range(len(data["CF-T"])), linewidth=2.0, label='CF-T')
+    cfF_line, = ax.plot(data["CF-F"], range(len(data["CF-F"])), linewidth=2.0, label='CF-F')
+    ad_line, = ax.plot(data["AD"], range(len(data["AD"])), linewidth=2.0, label='AD')
+    st_line, = ax.plot(data["ST"], range(len(data["ST"])), linewidth=2.0, label='ST')
+    
+    ax.set_ylabel("Testrun numeration")
+    ax.set_xlabel("Runtime [s]")
+    ax.set_title(title)
+    handles, labels = ax.get_legend_handles_labels()
+    fig.legend(handles, labels, loc='right')
     plt.show()
 
 
@@ -273,10 +304,13 @@ def main():
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_random-based.txt")
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_grid-based.txt")
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
-    plotBFSvsDFS(fai_tests, "CONCRETIZE program BFS vs DFS")
-    plotRefinementVSNoRef(fai_tests, "CONCRETIZE program REF vs NO-REF")
-    plotBFSvsDFSDirect(fai_tests, "CONCRETIZE program Kaktus Plot BFS vs DFS")
-    plotSemantics(fai_tests, "Runtime of Testruns per Semantic")
+
+
+    #plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
+    #plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
+    #plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
+    #plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
+    plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
     calculateValues(fai_tests)
 
 
@@ -298,10 +332,12 @@ def main():
     readTestFile(con_tests, "input/experiment/tests-run/concretize/CF/results_concretize_level-based.txt")
 
 
-    plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
-    plotBFSvsDFSDirect(con_tests, "CONCRETIZE program BFS vs DFS")
-    plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
-    plotRefinementSDirect(con_tests, "CONCRETIZE program Refinement")
+    #plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
+    #plotBFSvsDFSDirect(con_tests, "CONCRETIZE program Scatter Plot BFS vs DFS")
+    #plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
+    #plotRefinementSDirect(con_tests, "CONCRETIZE program  Scatter Plot REF vs NO-REF")
+    plotSemanticsSplit(con_tests, "CONCRETIZE, Runtime of Testruns per Semantic")
+
     calculateValues(con_tests)
 
 

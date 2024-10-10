@@ -551,4 +551,45 @@ DFS has some overhead, due to the context switches resulting with a longer compu
 
 
 
+\section{Usage and Settings}
+We implemented the previously mentioned encodings and algorithm into the software called \prog. The tool uses Python as primary programming language and the library z3 for SAT-Solving. The software is available at
 
+\begin{center}
+    \url{https://github.com/p4s3r0/argumentation-framework-clustering}
+\end{center}
+
+under the MIT license. We provide four different applications, e.g.\ \texttt{SETS}, \texttt{CHECK}, \texttt{CONCRETIZE} and \texttt{FAITHFUL}. Additionally, we need to add the corresponding data via flags, with which we can also change the behaviour of the program.
+
+\paragraph{Computing extensions} \prog can compute all semantics extensions of a given AF. This program can be called with the \texttt{SETS} argument as follows
+
+\begin{center}
+    \texttt{python3 main.py SETS <path\_af> -s <semantics>}
+\end{center}
+
+The argument \texttt{<path\_af>} is the path to the AF, of which the semantics extensions should be computed. Additionally, the \texttt{-s <semantics>} argument defines the semantics of the extensions (i.e.\ \texttt{CF} for conflict-free semantics, \texttt{AD} for admissible semantics or \texttt{ST} for stable semantics).
+
+\paragraph{Spurious/Faithful check} To check if an abstract AF is faithful or spurious, the program is called with the \texttt{CHECK} argument. Followed by the abstract AF and the concrete AF.
+
+\begin{center}
+    \texttt{python3 main.py CHECK <path\_abs\_af> -c <path\_con\_af> -s <semantics>}
+\end{center}
+
+The second argument \texttt{<path\_abs\_af>} is the path to the abstract AF. Next, we add the path to the concrete AF at the \texttt{-c <path\_con\_af>} variable. Furthermore, we can specify the semantics with the \texttt{-s <semantics>} argument and to be able to use the DFS approach, the program can be called additionally with the \texttt{-a DFS} argument (if no algorithm is specified, the default value approach is BFS).
+
+\paragraph{Compute faithful AF} If we have a spurious AF and want to compute a faithful abstract AF with only minor transformations, we want to call the program with the \texttt{FAITHFUL} argument.
+
+\begin{center}
+    \texttt{python3 main.py FAITHFUL <path\_abs\_af> -c <path\_con\_af> -s <semantics>}
+\end{center}
+
+The next arguments are again the path to the abstract AF, which is then followed by the path to the concrete AF. Same as for the previously mentioned programs, the semantics is set with the \texttt{-s <semantics>} flag and the algorithmic approach with the \texttt{-a DFS} or \texttt{-a BFS} flag.
+
+\paragraph{Concretizing arguments} If we want to have more control over which arguments are concretized to obtain faithfulness, the program needs to be called with the \texttt{CONCRETIZE} flag.
+
+\begin{center}
+    \texttt{python3 main.py CONCRETIZE <path\_abs\_af> -c <path\_con\_af> -p <conc\_args>}
+\end{center}
+
+In addition to the paths of the abstract and concrete AF, we can specify a list of arguments, separated by spaces, to be concretized. The list of arguments \texttt{<conc\_args>} needs to be directly after the \texttt{-p} flag. Additionally we can use positional arguments like \texttt{-s <semantics>} to specify the semantics or \texttt{-a <alg>} to determine if we want to use BFS or DFS.
+
+\paragraph{Additional Flags} 
