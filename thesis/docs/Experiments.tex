@@ -1,7 +1,7 @@
 \chapter{Experiments}
 
-\section{Usage}
-\textit{TODO: Explain how program is called}
+\section{Generation of Input Instances}
+\textit{TODO: Explain how Instances were created}
 
 \section{Setup}
 The experiment was conducted on a personal computer environment. The exact specification can be seen in \cref{table:ExperimentSpecs}. Generally, we used an AMD CPU with 6 cores and 12 Threads running the \textit{x86\_64} architecture. We had a total RAM memory of 16GB, which sometimes was not enough and we had to add another 16GB of SWAP memory. Every testrun was conducted on the same setup, running Linux as primary OS.
@@ -35,7 +35,7 @@ The experiment was conducted on a personal computer environment. The exact speci
     \caption{Testruns Statistics spurious check mean runtime}
     \begin{tabular}{ |l|l|l|l| }
         \hline
-            arguments amount & CF [s] (timeout)& AD [s] (timeout)& ST [s] (timeout)\\
+            arguments amount & cf [s] (timeout)& adm [s] (timeout)& stb [s] (timeout)\\
         \hline
             10 &   0.29 \hfill(0/60)  &   0.20 \hfill (0/60)  &   0.09 \hfill (0/60) \\
             15 &   3.91 \hfill(0/60)  &   0.81 \hfill (0/60)  &   0.13 \hfill (0/60) \\
@@ -333,7 +333,7 @@ The experiment was conducted on a personal computer environment. The exact speci
     \caption{Testruns Statistics concretize arguments mean runtime}
     \begin{tabular}{ |l|l|l|l| }
         \hline
-            arguments amount & CF [s] (timeout)& AD [s] (timeout)& ST [s] (timeout)\\
+            arguments amount & cf [s] (timeout)& adm [s] (timeout)& stb [s] (timeout)\\
         \hline
             10 & 27.52 \hfill (2/60) & 33.07 \hfill (0/60) & 33.20 \hfill (0/60) \\
             15 & 18.00 \hfill (0/60) & 83.31 \hfill (6/60) & 78.02 \hfill (6/60) \\

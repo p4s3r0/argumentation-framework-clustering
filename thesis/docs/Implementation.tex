@@ -563,18 +563,19 @@ under the MIT license. We provide four different applications, e.g.\ \texttt{SET
 \paragraph{Computing extensions} \prog can compute all semantics extensions of a given AF. This program can be called with the \texttt{SETS} argument as follows
 
 \begin{center}
-    \texttt{python3 main.py SETS <path\_af> -s <semantics>}
+    \texttt{python3 main.py SETS <path\_af>}
 \end{center}
 
-The argument \texttt{<path\_af>} is the path to the AF, of which the semantics extensions should be computed. Additionally, the \texttt{-s <semantics>} argument defines the semantics of the extensions (i.e.\ \texttt{CF} for conflict-free semantics, \texttt{AD} for admissible semantics or \texttt{ST} for stable semantics).
+The argument \texttt{<path\_af>} is the path to the AF, of which the semantics extensions should be computed. To set the semantics of the extension check the additional flags paragraph below.
 
 \paragraph{Spurious/Faithful check} To check if an abstract AF is faithful or spurious, the program is called with the \texttt{CHECK} argument. Followed by the abstract AF and the concrete AF.
 
 \begin{center}
-    \texttt{python3 main.py CHECK <path\_abs\_af> -c <path\_con\_af> -s <semantics>}
+    \texttt{python3 main.py CHECK <path\_abs\_af> -c <path\_con\_af>}
 \end{center}
 
-The second argument \texttt{<path\_abs\_af>} is the path to the abstract AF. Next, we add the path to the concrete AF at the \texttt{-c <path\_con\_af>} variable. Furthermore, we can specify the semantics with the \texttt{-s <semantics>} argument and to be able to use the DFS approach, the program can be called additionally with the \texttt{-a DFS} argument (if no algorithm is specified, the default value approach is BFS).
+The second argument \texttt{<path\_abs\_af>} is the path to the abstract AF. Next, we add the path to the concrete AF at the \texttt{-c <path\_con\_af>} variable. Furthermore, we can specify the semantics and the algorithm (i.e. BFS or DFS) which is explained in the additional flags paragraph.
+
 
 \paragraph{Compute faithful AF} If we have a spurious AF and want to compute a faithful abstract AF with only minor transformations, we want to call the program with the \texttt{FAITHFUL} argument.
 
@@ -592,4 +593,40 @@ The next arguments are again the path to the abstract AF, which is then followed
 
 In addition to the paths of the abstract and concrete AF, we can specify a list of arguments, separated by spaces, to be concretized. The list of arguments \texttt{<conc\_args>} needs to be directly after the \texttt{-p} flag. Additionally we can use positional arguments like \texttt{-s <semantics>} to specify the semantics or \texttt{-a <alg>} to determine if we want to use BFS or DFS.
 
-\paragraph{Additional Flags} 
+\paragraph{Additional Flags} To have full control of the inner workings of the program and the output printed to the user, we implemented additional flags. The first flag is the semantics flag.
+
+\begin{center}
+    \texttt{-s <semantics>}
+\end{center}
+
+This argument determines the semantics we are operating on. It is optional for every program and has one of the the following values: \texttt{CF} for conflict-free semantics which is also the default value, \texttt{AD} for admissible semantics or \texttt{ST} for stable semantics. 
+
+Next, when executing the program to concretize arguments from a cluster, we need a list of the arguments.
+
+\begin{center}
+    \texttt{-p <conc\_args>} 
+\end{center}
+
+The listing of the arguments which need to be concrete is specified after the \texttt{-p} tag and is specified in a joint list separated by spaces.
+
+Furthermore we can alter the faithful/spurious check algorithm with the \texttt{<alg>} argument.
+
+\begin{center}
+    \texttt{-a <alg>}
+\end{center}
+
+Here only two possible values can be selected, i.e.\ the default value \texttt{BFS} and the most of the time more efficient algorithm \texttt{DFS}.
+
+If the refinement of the current semantics is not desired, it can be disabled with the following flag.
+
+\begin{center}
+    \texttt{-noref}
+\end{center}
+
+We also implemented a visualization of the AFs, which can be triggered by using the the sollowing flag.
+
+\begin{center}
+    \texttt{-vis}
+\end{center}
+
+The visualisation will show the abstract AF, the concrete AF if it is part of the program call and finally it will show the resulting AF. To ''spectate`` the current computation and have more insight to the algorithm, we can add the \texttt{-verbose} flag. This will print interim findings to the user directly while calculating.
