@@ -265,11 +265,12 @@ def calculateValues(test_runs):
                     for BFS_DFS in ["BFS", "DFS"]:
                         for ref in ["True", "False"]:
                             t = test_runs[gen][file][sem][BFS_DFS][ref]
-                            runtime_per_arg[str(t.param_generator_arg_amount)][0] += t.runtime
-                            runtime_per_arg[str(t.param_generator_arg_amount)][1] += 1
                             if t.runtime == timeout:
                                 runtime_per_arg[str(t.param_generator_arg_amount)][2] += 1
                                 timeout_amount += 1
+                            else:
+                                runtime_per_arg[str(t.param_generator_arg_amount)][0] += t.runtime
+                                runtime_per_arg[str(t.param_generator_arg_amount)][1] += 1
                             tests_amount += 1
 
         print(f"STATS for {sem}")
@@ -306,12 +307,14 @@ def main():
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
 
 
-    #plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
+    plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
     #plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
     #plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
     #plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
-    plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
-    calculateValues(fai_tests)
+    #plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
+    #
+    # calculateValues(fai_tests)
+    exit()
 
 
 

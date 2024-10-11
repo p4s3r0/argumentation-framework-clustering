@@ -1,51 +1,50 @@
 \chapter{Experiments}
+\label{ch:experiment}
+In this chapter, we discuss the experiment that was conducted. In \cref{sec:GenerationOfInputInstances}, we describe how the AF instances were generated. Then, we describe the setup and environment in which the experiment was executed in \cref{sec:Setup}. In \cref{sec:ComparisonOfBFSandDFSApproachForSpuriousCheck}, we show and discuss the faithful/spurious check results according to the two approaches, i.e.\ BFS and DFS. In \cref{sec:ComparisonOfBFSandDFSApproachForConretizingArguments}, we will do the same for the concretizing arguments program. Finally, we investigate the efficiency of the applied refinements for both programs in \cref{sec:EfficiencyOfRefinements}.
+
 
 \section{Generation of Input Instances}
-\textit{TODO: Explain how Instances were created}
+\label{sec:GenerationOfInputInstances}
+We generated the experiment instances with the previously mentioned scripts in \cref{sec:ImplementationsCreatingAFs}. To have a large variety of AF inputs, we generated $25$ tests per generator approach, i.e., \ random-based, grid-based, and level-based. The $25$ tests per generator approach are grouped into five different sizes, which are $10$, $15$, $20$, $25$, and $30$. Since the AF generator uses a certain probability to create an attack, it is connected to a certain randomness. This randomness assures the versability of AFs in the same argument amount group. The probability value was set to \texttt{0.5}, equivalent to a $50\%$ chance that an attack between two arguments might occur. Finally, the abstraction of the concrete AFs was realized with the clustering script described in \cref{sec:ImplementationsCreatingAFs}. 
+
+The arguments to be concretized for the concretization algorithm were chosen in the AF generation script. For every instance, we chose a random amount (between $1$ and the total amount of arguments in the cluster) of arguments, which had to be concretized. The randomness of generation is essential to ensure that we did not pick AFs that contributed to a misleading runtime by picking favorable AFs.
+
 
 \section{Setup}
-The experiment was conducted on a personal computer environment. The exact specification can be seen in \cref{table:ExperimentSpecs}. Generally, we used an AMD CPU with 6 cores and 12 Threads running the \textit{x86\_64} architecture. We had a total RAM memory of 16GB, which sometimes was not enough and we had to add another 16GB of SWAP memory. Every testrun was conducted on the same setup, running Linux as primary OS.
+\label{sec:Setup}
+The experiment was conducted in a personal computer environment. The exact specification can be seen in \cref{table:ExperimentSpecs}. Generally, we used an AMD CPU with 6 cores and 12 Threads running the \textit{x86\_64} architecture. We had a total RAM of 16GB, which sometimes was not enough, and we had to add another 16GB of SWAP memory. Every test run was conducted on the same setup, running Linux as the primary OS. In total, $75$ different AFs were tested under various configurations. These included the usage of the BFS and DFS algorithm, the three covered semantics, e.g., conflict-free, admissible, and stable, and running with and without the refinements. A separate Python script managed the tests by running every test instance as a subprocess and setting the timeout to 300s.
 
 \begin{table}[H]
     \centering
     \caption{Experiment Setup Specifications}
     \begin{tabular}{ |l|l| }
-     \hline
-     CPU-Model-Name & AMD Ryzen 5 3600\\
-     CPU-Cores & 6\\
-     CPU-Threads & 12\\
-     CPU-Architecture & x86\_64\\
-     CPU-Speed & 4.2 GHz\\
-     RAM & Vengeance PRO 16 GB\\
-     SWAP & 16 GB\\
-     Operating System & Ubuntu 24.04 \\
-     \hline
+    \hline
+        CPU-Model-Name & AMD Ryzen 5 3600\\
+        CPU-Cores & 6\\
+        CPU-Threads & 12\\
+        CPU-Architecture & x86\_64\\
+        CPU-Speed & 4.2 GHz\\
+        RAM & Vengeance PRO 16 GB\\
+        SWAP & 16 GB\\
+        Operating System & Ubuntu 24.04 \\
+    \hline
     \end{tabular}
 \label{table:ExperimentSpecs}
 \end{table}
 
 
 
+\section{Faithful Spurious Check}
+\label{sec:FaithfulSpuriusCheck}
 
-\section{Comparison of BFS and DFS Approach for Spurious Check}
+\subsection{Comparison of BFS and DFS Approach for Spurious Check}
+\newcommand{\plotWidth}{10cm}
+\newcommand{\plotHeight}{8cm}
 
 
-\begin{table}[htb]
-    \centering
-    \caption{Testruns Statistics spurious check mean runtime}
-    \begin{tabular}{ |l|l|l|l| }
-        \hline
-            arguments amount & cf [s] (timeout)& adm [s] (timeout)& stb [s] (timeout)\\
-        \hline
-            10 &   0.29 \hfill(0/60)  &   0.20 \hfill (0/60)  &   0.09 \hfill (0/60) \\
-            15 &   3.91 \hfill(0/60)  &   0.81 \hfill (0/60)  &   0.13 \hfill (0/60) \\
-            20 &  87.47 \hfill(13/60) &   6.56 \hfill (0/60)  &   0.34 \hfill (0/60) \\
-            25 & 109.23 \hfill(20/60) &  37.69 \hfill (0/60)  &   4.72 \hfill (0/60) \\
-            30 & 150.07 \hfill(26/60) & 175.41 \hfill (32/60) &  39.88 \hfill (6/60) \\
-        \hline
-    \end{tabular}
-\label{table:ExperimentStatisticsConcretize}
-\end{table}
+We implemented two different approaches to check for faithfulness, e.g.\ BFS and DFS. Both of them were tested and showed different results according to the AFs generation procedure. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
+Note, that the testrun numeration does not begin at 0 because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions are less. Thus, BFS and DFS do not differ that much.
+
 
 
 
@@ -53,13 +52,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Testrun},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=38, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -82,13 +81,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=38, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -111,13 +110,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=38, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -140,7 +139,7 @@ The experiment was conducted on a personal computer environment. The exact speci
 
 
 
-
+The difference of BFS and DFS increases when we change the AF generation approach to the grid-based procedure. In the plots depicted in \cref{fig:expfaithful/BFSvsDFS/grid/CF}, \cref{fig:expfaithful/BFSvsDFS/grid/AD} and \cref{fig:expfaithful/BFSvsDFS/grid/ST} we can observe, that DFS outperforms the BFS algorithm. We speculate, that due to the grid-based AFs generation procedure, we created AFs with way more semantics extensions. Since BFS needs to compute every extension to proof spuriousness and DFS checks after every computed extension for spuriousness, we obtain a better runtime for DFS if the AF is spurious. Since all the testcase instances were computed randomly, the chance of generating a spurious AF is more likely and thus favor the DFS algorithm. 
 
 
 
@@ -149,13 +148,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -178,13 +177,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -206,13 +205,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Testrun},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=38, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -232,7 +231,7 @@ The experiment was conducted on a personal computer environment. The exact speci
 
 
 
-
+The difference increases even further when changing the AF generator approach to the level-based procedure. As we can see in \cref{fig:expfaithful/BFSvsDFS/level/CF}, \cref{fig:expfaithful/BFSvsDFS/level/AD} and \cref{fig:expfaithful/BFSvsDFS/level/ST}, DFS dominates BFS especially in the conflict-free and admissible semantics. This is due to the bigger size of the semantics extensions. Recall, that the conflict-free sets are a subset of the admissible sets and the admissible sets are a subset of the stable extensions.
 
 
 
@@ -242,13 +241,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -263,7 +262,7 @@ The experiment was conducted on a personal computer environment. The exact speci
         \end{axis}
     \end{tikzpicture}
     \caption{Runtime of level-based AFs over conflict-free semantics}
-    \label{fig:expfaithful/BFSvsDFS/level/ST}
+    \label{fig:expfaithful/BFSvsDFS/level/CF}
 \end{figure}
 
 
@@ -271,13 +270,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -299,13 +298,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Testrun},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=38, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -324,39 +323,71 @@ The experiment was conducted on a personal computer environment. The exact speci
 \end{figure}
 
 
+Finally, the data was arranged in a tabular format to enable a more comprehensive comparison from a higher-level viewpoint. We computed the mean value of the test-runs depending on the AFs number of arguments. Further, we split up the test-runs according to the semantics. Furthermore, we excluded the runtime from the test runs that ran into a timeout and stated the exact amount. In \cref{table:ExperimentStatisticsFaithfulCheck} we can observe that with the increase in size of the AF, the runtime of the faithful/spurious check increases as well. The same holds for the amount of timeouts.
 
-\section{Comparison of BFS and DFS Approach for Concretizing Arguments}
 
-
-\begin{table}[H]
+\begin{table}[htb]
     \centering
-    \caption{Testruns Statistics concretize arguments mean runtime}
+    \caption{test-runs Statistics spurious check mean runtime}
     \begin{tabular}{ |l|l|l|l| }
         \hline
             arguments amount & cf [s] (timeout)& adm [s] (timeout)& stb [s] (timeout)\\
         \hline
-            10 & 27.52 \hfill (2/60) & 33.07 \hfill (0/60) & 33.20 \hfill (0/60) \\
-            15 & 18.00 \hfill (0/60) & 83.31 \hfill (6/60) & 78.02 \hfill (6/60) \\
-            20 & 142.78 \hfill (20/60) & 96.07 \hfill (16/60) & 81.18 \hfill (16/60) \\
-            25 & 152.27 \hfill (27/60) & 144.33 \hfill (24/60) & 130.02 \hfill (22/60) \\
-            30 & 241.91 \hfill (47/60) & 231.94 \hfill (43/60) & 131.60 \hfill (24/60) \\
+            10 &   0.29 \hfill(0/60)  &   0.20 \hfill (0/60)  &   0.09 \hfill (0/60) \\
+            15 &   3.91 \hfill(0/60)  &   0.81 \hfill (0/60)  &   0.13 \hfill (0/60) \\
+            20 &  28.69 \hfill(13/60) &   6.56 \hfill (0/60)  &   0.34 \hfill (0/60) \\
+            25 &  13.85 \hfill(20/60) &  37.69 \hfill (0/60)  &   4.72 \hfill (0/60) \\
+            30 &  35.41 \hfill(26/60) &  33.01 \hfill (32/60) &  10.97 \hfill (6/60) \\
+        \hline
+    \end{tabular}
+\label{table:ExperimentStatisticsFaithfulCheck}
+\end{table}
+
+
+\subsection{Comparison of Refinement and No-Refinement}
+\label{subsec:ComparisonOfRefinementAndNoRefinementOnFaithfulProgram}
+
+
+
+
+\subsection{Overall }
+\begin{table}[H]
+    \centering
+    \caption{test-runs Statistics concretize arguments mean runtime}
+    \begin{tabular}{ |l|l|l|l| }
+        \hline
+            arguments amount & cf [s] (timeout)& adm [s] (timeout)& stb [s] (timeout)\\
+        \hline
+            10 & 18.13 \hfill (2/60)  &  33.07 \hfill (0/60)  &  33.20 \hfill (0/60) \\
+            15 & 18.00 \hfill (0/60)  &  59.24 \hfill (6/60)  &  53.36 \hfill (6/60) \\
+            20 & 64.17 \hfill (20/60) &  21.92 \hfill (16/60) &   1.61 \hfill (16/60) \\
+            25 & 31.40 \hfill (27/60) &  40.55 \hfill (24/60) &  31.60 \hfill (22/60) \\
+            30 & 31.89 \hfill (47/60) &  59.79 \hfill (43/60) &  19.33 \hfill (24/60) \\
         \hline
     \end{tabular}
 \label{table:ExperimentStatisticsConcretize}
 \end{table}
 
 
+
+\section{Comparison of BFS and DFS Approach for Concretizing Arguments}
+\label{sec:ComparisonOfBFSandDFSApproachForConretizingArguments}
+
+
+
+
+
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Testrun},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -379,13 +410,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -408,13 +439,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -444,13 +475,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Testrun},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -473,13 +504,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -502,13 +533,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -538,13 +569,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -567,13 +598,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             ylabel={Testrun},
             xlabel={Runtime [s]},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -595,13 +626,13 @@ The experiment was conducted on a personal computer environment. The exact speci
     \centering
     \begin{tikzpicture}
         \begin{axis}[
-            width=\textwidth,
-            height=5cm,
+            width=\plotWidth,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Testrun},
-            xmin=0, xmax=310,
+            xmin=-10, xmax=310,
             ymin=0, ymax=50,
-            xtick={100, 200, 300},
+            xtick={0, 100, 200, 300},
             ytick={0,10,20,30,40,50},
             legend pos=south east,
             ymajorgrids=true,
@@ -621,3 +652,5 @@ The experiment was conducted on a personal computer environment. The exact speci
 
 
 
+\section{Efficiency of Refinements}
+\label{sec:EfficiencyOfRefinements}
