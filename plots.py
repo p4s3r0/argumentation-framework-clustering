@@ -71,6 +71,10 @@ def plotSemantics(test_runs, title):
     ad_line, = ax.plot(data["AD"], range(len(data["AD"])), linewidth=2.0, label='AD')
     st_line, = ax.plot(data["ST"], range(len(data["ST"])), linewidth=2.0, label='ST')
     
+    printForThesis(data["CF"], range(len(data["CF"])))
+    printForThesis(data["AD"], range(len(data["AD"])))
+    printForThesis(data["ST"], range(len(data["ST"])))
+
     ax.set_ylabel("Testrun numeration")
     ax.set_xlabel("Runtime [s]")
     ax.set_title(title)
@@ -155,10 +159,11 @@ def plotBFSvsDFS(test_runs, title):
             ax[y][x].set_ylabel("Testrun numeration")
             ax[y][x].set_xlabel("Runtime [s]")
             ax[y][x].set_title(f"{gen} {sem}")
-            printForThesis([y[0].runtime for y in sorted_data], range(len(sorted_data)))
-            printForThesis([y[1].runtime for y in sorted_data], range(len(sorted_data)))
+            # printForThesis([y[0].runtime for y in sorted_data], range(len(sorted_data)))
+            # printForThesis([y[1].runtime for y in sorted_data], range(len(sorted_data)))
 
 
+    print("here")
     fig.suptitle(title)
     handles, labels = ax[0][0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
@@ -176,6 +181,11 @@ def plotRefinementVSNoRef(test_runs, title):
                     data.append((test_runs[gen][file][sem][BFS_DFS]["True"], test_runs[gen][file][sem][BFS_DFS]["False"]))
             # sort data over BFS runtime
             sorted_data = sorted(data, key=lambda t: (t[0].runtime, t[1].runtime))
+
+            if sem == "CF":
+               printForThesis([y[0].runtime for y in sorted_data], range(len(sorted_data)))
+               printForThesis([y[1].runtime for y in sorted_data], range(len(sorted_data)))
+
             ax[y][x].plot([y[0].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='REF')
             ax[y][x].plot([y[1].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='NO-REF')
             ax[y][x].set_xlabel("Runtime [s]")
@@ -209,6 +219,10 @@ def plotBFSvsDFSDirect(test_runs, title):
     ax.scatter([y[0].runtime for y in data["grid-based"]], [y[1].runtime for y in data["grid-based"]], marker='+', label='grid')
     ax.scatter([y[0].runtime for y in data["level-based"]], [y[1].runtime for y in data["level-based"]], marker='+', label='level')
 
+    printForThesis([y[0].runtime for y in data["random-based"]], [y[1].runtime for y in data["random-based"]])
+    printForThesis([y[0].runtime for y in data["grid-based"]], [y[1].runtime for y in data["grid-based"]])
+    printForThesis([y[0].runtime for y in data["level-based"]], [y[1].runtime for y in data["level-based"]])
+
     ax.set_ylabel("DFS Runtime [s]")
     ax.set_xlabel("BFS Runtime [s]")
 
@@ -236,6 +250,10 @@ def plotRefinementSDirect(test_runs, title):
     ax.scatter([y[0].runtime for y in data["CF"]], [y[1].runtime for y in data["CF"]], marker='+', label='conflict-free')
     ax.scatter([y[0].runtime for y in data["AD"]], [y[1].runtime for y in data["AD"]], marker='*', label='admissible')
     ax.scatter([y[0].runtime for y in data["ST"]], [y[1].runtime for y in data["ST"]], marker='o', label='stable')
+
+    printForThesis([y[0].runtime for y in data["CF"]], [y[1].runtime for y in data["CF"]])
+    printForThesis([y[0].runtime for y in data["AD"]], [y[1].runtime for y in data["AD"]])
+    printForThesis([y[0].runtime for y in data["ST"]], [y[1].runtime for y in data["ST"]])
 
 
     ax.set_ylabel("NO-REF Runtime [s]")
@@ -282,7 +300,6 @@ def calculateValues(test_runs):
 
 
 def printForThesis(x, y):
-    return
     global out_f
     out_f += 1
     with open(f"plot/out_plot_{out_f}.dat", "w") as f:
@@ -307,14 +324,13 @@ def main():
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
 
 
-    plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
-    #plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
-    #plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
-    #plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
-    #plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
+    # plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
+    # plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
+    # plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
+    # plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
+    plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
     #
     # calculateValues(fai_tests)
-    exit()
 
 
 
@@ -335,11 +351,11 @@ def main():
     readTestFile(con_tests, "input/experiment/tests-run/concretize/CF/results_concretize_level-based.txt")
 
 
-    #plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
-    #plotBFSvsDFSDirect(con_tests, "CONCRETIZE program Scatter Plot BFS vs DFS")
-    #plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
-    #plotRefinementSDirect(con_tests, "CONCRETIZE program  Scatter Plot REF vs NO-REF")
-    plotSemanticsSplit(con_tests, "CONCRETIZE, Runtime of Testruns per Semantic")
+    # plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
+    # plotBFSvsDFSDirect(con_tests, "CONCRETIZE program Scatter Plot BFS vs DFS")
+    # plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
+    plotRefinementSDirect(con_tests, "CONCRETIZE program  Scatter Plot REF vs NO-REF")
+    # plotSemanticsSplit(con_tests, "CONCRETIZE, Runtime of Testruns per Semantic")
 
     calculateValues(con_tests)
 

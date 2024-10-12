@@ -37,13 +37,18 @@ The experiment was conducted in a personal computer environment. The exact speci
 \section{Faithful Spurious Check}
 \label{sec:FaithfulSpuriusCheck}
 
-\subsection{Comparison of BFS and DFS Approach for Spurious Check}
+This section presents the data collected from the program, which checks if an abstract AF is faithful or spurious. We compare BFS and DFS in \cref{subsec:faithfulComparisonBFSvsDFS}. For these tests, we split plots into three categories, i.e., \ the three AF generator procedures (random-based, grid-based, and level-based). All three categories are split again on the specific semantics, i.e., conflict-free, admissible and stable. Then, we checked how much impact the refinements had on the corresponding semantics. Finally, we packed all the runtimes into one plot to show the influence of the different generator approaches and created a table to show the impact of the number of arguments from the AF. Next, we did the same for the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}.
+
+\subsection{Comparison of BFS and DFS}
+\label{subsec:faithfulComparisonBFSvsDFS}
+
 \newcommand{\plotWidth}{10cm}
 \newcommand{\plotHeight}{8cm}
+\newcommand{\plotHeightSmall}{5cm}
 
 
 We implemented two different approaches to check for faithfulness, e.g.\ BFS and DFS. Both of them were tested and showed different results according to the AFs generation procedure. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
-Note, that the testrun numeration does not begin at 0 because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions are less. Thus, BFS and DFS do not differ that much.
+Note, that the testrun numeration does not begin at 1 because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions are less. Thus, BFS and DFS do not differ that much.
 
 
 
@@ -53,9 +58,9 @@ Note, that the testrun numeration does not begin at 0 because all the test-runs 
     \begin{tikzpicture}
         \begin{axis}[
             width=\plotWidth,
-            height=\plotHeight,
+            height=\plotHeightSmall,
             xlabel={Runtime [s]},
-            ylabel={Testrun},
+            ylabel={Test-run},
             xmin=-10, xmax=310,
             ymin=38, ymax=50,
             xtick={0, 100, 200, 300},
@@ -65,9 +70,9 @@ Note, that the testrun numeration does not begin at 0 because all the test-runs 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/CF/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -82,8 +87,8 @@ Note, that the testrun numeration does not begin at 0 because all the test-runs 
     \begin{tikzpicture}
         \begin{axis}[
             width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
+            height=\plotHeightSmall,
+            ylabel={Test-run},
             xlabel={Runtime [s]},
             xmin=-10, xmax=310,
             ymin=38, ymax=50,
@@ -94,9 +99,9 @@ Note, that the testrun numeration does not begin at 0 because all the test-runs 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/AD/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -111,8 +116,8 @@ Note, that the testrun numeration does not begin at 0 because all the test-runs 
     \begin{tikzpicture}
         \begin{axis}[
             width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
+            height=\plotHeightSmall,
+            ylabel={Test-run},
             xlabel={Runtime [s]},
             xmin=-10, xmax=310,
             ymin=38, ymax=50,
@@ -123,9 +128,9 @@ Note, that the testrun numeration does not begin at 0 because all the test-runs 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/ST/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -133,8 +138,6 @@ Note, that the testrun numeration does not begin at 0 because all the test-runs 
     \caption{Runtime of random-based AFs over stable semantics}
     \label{fig:expfaithful/BFSvsDFS/random/ST}
 \end{figure}
-
-
 
 
 
@@ -150,7 +153,7 @@ The difference of BFS and DFS increases when we change the AF generation approac
         \begin{axis}[
             width=\plotWidth,
             height=\plotHeight,
-            ylabel={Testrun},
+            ylabel={Test-run},
             xlabel={Runtime [s]},
             xmin=-10, xmax=310,
             ymin=0, ymax=50,
@@ -161,9 +164,9 @@ The difference of BFS and DFS increases when we change the AF generation approac
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/CF/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -179,7 +182,7 @@ The difference of BFS and DFS increases when we change the AF generation approac
         \begin{axis}[
             width=\plotWidth,
             height=\plotHeight,
-            ylabel={Testrun},
+            ylabel={Test-run},
             xlabel={Runtime [s]},
             xmin=-10, xmax=310,
             ymin=0, ymax=50,
@@ -190,9 +193,9 @@ The difference of BFS and DFS increases when we change the AF generation approac
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/AD/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -208,7 +211,7 @@ The difference of BFS and DFS increases when we change the AF generation approac
             width=\plotWidth,
             height=\plotHeight,
             xlabel={Runtime [s]},
-            ylabel={Testrun},
+            ylabel={Test-run},
             xmin=-10, xmax=310,
             ymin=38, ymax=50,
             xtick={0, 100, 200, 300},
@@ -218,9 +221,9 @@ The difference of BFS and DFS increases when we change the AF generation approac
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/ST/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -243,7 +246,7 @@ The difference increases even further when changing the AF generator approach to
         \begin{axis}[
             width=\plotWidth,
             height=\plotHeight,
-            ylabel={Testrun},
+            ylabel={Test-run},
             xlabel={Runtime [s]},
             xmin=-10, xmax=310,
             ymin=0, ymax=50,
@@ -254,9 +257,9 @@ The difference increases even further when changing the AF generator approach to
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/CF/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -265,14 +268,13 @@ The difference increases even further when changing the AF generator approach to
     \label{fig:expfaithful/BFSvsDFS/level/CF}
 \end{figure}
 
-
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
         \begin{axis}[
             width=\plotWidth,
             height=\plotHeight,
-            ylabel={Testrun},
+            ylabel={Test-run},
             xlabel={Runtime [s]},
             xmin=-10, xmax=310,
             ymin=0, ymax=50,
@@ -283,9 +285,9 @@ The difference increases even further when changing the AF generator approach to
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/AD/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -301,7 +303,7 @@ The difference increases even further when changing the AF generator approach to
             width=\plotWidth,
             height=\plotHeight,
             xlabel={Runtime [s]},
-            ylabel={Testrun},
+            ylabel={Test-run},
             xmin=-10, xmax=310,
             ymin=38, ymax=50,
             xtick={0, 100, 200, 300},
@@ -311,9 +313,9 @@ The difference increases even further when changing the AF generator approach to
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=blue, mark=square, densely dashed]
+        \addplot[color=\cA, mark=square, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/ST/BFS.dat};
-        \addplot[color=red, mark=square]
+        \addplot[color=\cB, mark=square]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -323,7 +325,187 @@ The difference increases even further when changing the AF generator approach to
 \end{figure}
 
 
-Finally, the data was arranged in a tabular format to enable a more comprehensive comparison from a higher-level viewpoint. We computed the mean value of the test-runs depending on the AFs number of arguments. Further, we split up the test-runs according to the semantics. Furthermore, we excluded the runtime from the test runs that ran into a timeout and stated the exact amount. In \cref{table:ExperimentStatisticsFaithfulCheck} we can observe that with the increase in size of the AF, the runtime of the faithful/spurious check increases as well. The same holds for the amount of timeouts.
+Finally, we arranged the data into a single plot from all the generator approaches in \cref{fig:expfaithful/BFSvsDFS/OnePlot}. Here we can see that DFS dominates in almost all of the test-runs the BFS approach and in the few cases where BFS is more efficient, it is by a small factor. Especially with the AFs generated with the level-based procedure we observe that DFS is way more efficient. This is due the fact, that on level-based AFs we have far more extensions than on random-based and computing all of them with the BFS algorithm leads to a bad runtime. On the other hand, random-based AFs have far less extensions due to fewer attacks. Thus, BFS can be faster than DFS, since it does not have to deal with as many context switches.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime BFS [s]},
+            ylabel={Runtime DFS [s]},
+            xmin=-10, xmax=310,
+            ymin=-10, ymax=310,
+            xtick={0, 100, 200, 300},
+            ytick={0, 100, 200, 300},
+            legend pos=north west,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+            set layers
+        ]
+
+        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/all/random-based.dat};
+        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/all/level-based.dat};
+        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/all/grid-based.dat};
+        \legend{random-based, grid-based, level-based}
+        \pgfonlayer{axis foreground}
+            \addplot[color=black, thick, densely dashed] coordinates {(-10,-10) (310,310)};
+        \endpgfonlayer
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of BFS and DFS grouped by generator approach}
+    \label{fig:expfaithful/BFSvsDFS/OnePlot}
+\end{figure}
+
+
+
+
+
+
+\subsection{Comparison of Refinement and No-Refinement}
+\label{subsec:ComparisonOfRefinementAndNoRefinementOnFaithfulProgram}
+
+We implemented different refinements for each semantics. As data has shown, the refinements made for conflict-free semantics have a big impact as shown in \cref{fig:expfaithful/REFvsNOREF/grid-based} and \cref{fig:expfaithful/REFvsNOREF/level-based}. Especially for AFs with many conflict-free sets, the refinement reduces the runtime significantly. We got some test-runs for the grid-based AFs, where without the refinement we obtain a better result. We hypothesize, that the observed outliers may result from the DFS algorithm finding a spurious extension. Recall, that the refinement for the conflict-free sets is to extract all the subsets from a computed conflict-free set. If all the subsets are faithful, we introduce many faithful/spurious check which lead to an increase of runtime, that the DFS algorithm without the refinement does not face. The same outlier can be seen the other way around in the grid-based plot at test-run 25. Here, the refinement extracted a subset of a computed conflict-free set, which was spurious. Without the refinement, no spurious set was found within the timeout. Besides conflict-free, the refinements made for admissible and stable did only have a minor impact. We speculate, that the SAT-Solver discarded the refinement due to optimization reasons or the overhead of increasing the Boolean formula lead to no significant improvement.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/grid-based/REF.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/grid-based/NOREF.dat};
+        \legend{REF, NO-REF}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over conflict-free semantics}
+    \label{fig:expfaithful/REFvsNOREF/grid-based}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime [s]},
+            ylabel={Test-run},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/level-based/REF.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/level-based/NOREF.dat};
+        \legend{REF, NO-REF}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over conflict-free semantics}
+    \label{fig:expfaithful/REFvsNOREF/level-based}
+\end{figure}
+
+In \cref{fig:expfaithful/REFvsNOREF/OnePlot} we can see the performance of the refinements against no refinements. For admissible and stable, there is no significant difference except some outliers. We hypothesize, that due to the refinement, we pushed the SAT-Solver into a certain direction (like changing the seed), where he found some lucky spurious extensions. Nevertheless, most of the time the refinements made for non-conflict-free semantics had no fundamental impact on the runtime. On the other hand, the refinement made for conflict-free semantics had a significant improvement on the runtime, besides some outliers.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime REF [s]},
+            ylabel={Runtime NO-REF [s]},
+            xmin=-10, xmax=310,
+            ymin=-10, ymax=310,
+            xtick={0, 100, 200, 300},
+            ytick={0, 100, 200, 300},
+            legend style={at={(0.8,0.25)}},
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+            set layers
+        ]
+
+        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/all/random-based.dat};
+        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/all/grid-based.dat};
+        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/all/level-based.dat};
+        \legend{conflict-free, admissible, stable}
+        \pgfonlayer{axis foreground}
+            \addplot[color=black, thick, densely dashed] coordinates {(-10,-10) (310,310)};
+        \endpgfonlayer
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Performance comparison of Refinement and No-Refinement by Semantics}
+    \label{fig:expfaithful/REFvsNOREF/OnePlot}
+\end{figure}
+
+
+
+\subsection{Comparison of all Test-runs}
+In this section we compare the data over all test-run instances, specifically how many test-runs did not run in to a timeout depending on the semantics and the mean runtime of the passed test-cases. In \cref{fig:expfaithful/Semantics/OnePlot} we can observe that the most solvable semantics is the stable semantics. Followed by the admissible semantics and the least solved test-runs has the conflict-free semantics. The reason for this is the number of semantic extensions of the AFs. If an AF has many semantic extensions, the runtime of the faithful check increases.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeightSmall,
+            xlabel={Runtime REF [s]},
+            ylabel={Test-run},
+            xmin=-10, xmax=310,
+            ymin=90, ymax=310,
+            xtick={0, 100, 200, 300},
+            ytick={0, 100, 200, 300},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+
+        \addplot[color=\cA, line width=1.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/Semantics/CF.dat};
+        \addplot[color=\cB, line width=1.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/Semantics/AD.dat};
+        \addplot[color=\cC, line width=1.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/faithful/Semantics/ST.dat};
+
+        \legend{conflict-free, admissible, stable}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Solved test-runs depending on semantics}
+    \label{fig:expfaithful/Semantics/OnePlot}
+\end{figure}
+
+
+The data was arranged in a tabular format to enable a more comprehensive comparison from a higher-level viewpoint. We computed the mean value of the test-runs depending on the AFs number of arguments and semantics. Furthermore, we excluded the runtime from the test runs that ran into a timeout and stated the exact amount. In \cref{table:ExperimentStatisticsFaithfulCheck} we can observe that with the increase in size of the AF, the runtime of the faithful/spurious check increases as well. The same holds for the amount of timeouts.
 
 
 \begin{table}[htb]
@@ -344,13 +526,438 @@ Finally, the data was arranged in a tabular format to enable a more comprehensiv
 \end{table}
 
 
+
+
+
+
+
+\section{Concretizing Arguments Program}
+\label{sec:ConcretizingArgumentsProgram}
+
+This section presents the data collected from the concretizing arguments program. We again split up the test-runs to be able to compare the impact of BFS and DFS in \cref{subsec:ComparisonOfBFSandDFSApproachForConretizingArguments}, and the comparison on the runtime of using the semantics-specific refinements is shown in \cref{subsec:ComparisonOfRefinementAndNoRefinementOnConcretizingProgram}. The comparison of BFS and DFS is again split into the three AF generator approaches. Each plot depicts the runtime of BFS and DFS with the generator procedure and the corresponding semantics. The same is done for the refinement comparison. Furthermore, we also show the correlation of execution runtime and the size of the AF with a table and how many instances of test-runs were solvable according to the semantics.
+
+
+\subsection{Comparison of BFS and DFS}
+\label{subsec:ComparisonOfBFSandDFSApproachForConretizingArguments}
+
+Since the program for concretizing arguments uses the faithful/spurious check multiple times, we can compare the impact on the runtime of the BFS and DFS approaches. We start with the first AF generator procedure, i.e., the random-based approach. Here we created three plots: in \cref{fig:expconcretize/BFSvsDFS/random/CF} the conflict-free semantics is shown, in \cref{fig:expconcretize/BFSvsDFS/randomAD} we depicted the admissible semantics and in \cref{fig:expconcretize/BFSvsDFS/random/ST} the stable semantics. For these test-cases, the DFS approach dominates the BFS approach in every instance. We hypothesize that this is the repeated check of spurious AFs, which is more favorable for DFS. Furthermore, BFS does not only stand no chance against DFS, but most of the instances do not terminate before the timeout. This is especially critical for the admissible and stable semantics. 
+
+For the runtime on the DFS approach, the AFs created with the random-based procedure were trivial to solve, but ran in to a timeout when the complexity of the AFs increased.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime [s]},
+            ylabel={Test-run},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/BFSvsDFS/random/CF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over admissible semantics}
+    \label{fig:expconcretize/BFSvsDFS/randomAD}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of random-based AFs over stable semantics}
+    \label{fig:expconcretize/BFSvsDFS/random/ST}
+\end{figure}
+
+The second AFs generator procedure is the grid-based approach. Similar to the random-based approach, DFS dominates the BFS algorithm as shown in \cref{fig:expconcretize/BFSvsDFS/grid/CF}, \cref{fig:expconcretize/BFSvsDFS/grid/AD} and \cref{fig:expconcretize/BFSvsDFS/grid/ST}. We speculate, that the spikes at the conflict-free plot are edge-cases which produce a large amount of semantics extensions and the algorithm encountered the spurious extension only at a late stage of time.
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime [s]},
+            ylabel={Test-run},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/BFSvsDFS/grid/CF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over admissible semantics}
+    \label{fig:expconcretize/BFSvsDFS/grid/AD}
+\end{figure}
+
+For stable semantics, the DFS approach managed to solve every test-run instance within the given time frame.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over stable semantics}
+    \label{fig:expconcretize/BFSvsDFS/grid/ST}
+\end{figure}
+
+
+
+
+
+Finally, the remaining AF generator approach is the level-based procedure. We produced three plots for every covered semantics, i.e., conflict-free in \cref{fig:expconcretize/BFSvsDFS/level/CF}, admissible in \cref{fig:expconcretize/BFSvsDFS/level/AD} and stable in \cref{fig:expconcretize/BFSvsDFS/level/ST}. Also here DFS dominates the BFS algorithm in all the test-runs. In contrast to the grid-based approach, the level-based approach created AF instances, which were harder to solve for BFS and DFS. Also for the stable semantics, two test-run instances ran into a timeout on the DFS algorithm. We speculate, that due to the AF generation procedure we generated AFs, which even after concretizing arguments remain spurious.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/BFSvsDFS/level/CF}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over admissible semantics}
+    \label{fig:expconcretize/BFSvsDFS/level/AD}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime [s]},
+            ylabel={Test-run},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/BFS.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/DFS.dat};
+        \legend{BFS, DFS}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over stable semantics}
+    \label{fig:expconcretize/BFSvsDFS/level/ST}
+\end{figure}
+
+
+Finally, we grouped the data by the AF generator procedure and plugged it into a single plot. In \cref{fig:expconcretize/BFSvsDFS/OnePlot}, we can see how dominant the DFS algorithm is compared to the BFS approach. Every test-run instance is either on the diagonal, i.e., DFS is just as fast as BFS, or below, i.e., DFS is faster than BFS. 
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime BFS [s]},
+            ylabel={Runtime DFS [s]},
+            xmin=-10, xmax=310,
+            ymin=-10, ymax=310,
+            xtick={0, 100, 200, 300},
+            ytick={0, 100, 200, 300},
+            legend pos=north west,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+            set layers
+        ]
+
+        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/all/random-based.dat};
+        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/all/level-based.dat};
+        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/all/grid-based.dat};
+        \legend{random-based, grid-based, level-based}
+        \pgfonlayer{axis foreground}
+            \addplot[color=black, thick, densely dashed] coordinates {(-10,-10) (310,310)};
+        \endpgfonlayer
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of BFS and DFS grouped by generator approach}
+    \label{fig:expconcretize/BFSvsDFS/OnePlot}
+\end{figure}
+
+
 \subsection{Comparison of Refinement and No-Refinement}
-\label{subsec:ComparisonOfRefinementAndNoRefinementOnFaithfulProgram}
+\label{subsec:ComparisonOfRefinementAndNoRefinementOnConcretizingProgram}
+
+The results on the impact of the semantic specific refinements on the arguments concretizing program are shown in this section. As previously mentioned in the faithful/spurious check, the refinements made for admissible and stable did not have a significant impact. We hypothesize, that the SAT-Solver has discarded the refinements for optimization reasons for these two semantics. Nevertheless, the refinement made for conflict-free is not a refinement added to the Boolean formula, but is more an iterative improvement added at runtime by adding all the subsets of a computed conflict-free set.
+
+The runtime of the test-run instances for the conflict-free semantics grouped by refinement and no-refinement are shown in \cref{fig:expconcretize/REFvsNOREF/grid-based} for the AFs generated with the grid-based procedure and for the AFs generated with the level-based procedure in \cref{fig:expconcretize/REFvsNOREF/level-based}. In almost all the test-runs the refinement decreases the runtime of the computation especially for the level-based AFs. Nevertheless, some instances are more efficient without the refinements. We hypothesize that these instances are test-runs that use the DFS algorithm and have a better result since, without the refinement, the algorithm generates the semantic extensions in a different order. The order is crucial when using the DFS algorithm because if the spurious extension is found in an early stage, the algorithm can abort.
+
+For BFS, the refinement for conflict-free semantics improves the runtime for every instance. This is because the subset extraction of a computed semantics extension is always faster than computing the extension with an SAT-Solver. Since BFS computes all the semantics extensions before checking for spuriousness, the refinement decreases the runtime.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            ylabel={Test-run},
+            xlabel={Runtime [s]},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/grid-based/REF.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/grid-based/NOREF.dat};
+        \legend{REF, NO-REF}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of grid-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/REFvsNOREF/grid-based}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime [s]},
+            ylabel={Test-run},
+            xmin=-10, xmax=310,
+            ymin=0, ymax=50,
+            xtick={0, 100, 200, 300},
+            ytick={0,10,20,30,40,50},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+        \addplot[color=\cA, mark=square, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/level-based/REF.dat};
+        \addplot[color=\cB, mark=square]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/level-based/NOREF.dat};
+        \legend{REF, NO-REF}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Runtime of level-based AFs over conflict-free semantics}
+    \label{fig:expconcretize/REFvsNOREF/level-based}
+\end{figure}
 
 
+\subsection{Comparison of all Test-runs}
+In this section we compare the efficiency of the refinements to the corresponding semantics in \cref{fig:expconcretize/REFvsNOREF/OnePlot}. As the plot shows, the refinements for admissible and stable had no significant impact. Nevertheless, for conflict-free the refinement had a big impact. Besides five outliers, the refinement decreased the runtime significantly.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeight,
+            xlabel={Runtime REF [s]},
+            ylabel={Runtime NO-REF [s]},
+            xmin=-10, xmax=310,
+            ymin=-10, ymax=310,
+            xtick={0, 100, 200, 300},
+            ytick={0, 100, 200, 300},
+            legend style={at={(0.8,0.25)}},
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+            set layers
+        ]
+
+        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/all/random-based.dat};
+        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/all/grid-based.dat};
+        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/all/level-based.dat};
+        \legend{conflict-free, admissible, stable}
+        \pgfonlayer{axis foreground}
+            \addplot[color=black, thick, densely dashed] coordinates {(-10,-10) (310,310)};
+        \endpgfonlayer
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Performance comparison of Refinement and No-Refinement by Semantics}
+    \label{fig:expconcretize/REFvsNOREF/OnePlot}
+\end{figure}
+
+In \cref{table:ExperimentStatisticsConcretize} we grouped the test-run instances by the argument amount of the AFs. We then computed the mean runtime for all the implemented semantics, i.e., conflict-free, admissible and stable. Furthermore, we stated the test-run instances which did not terminate before the timeout of 300s. As the table shows, there is a direct correlation between the increase on arguments of an AF and the amount of timeouted test-runs. 
 
 
-\subsection{Overall }
 \begin{table}[H]
     \centering
     \caption{test-runs Statistics concretize arguments mean runtime}
@@ -368,289 +975,3 @@ Finally, the data was arranged in a tabular format to enable a more comprehensiv
 \label{table:ExperimentStatisticsConcretize}
 \end{table}
 
-
-
-\section{Comparison of BFS and DFS Approach for Concretizing Arguments}
-\label{sec:ComparisonOfBFSandDFSApproachForConretizingArguments}
-
-
-
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            xlabel={Runtime [s]},
-            ylabel={Testrun},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of random-based AFs over conflict-free semantics}
-    \label{fig:expconcretize/BFSvsDFS/random/CF}
-\end{figure}
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
-            xlabel={Runtime [s]},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of random-based AFs over admissible semantics}
-    \label{fig:expconcretize/BFSvsDFS/randomAD}
-\end{figure}
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
-            xlabel={Runtime [s]},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of random-based AFs over stable semantics}
-    \label{fig:expconcretize/BFSvsDFS/random/ST}
-\end{figure}
-
-
-
-
-
-
-
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            xlabel={Runtime [s]},
-            ylabel={Testrun},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of grid-based AFs over conflict-free semantics}
-    \label{fig:expconcretize/BFSvsDFS/grid/CF}
-\end{figure}
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
-            xlabel={Runtime [s]},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of grid-based AFs over admissible semantics}
-    \label{fig:expconcretize/BFSvsDFS/grid/AD}
-\end{figure}
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
-            xlabel={Runtime [s]},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of grid-based AFs over stable semantics}
-    \label{fig:expconcretize/BFSvsDFS/grid/ST}
-\end{figure}
-
-
-
-
-
-
-
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
-            xlabel={Runtime [s]},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of level-based AFs over conflict-free semantics}
-    \label{fig:expconcretize/BFSvsDFS/level/ST}
-\end{figure}
-
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            ylabel={Testrun},
-            xlabel={Runtime [s]},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of level-based AFs over admissible semantics}
-    \label{fig:expconcretize/BFSvsDFS/level/AD}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \begin{axis}[
-            width=\plotWidth,
-            height=\plotHeight,
-            xlabel={Runtime [s]},
-            ylabel={Testrun},
-            xmin=-10, xmax=310,
-            ymin=0, ymax=50,
-            xtick={0, 100, 200, 300},
-            ytick={0,10,20,30,40,50},
-            legend pos=south east,
-            ymajorgrids=true,
-            xmajorgrids=true,
-            grid style=dashed,
-        ]
-        \addplot[color=blue, mark=square, densely dashed]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/BFS.dat};
-        \addplot[color=red, mark=square]
-            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/DFS.dat};
-        \legend{BFS, DFS}
-        \end{axis}
-    \end{tikzpicture}
-    \caption{Runtime of level-based AFs over stable semantics}
-    \label{fig:expconcretize/BFSvsDFS/level/ST}
-\end{figure}
-
-
-
-\section{Efficiency of Refinements}
-\label{sec:EfficiencyOfRefinements}
