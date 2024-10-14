@@ -220,13 +220,11 @@ $\hat{R}=\bigl\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\bigl\}$. The atta
             \def \cx{1}     \def \cy{-1}
             \def \dx{2}     \def \dy{0}
             \def \ex{3}     \def \ey{0}
-    
             \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
             \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
             \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
             \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
             \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
-    
             % Attacks
             \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
             \DrawSelfAttackRightSingleton{\bx}{\by}
@@ -243,11 +241,9 @@ $\hat{R}=\bigl\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\bigl\}$. The atta
             % Singletons
             \def \ex{2}     \def \ey{0}
             \def \hx{0}     \def \hy{0}
-    
             \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$a,b,c,d$};
             \node at (0, 0.55) {$\hat{h}$};
             \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
-    
             % Attacks
             \DrawSelfAttackLeftTopCluster{\hx-0.65}{\hy + 0.3}
             \DrawAttackHorizontal{B}{\ex}{\ey}{\hx+0.5}{\hy}

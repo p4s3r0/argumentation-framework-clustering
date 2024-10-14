@@ -214,12 +214,11 @@ When operating on clustered AFs, a crucial transformation is to extract argument
 
 Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\hat{F}$ to create a new AF $\hat{F}'$ and transforming it. The transformation is guided by five steps considering the unchanged abstract AF $\hat{F}$ and the concrete AF $F$. To improve the understanding of each step, we accompany the explanation with the example depicted in \cref{example:concretizationOfArguments}, where we concretize the arguments $a$ and $b$.
 
-\vspace{0.3cm}
 
 \vspace{0.3cm}
 \begin{figure}[h]
     \centering
-    \begin{subfigure}[b]{0.475\textwidth}
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \begin{tikzpicture}
             % Singletons
@@ -245,33 +244,29 @@ Concretizing a list of arguments is done iteratively by duplicating the abstract
 
                 \DrawAttackDiagonal{NRL}{\cx}{\cy}{\ax}{\ay}
         \end{tikzpicture}
-        \caption{Concrete AF $F$}
+        \subcaption{Concrete AF $F$}
         \label{fig:concrete_af}
     \end{subfigure}%
     \hfill
-    \begin{subfigure}[b]{0.475\textwidth}
+    \begin{subfigure}[t]{0.55\textwidth}
         \centering
         \begin{tikzpicture}
             % Singletons
             \def \dx{1}   \def \dy{0}
             \def \gx{0}   \def \gy{-1}
             \def \hx{1.9}   \def \hy{-1}
-
             \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
             % Cluster
-
             \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c$};
             \node at (\gx + 0.1, \gy+0.5) {$\hat{g}$};
-
             \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
             \node at (\hx + 0.1, \hy+0.5) {$\hat{h}$};
-
             % Attacks
             \DrawAttackDiagonal{PRL}{\dx}{\dy}{\gx+0.1}{\gy+0.1}
             \DrawAttackDiagonal{NRL}{\hx}{\hy+0.1}{\dx}{\dy}
             \DrawSelfAttackLeftTopCluster{\gx-0.45}{\gy+0.3}
         \end{tikzpicture}
-        \caption{Abstract AF $\hat{F}$}
+        \subcaption{Abstract AF $\hat{F}$}
         \label{fig:abstract_af}
     \end{subfigure}
     \caption{Concrete and abstract AF}
@@ -946,25 +941,21 @@ To speed up the process of computing semantics extensions, we came up with heuri
 
 \paragraph{Admissible} Next, we will define the refinements made for the admissible semantics. Other than conflict-free sets, for (abstract) admissible sets we cannot derive directly information from the subsets. But we can decrease the computation time of showing spuriousness or faithfulness by adding the negated admissible formula for the concrete AF. This removes the faithful admissible sets, which are composed of only singletonsand can therefore be directly mapped from the abstract admissible sets to the concrete ones. The remaining sets to be computed are the spurious sets, or abstract admissible sets containing at least one cluster (since the concrete AF does not possess clusters and are therefore not ignored).
 
-Recall, that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. We refine the formula from \cref{def:booleanFormulaAdmissible}, denoted as $\varphi_{\!A\!D\!M}$ with the refinement denoted as $\eta_{\!A\!D\!M}$.
+Recall, that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. We refine the formula from \cref{def:booleanFormulaAdmissible}, denoted as $\varphi_{adm}$ with the refinement denoted as $\eta_{adm}$.
 
-\vspace{0.1cm}
-
-$$
-    \hat{adm}=\ \varphi_{\!A\!D\!M}(\hat{F}) \land \eta_{\!A\!D\!M}(F)
-$$
-
-\vspace{0.1cm}
-
-Where $\eta_{\!A\!D\!M}(F)$ is defined as the negated admissible formula of the concrete AF.
-
-\vspace{0.1cm}
 
 $$
-    \eta_{\!A\!D\!M}(F)=\ \overline{cf}(F) \land \overline{def}(F)
+    \hat{adm}=\ \varphi_{adm}(\hat{F}) \land \eta_{adm}(F)
 $$
 
-\vspace{0.1cm}
+
+Where $\eta_{adm}(F)$ is defined as the negated admissible formula of the concrete AF.
+
+
+$$
+    \eta_{adm}(F)=\ \overline{cf}(F) \land \overline{def}(F)
+$$
+
 
 The two new introduced components (i.e.\ $\overline{cf}$ and $\overline{def}$) define together the refinement. Here, $\overline{cf}$ stands for the negated part of the conflict-free sets from the concrete AF and $\overline{def}$ defines that we want to ignore all the sets from the concrete AF which are defending themselves from an attack.
 
@@ -974,18 +965,18 @@ The two new introduced components (i.e.\ $\overline{cf}$ and $\overline{def}$) d
 \end{align*}
 
 \paragraph{Stable} For the stable semantics we apply the same principle as for abstract admissibility. Since we cannot conclude anything from the subsets of the computed (abstract) semantics, we need to add the negation of the stable formula for the concrete AF. With this, we reduce the semantics extensions which need to be computed for showing spuriousness or faithfulness drastically, without losing crucial information. The eliminated abstract extensions are simply the extensions, which can be directly mapped to the concrete stable extensions. The remaining extensions that need to be computed are either spurious extensions, or extensions which have at least one cluster and need to be expanded and checked separately for spuriousness. Recall, that a set of
-arguments is abstractly stable, if it is abstractly conflict-free and if an argument is not in the abstractly stable extension, it implies that an argument in the abstractly stable extension is attacking it. Furthermore if the abstractly stable extension is not attacking an argument, then every singleton attacking the argument is not in the abstractly stable extension. We refine this formula from \cref{def:booleanFormulaStable}, denoted as $\varphi_{\!S\!T\!B}$ with the refinement denoted as $\eta_{S\!T\!B}$.
+arguments is abstractly stable, if it is abstractly conflict-free and if an argument is not in the abstractly stable extension, it implies that an argument in the abstractly stable extension is attacking it. Furthermore if the abstractly stable extension is not attacking an argument, then every singleton attacking the argument is not in the abstractly stable extension. We refine this formula from \cref{def:booleanFormulaStable}, denoted as $\varphi_{stb}$ with the refinement denoted as $\eta_{stb}$.
 
 
-$$ \hat{stb}=\  \varphi_{\!S\!T\!B}(\hat{F}) \land \eta_{S\!T\!B}(F) $$
+$$ \hat{stb}=\  \varphi_{stb}(\hat{F}) \land \eta_{stb}(F) $$
 
 \vspace{0.04cm}
-Here $\eta_{S\!T\!B}$ is defined as the negated stable formula of the concrete AF.
+Here $\eta_{stb}$ is defined as the negated stable formula of the concrete AF.
 \vspace{0.01cm}
 
 
 $$
-\eta_{S\!T\!B}(F) =\ \overline{cf}(F) \land \overline{att}(F) \land \overline{con}(F)
+\eta_{stb}(F) =\ \overline{cf}(F) \land \overline{att}(F) \land \overline{con}(F)
 $$
 
 

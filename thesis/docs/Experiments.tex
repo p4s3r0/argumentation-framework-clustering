@@ -1,6 +1,6 @@
 \chapter{Experiments}
 \label{ch:experiment}
-In this chapter, we discuss the experiment that was conducted. In \cref{sec:GenerationOfInputInstances}, we describe how the AF instances were generated. Then, we describe the setup and environment in which the experiment was executed in \cref{sec:Setup}. In \cref{sec:ComparisonOfBFSandDFSApproachForSpuriousCheck}, we show and discuss the faithful/spurious check results according to the two approaches, i.e.\ BFS and DFS. In \cref{sec:ComparisonOfBFSandDFSApproachForConretizingArguments}, we will do the same for the concretizing arguments program. Finally, we investigate the efficiency of the applied refinements for both programs in \cref{sec:EfficiencyOfRefinements}.
+In this chapter, we discuss the experiment that was conducted. In \cref{sec:GenerationOfInputInstances}, we describe how the AF instances were generated. Then, we describe the setup and environment in which the experiment was executed in \cref{sec:Setup}. Next, we split up the experiment into two programs, the faithful/spurious check in \cref{sec:FaithfulSpuriusCheck} and the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}. For every program, we ran test-run instances according to the two approaches, i.e., \ BFS and DFS, and investigated further the efficiency of the applied refinements to the corresponding semantics.
 
 
 \section{Generation of Input Instances}
@@ -37,7 +37,7 @@ The experiment was conducted in a personal computer environment. The exact speci
 \section{Faithful Spurious Check}
 \label{sec:FaithfulSpuriusCheck}
 
-This section presents the data collected from the program, which checks if an abstract AF is faithful or spurious. We compare BFS and DFS in \cref{subsec:faithfulComparisonBFSvsDFS}. For these tests, we split plots into three categories, i.e., \ the three AF generator procedures (random-based, grid-based, and level-based). All three categories are split again on the specific semantics, i.e., conflict-free, admissible and stable. Then, we checked how much impact the refinements had on the corresponding semantics. Finally, we packed all the runtimes into one plot to show the influence of the different generator approaches and created a table to show the impact of the number of arguments from the AF. Next, we did the same for the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}.
+This section presents the data collected from the program, which checks if an abstract AF is faithful or spurious. We compare BFS and DFS in \cref{subsec:faithfulComparisonBFSvsDFS}. For these tests, we split plots into three categories, i.e., the three AF generator procedures (random-based, grid-based, and level-based). All three categories are split again on the specific semantics, i.e., conflict-free, admissible, and stable. Then, we checked how much impact the refinements had on the corresponding semantics. Finally, we packed all the runtimes into one plot to show the influence of the different generator approaches and created a table to show the impact of the number of arguments from the AF. Next, we did the same for the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}.
 
 \subsection{Comparison of BFS and DFS}
 \label{subsec:faithfulComparisonBFSvsDFS}
@@ -47,8 +47,8 @@ This section presents the data collected from the program, which checks if an ab
 \newcommand{\plotHeightSmall}{5cm}
 
 
-We implemented two different approaches to check for faithfulness, e.g.\ BFS and DFS. Both of them were tested and showed different results according to the AFs generation procedure. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
-Note, that the testrun numeration does not begin at 1 because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions are less. Thus, BFS and DFS do not differ that much.
+We implemented two approaches to check for faithfulness, e.g., BFS and DFS. Both were tested and showed different results according to the AFs generation procedure. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
+Note that the test-run numeration does not begin at $1$ because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions is less. Thus, BFS and DFS are similar.
 
 
 
@@ -142,7 +142,7 @@ Note, that the testrun numeration does not begin at 1 because all the test-runs 
 
 
 
-The difference of BFS and DFS increases when we change the AF generation approach to the grid-based procedure. In the plots depicted in \cref{fig:expfaithful/BFSvsDFS/grid/CF}, \cref{fig:expfaithful/BFSvsDFS/grid/AD} and \cref{fig:expfaithful/BFSvsDFS/grid/ST} we can observe, that DFS outperforms the BFS algorithm. We speculate, that due to the grid-based AFs generation procedure, we created AFs with way more semantics extensions. Since BFS needs to compute every extension to proof spuriousness and DFS checks after every computed extension for spuriousness, we obtain a better runtime for DFS if the AF is spurious. Since all the testcase instances were computed randomly, the chance of generating a spurious AF is more likely and thus favor the DFS algorithm. 
+BFS and DFS differences increase when we change the AF generation approach to the grid-based procedure. In the plots depicted in \cref{fig:expfaithful/BFSvsDFS/grid/CF}, \cref{fig:expfaithful/BFSvsDFS/grid/AD} and \cref{fig:expfaithful/BFSvsDFS/grid/ST} we can observe, that DFS outperforms the BFS algorithm. Due to the grid-based AF generation procedure, we created AFs with many more semantic extensions than on the random-based approach. Since BFS needs to compute every extension to prove spuriousness and DFS checks after every computed extension for spuriousness, we obtain a better runtime for DFS if the AF is spurious. Since all the test-run instances were computed randomly, the chance of generating a spurious AF is more likely, the DFS algorithm is favored.
 
 
 
@@ -234,7 +234,7 @@ The difference of BFS and DFS increases when we change the AF generation approac
 
 
 
-The difference increases even further when changing the AF generator approach to the level-based procedure. As we can see in \cref{fig:expfaithful/BFSvsDFS/level/CF}, \cref{fig:expfaithful/BFSvsDFS/level/AD} and \cref{fig:expfaithful/BFSvsDFS/level/ST}, DFS dominates BFS especially in the conflict-free and admissible semantics. This is due to the bigger size of the semantics extensions. Recall, that the conflict-free sets are a subset of the admissible sets and the admissible sets are a subset of the stable extensions.
+The difference increases even further when the AF generator approach is changed to the level-based procedure. As we can see in \cref{fig:expfaithful/BFSvsDFS/level/CF}, \cref{fig:expfaithful/BFSvsDFS/level/AD} and \cref{fig:expfaithful/BFSvsDFS/level/ST}, DFS dominates BFS especially in the conflict-free and admissible semantics. This is due to the bigger size of the semantics extensions. Recall that the conflict-free sets are a subset of the admissible sets, and the admissible sets are a subset of the stable extensions.
 
 
 
@@ -325,7 +325,7 @@ The difference increases even further when changing the AF generator approach to
 \end{figure}
 
 
-Finally, we arranged the data into a single plot from all the generator approaches in \cref{fig:expfaithful/BFSvsDFS/OnePlot}. Here we can see that DFS dominates in almost all of the test-runs the BFS approach and in the few cases where BFS is more efficient, it is by a small factor. Especially with the AFs generated with the level-based procedure we observe that DFS is way more efficient. This is due the fact, that on level-based AFs we have far more extensions than on random-based and computing all of them with the BFS algorithm leads to a bad runtime. On the other hand, random-based AFs have far less extensions due to fewer attacks. Thus, BFS can be faster than DFS, since it does not have to deal with as many context switches.
+Finally, we arranged the data into a single plot from all the generator approaches in \cref{fig:expfaithful/BFSvsDFS/OnePlot}. Here, we can see that DFS dominates in almost all of the test-runs on the BFS approach, and in the few cases where BFS is more efficient than DFS, it is by a minor factor. Especially with the AFs generated with the level-based procedure, DFS is way more efficient. This is because, on level-based AFs, we have far more extensions than on random-based ones, and computing all of them with the BFS algorithm leads to a lousy runtime. On the other hand, random-based AFs have far fewer extensions due to fewer attacks. Thus, BFS can be faster than DFS, since it does not have to deal with as many context switches.
 
 \begin{figure}[H]
     \centering
@@ -370,7 +370,7 @@ Finally, we arranged the data into a single plot from all the generator approach
 \subsection{Comparison of Refinement and No-Refinement}
 \label{subsec:ComparisonOfRefinementAndNoRefinementOnFaithfulProgram}
 
-We implemented different refinements for each semantics. As data has shown, the refinements made for conflict-free semantics have a big impact as shown in \cref{fig:expfaithful/REFvsNOREF/grid-based} and \cref{fig:expfaithful/REFvsNOREF/level-based}. Especially for AFs with many conflict-free sets, the refinement reduces the runtime significantly. We got some test-runs for the grid-based AFs, where without the refinement we obtain a better result. We hypothesize, that the observed outliers may result from the DFS algorithm finding a spurious extension. Recall, that the refinement for the conflict-free sets is to extract all the subsets from a computed conflict-free set. If all the subsets are faithful, we introduce many faithful/spurious check which lead to an increase of runtime, that the DFS algorithm without the refinement does not face. The same outlier can be seen the other way around in the grid-based plot at test-run 25. Here, the refinement extracted a subset of a computed conflict-free set, which was spurious. Without the refinement, no spurious set was found within the timeout. Besides conflict-free, the refinements made for admissible and stable did only have a minor impact. We speculate, that the SAT-Solver discarded the refinement due to optimization reasons or the overhead of increasing the Boolean formula lead to no significant improvement.
+We implemented different refinements for each semantics. As data has shown, the refinements made for conflict-free semantics have a significant impact, as shown in \cref{fig:expfaithful/REFvsNOREF/grid-based} and \cref{fig:expfaithful/REFvsNOREF/level-based}. The refinement reduces the runtime significantly, especially for AFs with many conflict-free sets. We got some test-runs for the grid-based AFs, where we obtained a better result without the refinement. We hypothesize that the observed outliers may result from the DFS algorithm finding a spurious extension. Recall that the refinement for the conflict-free sets is to extract all the subsets from a computed conflict-free set. If all the subsets are faithful, we introduce many faithful/spurious checks, which leads to an increase in runtime that the DFS algorithm, without refinement, does not face. The same outlier can be seen the other way around in the grid-based plot at test-run 25. Here, the refinement extracted a subset of a computed conflict-free set, which was spurious. Without the refinement, no spurious set was found within the timeout. Besides conflict-free, the refinements made for admissible and stable only had a minor impact. We speculate that the SAT-Solver discarded the refinement for optimization reasons or the overhead of increasing the Boolean formula, which led to no significant improvement.
 
 
 \begin{figure}[H]
@@ -429,7 +429,7 @@ We implemented different refinements for each semantics. As data has shown, the 
     \label{fig:expfaithful/REFvsNOREF/level-based}
 \end{figure}
 
-In \cref{fig:expfaithful/REFvsNOREF/OnePlot} we can see the performance of the refinements against no refinements. For admissible and stable, there is no significant difference except some outliers. We hypothesize, that due to the refinement, we pushed the SAT-Solver into a certain direction (like changing the seed), where he found some lucky spurious extensions. Nevertheless, most of the time the refinements made for non-conflict-free semantics had no fundamental impact on the runtime. On the other hand, the refinement made for conflict-free semantics had a significant improvement on the runtime, besides some outliers.
+In \cref{fig:expfaithful/REFvsNOREF/OnePlot}, we can see the performance of the refinements against no refinements. There is no significant difference except for some outliers for admissible and stable. We hypothesize that due to the refinement, we pushed the SAT-Solver in a specific direction (like changing the seed), where he found some lucky spurious extensions. Nevertheless, most of the time, the refinements made for non-conflict-free semantics had no fundamental impact on the runtime. On the other hand, the refinement made for conflict-free semantics significantly improved the runtime, besides some outliers.
 
 \begin{figure}[H]
     \centering
@@ -469,7 +469,7 @@ In \cref{fig:expfaithful/REFvsNOREF/OnePlot} we can see the performance of the r
 
 
 \subsection{Comparison of all Test-runs}
-In this section we compare the data over all test-run instances, specifically how many test-runs did not run in to a timeout depending on the semantics and the mean runtime of the passed test-cases. In \cref{fig:expfaithful/Semantics/OnePlot} we can observe that the most solvable semantics is the stable semantics. Followed by the admissible semantics and the least solved test-runs has the conflict-free semantics. The reason for this is the number of semantic extensions of the AFs. If an AF has many semantic extensions, the runtime of the faithful check increases.
+In this section, we compare the data over all test-run instances, precisely how many test-runs did not run into a timeout depending on the semantics and the mean runtime of the passed test cases. In \cref{fig:expfaithful/Semantics/OnePlot}, we can observe that the most solvable semantics is the stable semantics. Following admissible semantics, the least solved test-runs have conflict-free semantics. The reason for this is the number of semantic extensions of the AFs. If an AF has many semantic extensions, the runtime of the faithful check increases.
 
 
 \begin{figure}[H]
@@ -505,7 +505,7 @@ In this section we compare the data over all test-run instances, specifically ho
 \end{figure}
 
 
-The data was arranged in a tabular format to enable a more comprehensive comparison from a higher-level viewpoint. We computed the mean value of the test-runs depending on the AFs number of arguments and semantics. Furthermore, we excluded the runtime from the test runs that ran into a timeout and stated the exact amount. In \cref{table:ExperimentStatisticsFaithfulCheck} we can observe that with the increase in size of the AF, the runtime of the faithful/spurious check increases as well. The same holds for the amount of timeouts.
+The data was arranged in a tabular format to enable a more comprehensive comparison from a higher-level viewpoint. We computed the mean value of the test-runs depending on the AF number of arguments and semantics. Furthermore, we excluded the runtime from the test runs that ran into a timeout and stated the exact amount. In \cref{table:ExperimentStatisticsFaithfulCheck}, we can observe that with the increase in the AF's size, the faithful/spurious check's runtime also increases. The same holds for the amount of timeouts.
 
 
 \begin{table}[htb]
@@ -540,9 +540,9 @@ This section presents the data collected from the concretizing arguments program
 \subsection{Comparison of BFS and DFS}
 \label{subsec:ComparisonOfBFSandDFSApproachForConretizingArguments}
 
-Since the program for concretizing arguments uses the faithful/spurious check multiple times, we can compare the impact on the runtime of the BFS and DFS approaches. We start with the first AF generator procedure, i.e., the random-based approach. Here we created three plots: in \cref{fig:expconcretize/BFSvsDFS/random/CF} the conflict-free semantics is shown, in \cref{fig:expconcretize/BFSvsDFS/randomAD} we depicted the admissible semantics and in \cref{fig:expconcretize/BFSvsDFS/random/ST} the stable semantics. For these test-cases, the DFS approach dominates the BFS approach in every instance. We hypothesize that this is the repeated check of spurious AFs, which is more favorable for DFS. Furthermore, BFS does not only stand no chance against DFS, but most of the instances do not terminate before the timeout. This is especially critical for the admissible and stable semantics. 
+Since the program for concretizing arguments uses the faithful/spurious check multiple times, we can compare the impact on the runtime of the BFS and DFS approaches. We start with the first AF generator procedure, i.e., the random-based approach. Here we created three plots: in \cref{fig:expconcretize/BFSvsDFS/random/CF} the conflict-free semantics is shown, in \cref{fig:expconcretize/BFSvsDFS/randomAD} we depicted the admissible semantics and in \cref{fig:expconcretize/BFSvsDFS/random/ST} the stable semantics. For these test-cases, the DFS approach dominates the BFS approach in every instance. We hypothesize that this is the repeated check of spurious AFs, which is more favorable for DFS. Furthermore, BFS not only stands no chance against DFS, but in most instances, it does not terminate before the timeout. This is especially critical for the admissible and stable semantics.
 
-For the runtime on the DFS approach, the AFs created with the random-based procedure were trivial to solve, but ran in to a timeout when the complexity of the AFs increased.
+For the runtime on the DFS approach, the AFs created with the random-based procedure were trivial to solve but ran into a timeout when the complexity of the AFs increased.
 
 
 \begin{figure}[H]
@@ -631,7 +631,7 @@ For the runtime on the DFS approach, the AFs created with the random-based proce
     \label{fig:expconcretize/BFSvsDFS/random/ST}
 \end{figure}
 
-The second AFs generator procedure is the grid-based approach. Similar to the random-based approach, DFS dominates the BFS algorithm as shown in \cref{fig:expconcretize/BFSvsDFS/grid/CF}, \cref{fig:expconcretize/BFSvsDFS/grid/AD} and \cref{fig:expconcretize/BFSvsDFS/grid/ST}. We speculate, that the spikes at the conflict-free plot are edge-cases which produce a large amount of semantics extensions and the algorithm encountered the spurious extension only at a late stage of time.
+The second AFs generator procedure is the grid-based approach. Similar to the random-based approach, DFS dominates the BFS algorithm as shown in \cref{fig:expconcretize/BFSvsDFS/grid/CF}, \cref{fig:expconcretize/BFSvsDFS/grid/AD} and \cref{fig:expconcretize/BFSvsDFS/grid/ST}. The spikes at the conflict-free plot are edge cases that produce many semantics extensions, and the algorithm encountered the spurious extension only at a late stage.
 
 
 \begin{figure}[H]
@@ -725,7 +725,7 @@ For stable semantics, the DFS approach managed to solve every test-run instance 
 
 
 
-Finally, the remaining AF generator approach is the level-based procedure. We produced three plots for every covered semantics, i.e., conflict-free in \cref{fig:expconcretize/BFSvsDFS/level/CF}, admissible in \cref{fig:expconcretize/BFSvsDFS/level/AD} and stable in \cref{fig:expconcretize/BFSvsDFS/level/ST}. Also here DFS dominates the BFS algorithm in all the test-runs. In contrast to the grid-based approach, the level-based approach created AF instances, which were harder to solve for BFS and DFS. Also for the stable semantics, two test-run instances ran into a timeout on the DFS algorithm. We speculate, that due to the AF generation procedure we generated AFs, which even after concretizing arguments remain spurious.
+Finally, the remaining AF generator approach is the level-based procedure. We produced three plots for every covered semantics, i.e., conflict-free in \cref{fig:expconcretize/BFSvsDFS/level/CF}, admissible in \cref{fig:expconcretize/BFSvsDFS/level/AD} and stable in \cref{fig:expconcretize/BFSvsDFS/level/ST}. Also, DFS dominates the BFS algorithm in all the test runs. In contrast to the grid-based approach, the level-based approach created AF instances, which were more challenging to solve for BFS and DFS. Also, for the stable semantics, two test-run instances ran into a timeout on the DFS algorithm. We speculate that due to the AF generation procedure, we generated AFs that remain spurious even after concretizing arguments.
 
 \begin{figure}[H]
     \centering
@@ -854,7 +854,7 @@ Finally, we grouped the data by the AF generator procedure and plugged it into a
 \subsection{Comparison of Refinement and No-Refinement}
 \label{subsec:ComparisonOfRefinementAndNoRefinementOnConcretizingProgram}
 
-The results on the impact of the semantic specific refinements on the arguments concretizing program are shown in this section. As previously mentioned in the faithful/spurious check, the refinements made for admissible and stable did not have a significant impact. We hypothesize, that the SAT-Solver has discarded the refinements for optimization reasons for these two semantics. Nevertheless, the refinement made for conflict-free is not a refinement added to the Boolean formula, but is more an iterative improvement added at runtime by adding all the subsets of a computed conflict-free set.
+The results of the impact of the semantic-specific refinements on the arguments concretizing program are shown in this section. As previously mentioned in the faithful/spurious check, the refinements made for admissible and stable did not significantly impact. We hypothesize that the SAT-Solver has discarded the refinements for optimization reasons for these two semantics. Nevertheless, the refinement made for conflict-free is not added to the Boolean formula. However, it is more of an iterative improvement added at runtime by adding all the subsets of a computed conflict-free set.
 
 The runtime of the test-run instances for the conflict-free semantics grouped by refinement and no-refinement are shown in \cref{fig:expconcretize/REFvsNOREF/grid-based} for the AFs generated with the grid-based procedure and for the AFs generated with the level-based procedure in \cref{fig:expconcretize/REFvsNOREF/level-based}. In almost all the test-runs the refinement decreases the runtime of the computation especially for the level-based AFs. Nevertheless, some instances are more efficient without the refinements. We hypothesize that these instances are test-runs that use the DFS algorithm and have a better result since, without the refinement, the algorithm generates the semantic extensions in a different order. The order is crucial when using the DFS algorithm because if the spurious extension is found in an early stage, the algorithm can abort.
 
@@ -918,7 +918,7 @@ For BFS, the refinement for conflict-free semantics improves the runtime for eve
 
 
 \subsection{Comparison of all Test-runs}
-In this section we compare the efficiency of the refinements to the corresponding semantics in \cref{fig:expconcretize/REFvsNOREF/OnePlot}. As the plot shows, the refinements for admissible and stable had no significant impact. Nevertheless, for conflict-free the refinement had a big impact. Besides five outliers, the refinement decreased the runtime significantly.
+In this section, we compare the efficiency of the refinements to the corresponding semantics in \cref{fig:expconcretize/REFvsNOREF/OnePlot}. As the plot shows, the refinements for admissible and stable had no significant impact. Nevertheless, for conflict-free semantics, refinement had a significant impact. Besides five outliers, the refinement decreased the runtime significantly.
 
 \begin{figure}[H]
     \centering
@@ -955,7 +955,7 @@ In this section we compare the efficiency of the refinements to the correspondin
     \label{fig:expconcretize/REFvsNOREF/OnePlot}
 \end{figure}
 
-In \cref{table:ExperimentStatisticsConcretize} we grouped the test-run instances by the argument amount of the AFs. We then computed the mean runtime for all the implemented semantics, i.e., conflict-free, admissible and stable. Furthermore, we stated the test-run instances which did not terminate before the timeout of 300s. As the table shows, there is a direct correlation between the increase on arguments of an AF and the amount of timeouted test-runs. 
+In \cref{table:ExperimentStatisticsConcretize}, we grouped the test-run instances by the argument amount of the AFs. We then computed the mean runtime for all the implemented semantics, i.e., conflict-free, admissible, and stable. Furthermore, we stated the test-run instances that did not terminate before the timeout of 300s. As the table shows, there is a direct correlation between the increase in arguments of an AF and the amount of timeouted test-runs. 
 
 
 \begin{table}[H]
