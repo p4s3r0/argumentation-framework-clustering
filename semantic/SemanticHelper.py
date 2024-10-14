@@ -76,35 +76,36 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
 
 def verifySet(current_solver, verify_set: list, AF_abstract):
     '''Verifys the given set if it is satisfiable with the main AF'''
-    if verify_set == [[]]:
+    if verify_set == [[]] or verify_set == []:
         return True
+
+    if type(verify_set[0]) != list:
+        verify_set = [verify_set]
 
     for combination in verify_set:
         current_solver.solver.push()
         for arg in AF_abstract.arguments.values():
             if arg in combination:
                 if arg.is_singleton:
-                    current_solver.solver.add(arg.z3_value == True)
+                    current_solver.solver.add(current_solver.AF[arg.name].z3_value == True)
                 else:
                     temp = False
                     for c_arg in arg.clustered_arguments:
-                        if c_arg in current_solver.AF:
-                            temp = z3.Or(current_solver.AF[c_arg].z3_value, temp)
+                        temp = z3.Or(current_solver.AF[c_arg].z3_value, temp)
                     current_solver.solver.add(temp)
             else:
                 if arg.is_singleton:
-                    current_solver.solver.add(arg.z3_value == False)
+                    current_solver.solver.add(current_solver.AF[arg.name].z3_value == False)
                 else:
                     temp = False
                     for c_arg in arg.clustered_arguments:
-                        if c_arg in current_solver.AF:
-                            temp = z3.Or(current_solver.AF[c_arg].z3_value, temp)
+                        temp = z3.Or(current_solver.AF[c_arg].z3_value, temp)
                     current_solver.solver.add(z3.Not(temp))
 
         if Solver.solve(current_solver.solver):
             current_solver.solver.pop()
-            return True
         else:
             current_solver.solver.pop()
+            return verify_set
 
-    return verify_set
+    return True

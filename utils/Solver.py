@@ -52,6 +52,8 @@ def negatePreviousSolution(arguments: dict[str, Argument.Argument], solution: li
 
 def compareSets(set1: list[list[Argument.Argument]], set2: list[list[Argument.Argument]]):
     """Compares two Sets and checks if they are equal"""
+    print(set2)
+    exit()
     deconstructed_list_1 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set1]
     deconstructed_list_2 = [ClusterHelperFunctions.deconstructClusteredList(clustered_list=sol) for sol in set2]
 

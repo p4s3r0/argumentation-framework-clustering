@@ -16,19 +16,13 @@ def spuriousFaithfulCheck(af_concrete: ArgumentationFramework, af_abstract: Argu
     solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_concrete.arguments, no_refinement=no_refinement)
 
     if algorithm == "BFS":
-        set_af_1 = list()
-        if len(solver_af_1.solution) == 0 or len(solver_af_1.solution) == 1:
-            set_af_1 = solver_af_1.computeSets()
-        else:
-            set_af_1 = solver_af_1.solution
         set_af_2 = solver_af_2.computeSets()
-
-        Info.SolutionSets(semantic, set_af_1, "Concrete: ")
         Info.SolutionSets(semantic, set_af_2, "Abstract: ")
 
-        if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
-            Out.Spurious(cmp)
-            return False, list(cmp)
+        cmp = solver_af_1.verifySet(set_af_2, af_abstract)
+        if cmp != True:
+            Out.Spurious(cmp[0])
+            return False, cmp[0]
         else:
             Out.Faithful()
             return True, None
@@ -50,6 +44,8 @@ def clearSolver():
     global solver_af_1
     solver_af_1 = None
 
+
+
 def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visualize: bool, no_refinement: bool):
     """
     Compares 2 AFs from the passed files and decides if spurious of faithful
@@ -68,15 +64,13 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visuali
     solver_af_2 = getSemanticSolver(semantic=semantic, AF=af_abstract.arguments, AF_main=af_main.arguments, no_refinement=no_refinement)
 
     if algorithm == "BFS":
-        set_af_1 = solver_af_1.computeSets()
         set_af_2 = solver_af_2.computeSets()
-
-        Info.SolutionSets(semantic, set_af_1, "Concrete: ")
         Info.SolutionSets(semantic, set_af_2, "Abstract: ")
-
-        if (cmp := Solver.compareSets(set1=set_af_1, set2=set_af_2)) != "FAITHFUL":
-            Out.Spurious(cmp)
-            return False
+        for extension in set_af_2:
+            cmp = solver_af_1.verifySet(extension, af_abstract)
+            if cmp != True:
+                Out.Spurious(cmp[0])
+                return False
         else:
             Out.Faithful()
             return True
@@ -88,7 +82,6 @@ def compareTwoAFs(file1: str, file2: str, algorithm: str, semantic: str, visuali
                 return False
                 break
         else:
-
             Out.Faithful()
             return True
 
