@@ -2,6 +2,8 @@ from . import ConflictFreeSolver
 from . import AdmissibleSolver
 from . import StableSolver
 
+import z3
+
 from utils import Error
 from utils import Argument
 from utils import Info
@@ -72,46 +74,37 @@ def computeSets(current_solver, solution_amount: int=-1, algorithm: str="BFS"):
 
 
 
-def verifySet(current_solver, verify_set: list):
+def verifySet(current_solver, verify_set: list, AF_abstract):
     '''Verifys the given set if it is satisfiable with the main AF'''
     if verify_set == [[]]:
         return True
 
-    deconstructed_list = ClusterHelperFunctions.deconstructClusteredList(clustered_list=verify_set[0])
-
-    if type(deconstructed_list[0]) == str:
-        deconstructed_list = [deconstructed_list]
-
-    for combination in deconstructed_list:
-        if len(deconstructed_list) > 1:
-            for solution in combination:
-                current_solver.solver.push()
-                for arg in solution:
-                    current_solver.solver.add(current_solver.AF[solution].z3_value == True)
-
-                if Solver.solve(current_solver.solver):
-                    current_solver.solver.pop()
-                    return True
+    for combination in verify_set:
+        current_solver.solver.push()
+        for arg in AF_abstract.arguments.values():
+            if arg in combination:
+                if arg.is_singleton:
+                    current_solver.solver.add(arg.z3_value == True)
                 else:
-                    current_solver.solver.pop()
+                    temp = False
+                    for c_arg in arg.clustered_arguments:
+                        if c_arg in current_solver.AF:
+                            temp = z3.Or(current_solver.AF[c_arg].z3_value, temp)
+                    current_solver.solver.add(temp)
             else:
-                return verify_set
+                if arg.is_singleton:
+                    current_solver.solver.add(arg.z3_value == False)
+                else:
+                    temp = False
+                    for c_arg in arg.clustered_arguments:
+                        if c_arg in current_solver.AF:
+                            temp = z3.Or(current_solver.AF[c_arg].z3_value, temp)
+                    current_solver.solver.add(z3.Not(temp))
+
+        if Solver.solve(current_solver.solver):
+            current_solver.solver.pop()
+            return True
         else:
-            current_solver.solver.push()
-            for argument in current_solver.AF.keys():
-                if argument in combination:
-                    current_solver.solver.add(current_solver.AF[argument].z3_value == True)
-                else:
-                    current_solver.solver.add(current_solver.AF[argument].z3_value == False)
-            if Solver.solve(current_solver.solver):
-                current_solver.solver.pop()
+            current_solver.solver.pop()
 
-                return True
-            else:
-                current_solver.solver.pop()
-                return verify_set
-
-    return verify_set                
-
-
-            
+    return verify_set

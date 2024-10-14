@@ -181,5 +181,5 @@ class StableSolver:
         return SemanticHelper.computeSets(self, solution_amount, algorithm)
 
 
-    def verifySet(self, verify_set: list):
-        return SemanticHelper.verifySet(self, verify_set)
+    def verifySet(self, verify_set: list, AF_abstract):
+        return SemanticHelper.verifySet(self, verify_set, AF_abstract)
