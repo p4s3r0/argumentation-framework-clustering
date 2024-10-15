@@ -1,11 +1,11 @@
 \chapter{Experimental Evaluation}
 \label{ch:experiment}
-In this chapter, we discuss the experiment that was conducted. In \cref{sec:GenerationOfInputInstances}, we describe how the AF instances were generated. Then, we describe the setup and environment in which the experiment was executed in \cref{sec:Setup}. Next, we split up the experiment into two programs, the faithful/spurious check in \cref{sec:FaithfulSpuriusCheck} and the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}. For every program, we ran test-run instances according to the two approaches, i.e., \ BFS and DFS, and investigated further the efficiency of the applied refinements to the corresponding semantics.
+In this chapter, we discuss the experiment that was conducted. In \cref{sec:GenerationOfInputInstances}, we describe how the AF instances were generated. Then, we describe the setup and environment in which the experiment was executed in \cref{sec:Setup}. Next, we split up the experiment into two programs, the faithful/spurious check in \cref{sec:FaithfulSpuriusCheck} and the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}. For every program, we ran test-run instances (a test-run is a single program invocation, solving a specific task) according to the two approaches, i.e., \ BFS and DFS, and investigated further the efficiency of the applied refinements to the corresponding semantics.
 
 
 \section{Generation of Input Instances}
 \label{sec:GenerationOfInputInstances}
-We generated the experiment instances with the previously mentioned scripts in \cref{sec:ImplementationsCreatingAFs}. To have a large variety of AF inputs, we generated $25$ tests per generator approach, i.e., \ random-based, grid-based, and level-based. The $25$ tests per generator approach are grouped into five different sizes, which are $10$, $15$, $20$, $25$, and $30$. Since the AF generator uses a certain probability to create an attack, it is connected to a certain randomness. This randomness assures the versability of AFs in the same argument amount group. The probability value was set to \texttt{0.5}, equivalent to a $50\%$ chance that an attack between two arguments might occur. Finally, the abstraction of the concrete AFs was realized with the clustering script described in \cref{sec:ImplementationsCreatingAFs}. 
+We generated the experiment instances with the previously mentioned scripts in \cref{sec:ImplementationsCreatingAFs}. To have a variety of AF inputs, we generated $25$ tests per generator approach, i.e., \ random-based, grid-based, and level-based. The $25$ tests per generator approach are grouped into five different sizes, which are $10$, $15$, $20$, $25$, and $30$. Since the AF generator uses a certain probability to create an attack, it is connected to a certain randomness. This randomness assures the versability of AFs in the same argument amount group. The probability value was set to \texttt{0.5}, equivalent to a $50\%$ chance that an attack between two arguments might occur. Finally, the abstraction of the concrete AFs was realized with the clustering script described in \cref{sec:ImplementationsCreatingAFs}. 
 
 The arguments to be concretized for the concretization algorithm were chosen in the AF generation script. For every instance, we chose a random amount (between $1$ and the total amount of arguments in the cluster) of arguments, which had to be concretized. The randomness of generation is essential to ensure that we did not pick AFs that contributed to a misleading runtime by picking favorable AFs.
 
@@ -34,6 +34,8 @@ The experiment was conducted in a personal computer environment. The exact speci
 
 
 
+
+
 \section{Checking Faithulness}
 \label{sec:FaithfulSpuriusCheck}
 
@@ -47,7 +49,7 @@ This section presents the data collected from the program, which checks if an ab
 \newcommand{\plotHeightSmall}{5cm}
 
 
-We implemented two approaches to check for faithfulness, e.g., BFS and DFS. Both were tested and showed different results according to the AFs generation procedure. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
+We implemented two approaches to check for faithfulness, i.e., BFS and DFS. Both were tested and showed different results according to the AFs generation procedure. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
 Note that the test-run numeration does not begin at $1$ because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions is less. Thus, BFS and DFS are similar.
 
 
@@ -916,7 +918,7 @@ Finally, we grouped the data by the AF generator procedure and plugged it into a
 \subsection{Impact of Refinements}
 \label{subsec:ComparisonOfRefinementAndNoRefinementOnConcretizingProgram}
 
-The results of the impact of the semantic-specific refinements on the arguments concretizing program are shown in this section. As previously mentioned in the faithful/spurious check, the refinements made for admissible and stable did not significantly impact. We hypothesize that the SAT-Solver has discarded the refinements for optimization reasons for these two semantics. Nevertheless, the refinement made for conflict-free is not added to the Boolean formula. However, it is more of an iterative improvement added at runtime by adding all the subsets of a computed conflict-free set.
+The results of the impact of the semantic-specific refinements on the arguments concretizing program are shown in this section. As previously mentioned in the faithful/spurious check, the refinements made for admissible and stable did not significantly impact the runtime. We hypothesize that the SAT-Solver has discarded the refinements for optimization reasons for these two semantics. Nevertheless, the refinement made for conflict-free is not added to the Boolean formula. However, it is more of an iterative improvement added at runtime by adding all the subsets of a computed conflict-free set.
 
 The runtime of the test-run instances for the conflict-free semantics grouped by refinement and no-refinement are shown in \cref{fig:expconcretize/REFvsNOREF/grid-based} for the AFs generated with the grid-based procedure and for the AFs generated with the level-based procedure in \cref{fig:expconcretize/REFvsNOREF/level-based}. In almost all the test-runs the refinement decreases the runtime of the computation especially for the level-based AFs. Nevertheless, some instances are more efficient without the refinements. We hypothesize that these instances are test-runs that use the DFS algorithm and have a better result since, without the refinement, the algorithm generates the semantic extensions in a different order. The order is crucial when using the DFS algorithm because if the spurious extension is found in an early stage, the algorithm can abort.
 

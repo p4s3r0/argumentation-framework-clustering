@@ -354,13 +354,13 @@ def main():
     fai_tests_better = dict()
     readTestFile(fai_tests_better, "input/experiment/tests-run/with_optimization/results_faithful.txt")
 
-    #plotBFSvsDFS(fai_tests_better, "better")
+    plotBFSvsDFS(fai_tests_better, "better")
     #plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
     plotBFSvsDFSspecial(fai_tests, fai_tests_better, "h")
     plt.show()
 
     exit()
-    # plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
+    plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
     # plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
     # plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
     plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")

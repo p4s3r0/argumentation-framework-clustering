@@ -1,19 +1,18 @@
 \chapter{Algorithmic approaches to obtain Faithful Clustering}
 In this chapter we have a closer look at the algorithms we designed and how they work.
-We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are transformed to singletons) is computed. The approach to compute faithful clustered AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}.
+We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are transformed to singletons) is computed. The approach to compute faithful abstract AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}.
 
 
 \section{Boolean Encodings for Abstract Semantics}
 \label{sec:Encodings}
-We previously defined the semantics in mathematical notation. But since we use SAT-Solving to compute extensions under a chosen semantics we develop in this section encodings in Boolean logic of the semantics of clustered AFs. We develop these encodings for (abstract) conflict-free, (abstract) admissible, and (abstract) stable extensions. For each semantics we present the corresponding Boolean encoding and an example.
+We previously defined the semantics in mathematical notation. But since we use SAT-Solving to compute extensions under a chosen semantics we develop in this section encodings in Boolean logic of the semantics of abstract AFs. We develop these encodings for (abstract) conflict-free, (abstract) admissible, and (abstract) stable extensions. For each semantics we present the corresponding Boolean encoding and an example.
 
 In general, given an AF $\hat{G}=(\hat{A}, \hat{R})$, we will use Boolean variables corresponding to arguments. That is, if $a \in \hat{A}$ is an argument, then $a$ is also a Boolean variable. The intended meaning is then that in a truth-value assignment a variable $a$ is \emph{true}, then there is a corresponding set of arguments with $a$ in the set. Formally, if $\tau$ is a truth-value assignment on the variables in $\hat{A}$, then the corresponding set of arguments is defined as $\{a \in A \mid \tau(a) = 1\}$, where $1$ is the numerical equivalent to the Boolean \emph{true}.
 
-We further define a subset of arguments, denoted ad $\hat{A}_{\mathit{Single}} \subset \hat{A}$ consisting of the the singletons arguments of the the AF $G$, which effectively excludes each cluster.
+We further define a subset of arguments, denoted as $\hat{A}_{\mathit{Single}} \subseteq \hat{A}$ consisting of the singletons arguments of the the AF $G$, which effectively excludes each cluster.
 
 
 \paragraph{Conflict-Free} We begin with (abstract) conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, the empty set is always part of the conflict-free sets.
-
 \begin{definition}
     Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. We can now define the following formula.
     \begin{center}
@@ -129,25 +128,24 @@ If we compare the models of $\hat{cf}(\hat{G})$ with the conflict-free sets of $
 
 By applying the formula defined in \cref{def:booleanFormulaAdmissible} to the AF $\hat{G}$, we obtain the following Boolean expression.
 \begin{align*}
-    \hat{adm}(\hat{G}) = \big(
-    \lnot (a \land a)
-    & \land \lnot (a \land d) \land \lnot (b \land d) \land \lnot (b \land c) \land \lnot (b \land d) \land \lnot (c \land b) \land \lnot (d \land e) \\
-    & \land \lnot (d \land d) \land \lnot (e \land d) \big) \\
-    & \land \bigl( a \rightarrow ((a \lor d) \land (e \lor d)) \land \bigl( b \rightarrow ((a \lor d) \land (b) \land (e \lor d)) \bigl) \bigl)\\
-    & \land \bigl( c \rightarrow ((a \lor c \lor d) \land (\hat{h})) \bigl) \land \bigl( d \rightarrow (d) \land (e \lor d) \bigl) \land \bigl( e \rightarrow (e \lor d) \bigl)
+    \hat{adm}(\hat{G}) = &\big(
+     \lnot (a \land a) \land \lnot (a \land d) \land \lnot (b \land d) \land \lnot (b \land c) \land \lnot (b \land d) \land \lnot (c \land b) \land \lnot (d \land e) \land \\
+      & \lnot (d \land d) \land \lnot (e \land d) \big) \land\\
+      &\bigl( a \rightarrow ((a \lor d) \land (e \lor d)) \land \bigl( b \rightarrow ((a \lor d) \land (b) \land (e \lor d)) \bigl) \bigl) \land\\
+      &\bigl( c \rightarrow ((a \lor c \lor d) \land (\hat{h})) \bigl) \land \bigl( d \rightarrow (d) \land (e \lor d) \bigl) \land \bigl( e \rightarrow (e \lor d) \bigl)
 \end{align*}
 
-The models of $ \hat{adm}(\hat{G})$ in this example are $\big\{\{\}$, $\{c\}$, $\{e\}$, $\{\hat{h}\}$, $\{c, e\}$, $\{c, \hat{h}\}$, $\{e, \hat{h}\}$, $\{c, e, \hat{h}\} \big\}$.
+The models of $\hat{adm}(\hat{G})$ in this example are $\big\{\emptyset$, $\{c\}$, $\{e\}$, $\{\hat{h}\}$, $\{c, e\}$, $\{c, \hat{h}\}$, $\{e, \hat{h}\}$, $\{c, e, \hat{h}\} \big\}$.
 \end{example}
 
-If we compare the models of $ \hat{adm}(\hat{G})$ with the admissible sets of $\hat{G}$, we can observe that they are equal. Indeed, \cref{def:booleanFormulaAdmissible} provides a Boolean representation that allows the derivation of admissible sets from an AF. If the AF $\hat{G}$ has no cluster, the formula reduces itself to the previous formula for admissible sets.
+If we compare the models of $ \hat{adm}(\hat{G})$ with the admissible sets of $\hat{G}$, we can observe that they are equal. Indeed, \cref{def:booleanFormulaAdmissible} provides a Boolean representation that allows the derivation of admissible sets from an AF. If the AF $\hat{G}$ has no cluster, the formula reduces a previously defined formula for admissible sets \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}.
 
 
 
 \paragraph{Stable} Finally we take a look at the (abstract) stable extensions. Recall, that a set of arguments is abstractly stable, if it is abstractly conflict-free and if an
 argument is not in the abstractly stable extension, it implies that an argument in the
 abstractly stable extension is attacking it. Furthermore if the abstractly stable extension
-is not attacking an argument, then every singleton attacking the argument is not in the
+is not attacking an argument, then every singleton attacked by the argument is not in the
 abstractly stable extension. Other than conflict-free and admissible, the empty set is not a stable extension except if $\hat{A} = \emptyset$.
 
 \begin{definition}
@@ -162,7 +160,7 @@ abstractly stable extension. Other than conflict-free and admissible, the empty 
 
 
 \begin{example}
-    Let us have a look at an example and define the AF $\hat{G}=(\hat{A}, \hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsStable}. Where the arguments are $\hat{A}=\{a, b, c, d\}$ and the attacks $\hat{R}=\big\{ (a,a)$, $(a,b)$, $(a,d)$, $(b,a)$, $(b,d)$, $(c,b)$, $(d,a)\big\}$.
+    Let us have a look at an example and define the AF $\hat{G}=(\hat{A}, \hat{R})$ to be the abstract AF depicted in \cref{af:algorithmEncodingsStable}. Where the arguments are $\hat{A}=\{a, b, c, d\}$ and the attacks $\hat{R}=\big\{ (a,a)$, $(a,b)$, $(a,d)$, $(b,a)$, $(b,d)$, $(c,b)$, $(d,a)\big\}$.
 
     \begin{figure}[H]
         \centering
@@ -194,11 +192,11 @@ abstractly stable extension. Other than conflict-free and admissible, the empty 
 
 If we apply the encoded formula defined in \cref{def:booleanFormulaStable} to the AF $\hat{G}$, we obtain the following Boolean expression.
 \begin{align*}
-    \hat{stb}(\hat{G}) = \bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) 
-    & \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \bigl) \\
-    &\land \bigl( (a \lor a \lor b \lor d) \land (b \lor a \lor c) \land (d \lor b) \land (\hat{h} \lor c)\bigl) \\
-    &\land \bigl( ((a \land \lnot a \land \lnot b \land \lnot d) \rightarrow (\lnot a \land \lnot b)\bigl)\\
-    &\land \bigl((b \land \lnot a \land \lnot c) \rightarrow (\lnot a \land \lnot d)) \land ((d \land \lnot b) \rightarrow \lnot a)\bigl)
+    \hat{stb}(\hat{G}) = &\bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) 
+    \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \bigl) \land\\
+    & \bigl( (a \lor a \lor b \lor d) \land (b \lor a \lor c) \land (d \lor b) \land (\hat{h} \lor c)\bigl) \land \\
+    & \bigl( ((a \land \lnot a \land \lnot b \land \lnot d) \rightarrow (\lnot a \land \lnot b)\bigl) \land\\
+    & \bigl((b \land \lnot a \land \lnot c) \rightarrow (\lnot a \land \lnot d)) \land ((d \land \lnot b) \rightarrow \lnot a)\bigl)
 \end{align*}
 
 
@@ -210,7 +208,7 @@ By comparing the models of $\hat{stb}(\hat{G})$ with the stable sets of $\hat{G}
 
 \section{Concretizing Singletons}
 \label{sec:ConcretizingSingletons}
-When operating on clustered AFs, a crucial transformation is to extract arguments from a cluster and transform it to a singleton. This is called concretizing. When clustering singletons, the cluster inherits the attacks of the argument, concretizing is the inverse operation. This means, that it needs to revert the changes done by the clustering. Since clustering does not preserve all the informations, i.e.\ the attacks directed towards and originating from the clustered arguments, the abstraction does lead to a loss of details. To be able to concretize argument, this needs to compensated by providing additionally the concrete AF. With the concrete AF we can reconstruct the attacks of the arguments and transform the AF in such a way, as if it was primarily abstracted the same manner, but without the arguments intended to be concretized.
+When operating on abstract AFs, a crucial transformation is to extract arguments from a cluster and transform it to a singleton. This is called concretizing. When clustering singletons, the cluster inherits the attacks of the argument, concretizing is the inverse operation. This means, that it needs to revert the changes done by the clustering. Since clustering does not preserve all the informations, i.e.\ the attacks directed towards and originating from the clustered arguments, the abstraction does lead to a loss of details. To be able to concretize argument, this needs to compensated by providing additionally the concrete AF. With the concrete AF we can reconstruct the attacks of the arguments and transform the AF in such a way, as if it was primarily abstracted the same manner, but without the arguments intended to be concretized.
 
 Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\hat{F}$ to create a new AF $\hat{F}'$ and transforming it. The transformation is guided by five steps considering the unchanged abstract AF $\hat{F}$ and the concrete AF $F$. To improve the understanding of each step, we accompany the explanation with the example depicted in \cref{example:concretizationOfArguments}, where we concretize the arguments $a$ and $b$.
 
@@ -275,7 +273,7 @@ Concretizing a list of arguments is done iteratively by duplicating the abstract
 
 
 \paragraph{Step 1:} Each argument needing concretization is first removed from the parent cluster and added as a singleton in $\hat{F}'$ with no attacks towards or originating from the singleton. If an argument is not part of a cluster, we ignore it and remove it from the list of arguments to be concretized.
-We do not consider attacks in this step since they depend on the concrete- and abstract AFs which we will consider on the next step. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep1} and the pseudo-code in \cref{alg:concretizingSingletonsStep1}.
+We do not consider attacks in this step since they depend on the concrete- and abstract AFs which we will consider on the next step. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep1} and the pseudo-code in \cref{alg:concretizingSingletonsStep1}. We defined the arguments to be concretized as a list of arguments $list(S)$, with $S$ being the computed concretizer list. Furthermore, we have an AF datastructure $F: AF(A, R)$. Here $A$ is a dictionary of arguments, where each argument has the property $attacks$ (i.e.\ a list of arguments that are being attacked by the argument) and $attacked\_by$ (i.e.\ a list of arguments that attack the argument). The attacks of the AF are stored in the list $R$, where the entities of an attack $r=(a, b)$ can be extracted with $r.source$, mapping to the attacker $a$ of the attack $r$ and $r.target$, mapping to the argument that is being attacked $b$ in the attack $r$.
 
 
 \vspace{0.3cm}
@@ -315,16 +313,16 @@ We do not consider attacks in this step since they depend on the concrete- and a
 \begin{algorithm}[H]
     \caption{Concretizing Singletons Pseudocode Step 1}\label{alg:concretizingSingletonsStep1}
     \begin{algorithmic}[1]
-        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
-        \Require $e: list(Arguments)$ \Comment{Concretizer List}
-        \State $N$ $\gets$ $A$ \Comment{$N$ = Concretized Cluster}
+        \Require $\hat{F}: AF(\hat{A}, \hat{R})$ \Comment{Abstract Clustered AF}
+        \Require $e: list(S)$ \Comment{Concretizer List}
+        \State $\hat{F}'$ $\gets$ $\hat{F}$ \Comment{$N$ = Concretized Cluster}
         \For{$a_i$ in $e$}
-            \For{$c_i$ in $A.clusters$}
+            \For{$c_i$ in $\hat{F}.clusters$}
                 \If{$a_i$ in $c_i$}
                     \State $c_i.remove(a_i)$
                 \EndIf
                 \EndFor
-            \State $N.addSingleton(a_i)$
+            \State $\hat{F}'.addSingleton(a_i)$
         \EndFor
     \end{algorithmic}
 \end{algorithm}
@@ -376,18 +374,18 @@ We do not consider attacks in this step since they depend on the concrete- and a
 \begin{algorithm}[H]
     \caption{Concretizing Singletons Pseudocode Step 2}\label{alg:concretizingSingletonsStep2}
     \begin{algorithmic}[1]
-        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
-        \Require $e: list(Arguments)$ \Comment{Concretizer List}
-        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \Require $F: AF(A, R)$ \Comment{Concrete AF}
+        \Require $e: list(S)$ \Comment{Concretizer List}
+        \Require $\hat{F}': AF(\hat{A}', \hat{R}')$ \Comment{Concretized Cluster}
         \For{$e_i$ in $e$}
-            \For{$att_i$ in $C[e_i].attacks$} \Comment{Add attacks (argument, cluster)}
-                \If{$att_i$ to cluster $c_i$}
-                    \State $N.addAttack((e_i, c_i))$
+            \For{$att_i$ in $F[e_i].attacks$} \Comment{Add attacks (argument, cluster)}
+                \If{$att_i$ is cluster}
+                    \State $\hat{F}'.addAttack((e_i, att_i))$
                 \EndIf
             \EndFor
-            \For{$def_i$ in $C[e_i].defends$} \Comment{Add attacks (cluster, argument)}
-                \If{$def_i$ from cluster $c_i$}
-                    \State $N.addAttack((c_i, e_i))$
+            \For{$att\_by_i$ in $F[e_i].attacked\_by$} \Comment{Add attacks (cluster, argument)}
+                \If{$att\_by_i$ is cluster}
+                    \State $\hat{F}'.addAttack((att\_by_i, e_i))$
                 \EndIf
             \EndFor
         \EndFor
@@ -438,27 +436,27 @@ And finally, the third part covers the case, if the attacker $a$ is a cluster an
 \begin{algorithm}[H]
     \caption{Concretizing Singletons Pseudocode Step 3}\label{alg:concretizingSingletonsStep3}
     \begin{algorithmic}[1]
-        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
-        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
-        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
-        \For{$r_i$ in $A_{r_1}$}
-            \If{$r_i.defender$ is cluster and $r_i.attacker$ is cluster} \Comment{Part 1}
-                \For{$a_i$ in $A[r_i.attacker]$}
-                    \If{!($a_i$ attacks any of $C[r_i].defender$)}
-                        \State $N.removeAttack(r_i)$
+        \Require $F: AF(A, R)$ \Comment{Concrete AF}
+        \Require $\hat{F}: AF(\hat{A}, \hat{R})$ \Comment{Abstract AF}
+        \Require $\hat{F}': AF(\hat{A}', \hat{R}')$ \Comment{Concretized Cluster}
+        \For{$r_i$ in $\hat{R}'$}
+            \If{$r_i.target$ is cluster and $r_i.source$ is cluster} \Comment{Part 1}
+                \For{$a_i$ in $\hat{F}[r_i.source]$}
+                    \If{\textbf{not}($a_i$ attacks any of $A[r_i.target]$)}
+                        \State $\hat{F}'.removeAttack(r_i)$
                         \State break
                     \EndIf
                 \EndFor
             \EndIf
-            \If{$r_i.defender$ is cluster} \Comment{Part 2}
-                \If{!($r_i.attacker$ attacks any of $C[r_i].defender$)}
-                    \State $N.removeAttack(r_i)$
+            \If{$r_i.target$ is cluster} \Comment{Part 2}
+                \If{\textbf{not}($r_i.source$ attacks any of $A[r_i.target]$)}
+                    \State $\hat{F}'.removeAttack(r_i)$
                     \State continue
                 \EndIf
             \EndIf
-            \If{$r_i.attacker$ is cluster} \Comment{Part 3}
-                \If{!($r_i.defender$ defends against any $C[r_i].attacker$)}
-                    \State $N.removeAttack(r_i)$
+            \If{$r_i.source$ is cluster} \Comment{Part 3}
+                \If{\textbf{not} ($r_i.target$ is attacked by any $A[r_i.source]$)}
+                    \State $\hat{F}'.removeAttack(r_i)$
                     \State continue
                 \EndIf
             \EndIf
@@ -467,7 +465,7 @@ And finally, the third part covers the case, if the attacker $a$ is a cluster an
 \end{algorithm}
 
 
-\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact, that we copied all the attacks from $\hat{F}$, we only have to take into consideration the attacks towards or originating to the concretized singletons. So instead of iterating over all singletons of the AF $\hat{F}'$, we can limit the attack creation to the concretized singletons. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep4} and the pseudo-code in \cref{alg:concretizingSingletonsStep4}. To explain the pseudo-code a bit further, we iterate over all the arguments which need to be concretized and check their direct defender and attacker from the concrete AF and then add the missing attacks to the concretized AF.
+\paragraph{Step 4:} In this step we add the new attacks between the singletons. Due to the fact that we copied all the attacks from $\hat{F}$, we only have to take into consideration the attacks towards or originating to the concretized singletons. So instead of iterating over all singletons of the AF $\hat{F}'$, we can limit the attack creation to the concretized singletons. The resulting AF is depicted in \cref{example:algorithmConcretizeSingletonsStep4} and the pseudo-code in \cref{alg:concretizingSingletonsStep4}. To explain the pseudo-code a bit further, we iterate over all the arguments which need to be concretized and check their direct defender and attacker from the concrete AF and then add the missing attacks to the concretized AF.
 
 
 \vspace{0.3cm}
@@ -508,19 +506,19 @@ And finally, the third part covers the case, if the attacker $a$ is a cluster an
 \begin{algorithm}[H]
     \caption{Concretizing Singletons Pseudocode Step 4}\label{alg:concretizingSingletonsStep4}
     \begin{algorithmic}[1]
-        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
-        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
-        \Require $e: list(Arguments)$ \Comment{Concretizer List}
-        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
+        \Require $F: AF(A, R)$ \Comment{Concrete AF}
+        \Require $\hat{F}: AF(\hat{A}, \hat{R})$ \Comment{Abstract AF}
+        \Require $\hat{F}': AF(\hat{A}', \hat{R}')$ \Comment{Concretized Cluster}
+        \Require $e: list(S)$ \Comment{Concretizer List}
         \For{$e_i$ in $e$}
-            \For{$a_i$ in $C[e_i].attacks$}
-                \If{$a_i$ is singleton and ($e_i$, $a_i$) not in $r_2$}
-                    \State $N.addAttack((e_i, a_i))$
+            \For{$a_i$ in $A[e_i.attacks]$}
+                \If{$a_i$ is singleton and ($e_i$, $a_i$) not in $R$}
+                    \State $\hat{F}'.addAttack((e_i, a_i))$
                 \EndIf
             \EndFor
-            \For{$a_i$ in $C[e_i].defends$}
-                \If{$a_i$ is singleton and ($a_i$, $e_i$) not in $r_2$}
-                    \State $N.addAttack((a_i, e_i))$
+            \For{$a_i$ in $A[e_i.attacked\_by]$}
+                \If{$a_i$ is singleton and ($a_i$, $e_i$) not in $R$}
+                    \State $\hat{F}'.addAttack((a_i, e_i))$
                 \EndIf
             \EndFor
         \EndFor
@@ -566,15 +564,15 @@ one singleton to the mentioned singleton. The resulting AF $\hat{F}'$ is depicte
 \begin{algorithm}[H]
     \caption{Concretizing Singletons Pseudocode Step 5}\label{alg:concretizingSingletonsStep5}
     \begin{algorithmic}[1]
-        \Require $A: AF(a_1, r_1)$ \Comment{Abstract Clustered AF}
-        \Require $C: AF(a_2, r_2)$ \Comment{Concrete AF}
-        \Require $e: list(Arguments)$ \Comment{Concretizer List}
-        \Require $N: AF(a_3, r_3)$ \Comment{Concretized Cluster}
-        \For{$c_i$ in $N.clusters$}
+        \Require $F: AF(A, R)$ \Comment{Concrete AF}
+        \Require $\hat{F}: AF(\hat{A}, \hat{R})$ \Comment{Abstract AF}
+        \Require $\hat{F}': AF(\hat{A}', \hat{R}')$ \Comment{Concretized Cluster}
+        \Require $e: list(S)$ \Comment{Concretizer List}
+        \For{$c_i$ in $\hat{F}'.clusters$}
             \If{$c_i.argAmount == 1$}
                 \State $c_i \gets Singleton$
             \ElsIf{$c_i.argAmount == 0$}
-                \State $N.remove(c_i)$
+                \State $\hat{F}'.remove(c_i)$
             \EndIf
         \EndFor
     \end{algorithmic}
@@ -585,10 +583,10 @@ one singleton to the mentioned singleton. The resulting AF $\hat{F}'$ is depicte
 \section{Computation of Concretizer List}
 \label{sec:ComputationOfConcretizerList}
 % Why do we need the algorithm
-When talking about clustering AFs, faithfulness is an important property. If an AF is spurious, we find at least one extension, which cannot be mapped to a concrete extension. Based on the spurious extensions, we try to concretize the arguments of the clustered AF, to obtain faithfulness. This mutation is realized through the concretizer list.
+When talking about clustering AFs, faithfulness is an important property. If an AF is spurious, we find at least one extension, which cannot be mapped to a concrete extension. Based on the spurious extensions, we try to concretize the arguments of the abstract AF, to obtain faithfulness. This mutation is realized through the concretizer list.
 
 % What is concretizer list
-The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependent on the size of the set. We use a heuristi approach, putting the main focus on local changes. Here we operate directly on the arguments and its attackers which make a set spurious, instead of applying global changes to the AF. Further, a minimal deviation of the abstract AF is usually desired, so small concretizer sets are checked first.
+The concretizer list is a list of sets of clustered arguments. Each set is a unique combination of arguments, which are being concretized to find a faithful AF. All the sets of the concretizer list are attempted iteratively, where the order is dependent on the size of the set. We use a heuristic approach, putting the main focus on local changes. Here we operate directly on the arguments and its attackers which make a set spurious, instead of applying global changes to the AF. Further, a minimal deviation of the abstract AF is usually desired, so small concretizer sets are checked first.
 
 % Input: spurious set
 The input to the computation of the concretizer list is a set of the arguments of all the spurious extensions. 
@@ -669,7 +667,7 @@ The first step is to filter out the clusters of the input, since clusters are no
 % Get combination as defender depth 2
 Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked by an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the arguments, which are being attacked by the argument. A depth $2$ argument is an argument, which has some attack relation (e.g.\ attacks the argument or is attacked by the argument) with a depth $1$ argument.
 
-We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in dotted line style and the attacker with the same depth, depicted in dashed line style. The pseudo-code of this procedure is listed in \cref{alg:concretizerListNeighbours}. Some arguments can have multiple depths (e.g.\ argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), then the lower depth is chosen as the representative.
+We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in dotted line style and the attacker with the same depth, depicted in dashed line style. The pseudo-code of this procedure is listed in \cref{alg:concretizerListNeighbours} where $N$ represents the list of neighbours at depth $2$ that we are computing. Some arguments can have multiple depths (e.g.\ argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), then the lower depth is chosen as the representative.
 
 %Depth 2 Attacker
 \vspace{0.1cm}
@@ -730,9 +728,9 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
 \begin{algorithm}
     \caption{Computation of Concretizer list Algorithm: Neighbours}\label{alg:concretizerListNeighbours}
     \begin{algorithmic}[1]
-        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
+        \Require $G: AF(A, R)$ \Comment{Concrete AF}
         \Require $s: list(Arguments)$ \Comment{Working List}
-        \State $N$ $\gets$ $[]$ \Comment{$N$ = list of neighbours}
+        \State $N$ $\gets$ $list()$ \Comment{$N$ = list of neighbours}
         \For{$s_i$ in $s$} \Comment{Get neighbours}
             \For{$n(1)_i$ neighbour of $s_i$} \Comment{depth 1 attacker}
                 \For{$n(2)_i$ neighbour of $n(1)_i$} \Comment{depth 2 attacker}
@@ -827,7 +825,7 @@ $\{a, c, d, e\}\bigl\}$. The pseudo-code for the last step is stated in \cref{al
 
 \section{Finding Faithful Clusterings}
 \label{sec:AlgorithmicApproachToComputeFaifthulClusterings}
-When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t.\ we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the corresponding concrete AFs. Thus, we need to transform the clustered AF, s.t.\ only correct solutions can be drawen, which we then call faithful. The algorithm we designed, takes as input a concrete AF denoted to $G$, and an abstract AF $\hat{G}$. First we determine, if the abstract AF $\hat{G}$ is spurious, by calculating the semantics extensions and attempting to find spurious set. If no spurious set can be found, the AF is faithful and no further mutations are needed.
+When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t.\ we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the corresponding concrete AFs. Thus, we need to transform the abstract AF, s.t.\ only correct solutions can be drawen, which we then call faithful. The algorithm we designed, takes as input a concrete AF denoted to $G$, and an abstract AF $\hat{G}$. First we determine, if the abstract AF $\hat{G}$ is spurious, by calculating the semantics extensions and attempting to find spurious set. If no spurious set can be found, the AF is faithful and no further mutations are needed.
 
 But if we find spurious extensions, we build the concretizer list as specified previously in \cref{sec:ComputationOfConcretizerList}. Recall, that the concretizer list operates with the depth of neighbours of $2$. This means, that depending on the AF, we can not guarantee to find a faithful AF. If the spurious extension of an AF $G$ has an argument $a$ with depth 3 to an argument $b$, and the only faithful AF is the concrete one, then we will not find the faithful AF.
 
@@ -904,7 +902,7 @@ Finally, we concretize the concretizer list set after set and check for faithful
 \vspace{0.3cm}
 
 
-When taking a look at the conflict-free sets of the concrete AF $G$ (i.e.\ $\bigl\{ \{\},$ $\{b\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{b, d\},$  $\{c, e\},$ $\{d, e\} \bigl\}$) and the abstractly conflict-free sets of the abstract AF $\hat{G}$ (e.g.\ $\bigl\{ \{\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{\hat{h}\},$ $\{c, e\},$ $\{c, \hat{h}\},$ $\{d, e\},$ $\{d, \hat{h}\},$ $\{e, \hat{h}\},$ $\{c, e, \hat{h}\},$ $\{e, d, \hat{h}\} \bigl\}$) we can observe, that the abstract AF $\hat{G}$ is spurious due to the sets $\bigl\{\{\hat{h}, d, e\},$ $\{\hat{h}, e\},$ $\{c, \hat{h}, e\},$ $\{c, \hat{h}\}\bigl\}$. Now we compute the concretizer list and obtain the sets $\bigl\{ \{a\}, \{b\}, \{a, b\}\bigl\}$. In this example, the only faithful solution we can obtain by concretizing is the concrete AF $G$. Thus, concretizing the set $\{a, b\}$ leads to a faithful AF.
+When taking a look at the conflict-free sets of the concrete AF $G$ (i.e.\ $\bigl\{ \emptyset,$ $\{b\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{b, d\},$  $\{c, e\},$ $\{d, e\} \bigl\}$) and the abstractly conflict-free sets of the abstract AF $\hat{G}$ (e.g.\ $\bigl\{ \emptyset,$ $\{c\},$ $\{d\},$ $\{e\},$ $\{\hat{h}\},$ $\{c, e\},$ $\{c, \hat{h}\},$ $\{d, e\},$ $\{d, \hat{h}\},$ $\{e, \hat{h}\},$ $\{c, e, \hat{h}\},$ $\{e, d, \hat{h}\} \bigl\}$) we can observe, that the abstract AF $\hat{G}$ is spurious due to the sets $\bigl\{\{\hat{h}, d, e\},$ $\{\hat{h}, e\},$ $\{c, \hat{h}, e\},$ $\{c, \hat{h}\}\bigl\}$. Now we compute the concretizer list and obtain the sets $\bigl\{ \{a\}, \{b\}, \{a, b\}\bigl\}$. In this example, the only faithful solution we can obtain by concretizing is the concrete AF $G$. Thus, concretizing the set $\{a, b\}$ leads to a faithful AF.
 \vspace{0.5cm}
 
 \begin{algorithm}
@@ -937,9 +935,9 @@ When taking a look at the conflict-free sets of the concrete AF $G$ (i.e.\ $\big
 
 To speed up the process of computing semantics extensions, we came up with heuristics and refinements to improve the faithful/spurious check of two AFs for admissible and stable semantics and for conflict-free the general approach of finding semantics sets. Some heuristics were already mentioned previously, like sorting the concretizer list by size to obtain a rather small mutation of the spurious AF. But we also implemented shortcuts and refinements, specific for every semantics.
 
-\paragraph{Conflict-free} Let us begin with a refinement for the conflict-free sets computation. When computing a single conflict-free set, with the amount of arguments greater than 1, we extract every subset, which is conflict-free as well. Formally, if $X$ is a conflict-free set and $|X|\geq 2$, then $\forall S \subseteq X$, $S$ is conflict-free. This property can be derived from the definition of conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, if there are no attacks between the arguments in $X$, and $S \subseteq X$, we can conclude that there are not attacks between the argument in $S$. With this adaption we can speed up the process of generating conflict-free sets, which is also used in the faithful/spurious check.
+\paragraph{Conflict-free} Let us begin with a refinement for the conflict-free sets computation. When computing a single conflict-free set, with the amount of arguments greater than 1, we extract every subset, which is conflict-free as well. Formally, if $X$ is a conflict-free set and $|X|\geq 2$, then $\forall S \subseteq X$, $S$ is conflict-free. This property can be derived from the definition of conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, if there are no attacks between the arguments in $X$, and $S \subseteq X$, we can conclude that there are no attacks between the argument in $S$. With this adaption we can speed up the process of generating conflict-free sets, which is also used in the faithful/spurious check.
 
-\paragraph{Admissible} Next, we will define the refinements made for the admissible semantics. Other than conflict-free sets, for (abstract) admissible sets we cannot derive directly information from the subsets. But we can decrease the computation time of showing spuriousness or faithfulness by adding the negated admissible formula for the concrete AF. This removes the faithful admissible sets, which are composed of only singletonsand can therefore be directly mapped from the abstract admissible sets to the concrete ones. The remaining sets to be computed are the spurious sets, or abstract admissible sets containing at least one cluster (since the concrete AF does not possess clusters and are therefore not ignored).
+\paragraph{Admissible} Next, we will define the refinements made for the admissible semantics. Other than conflict-free sets, for (abstract) admissible sets we cannot derive directly information from the subsets. But we can decrease the computation time of showing spuriousness or faithfulness by adding the negated admissible formula for the concrete AF. This removes the faithful admissible sets, which are composed of only singletons and can therefore be directly mapped from the abstract admissible sets to the concrete ones. The remaining sets to be computed are the spurious sets, or abstract admissible sets containing at least one cluster (since the concrete AF does not possess clusters and are therefore not ignored).
 
 Recall, that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. We refine the formula from \cref{def:booleanFormulaAdmissible}, denoted as $\varphi_{adm}$ with the refinement denoted as $\eta_{adm}$.
 
@@ -953,7 +951,7 @@ Where $\eta_{adm}(F)$ is defined as the negated admissible formula of the concre
 
 
 $$
-    \eta_{adm}(F)=\ \overline{cf}(F) \land \overline{def}(F)
+    \eta_{adm}(F)=\ \overline{cf}(F) \lor \overline{def}(F)
 $$
 
 
@@ -976,7 +974,7 @@ Here $\eta_{stb}$ is defined as the negated stable formula of the concrete AF.
 
 
 $$
-\eta_{stb}(F) =\ \overline{cf}(F) \land \overline{att}(F) \land \overline{con}(F)
+\eta_{stb}(F) =\ \overline{cf}(F) \land \overline{att}(F)
 $$
 
 
@@ -984,8 +982,7 @@ The three components (i.e.\ $\overline{cf}$, $\overline{att}$, $\overline{con}$)
 
 \begin{align*}
     \overline{cf}(F)&=\ \bigvee_{a \in A_{\mathit{Single}}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\mathit{Single}}} \big( a \land b \big) \big)\\[0.2cm]
-    \overline{att}(F)&=\ \bigvee_{a \in A} \big( \lnot a \bigwedge_{b:(b,a)\in R} \lnot b \big)\\[0.2cm]
-    \overline{con}(F)&=\ \bigvee_{a \in A} \big( \big( a \bigwedge_{b:(b,a)\in R} \lnot b) \land \big(\bigvee_{c:(a,c), c\in A_{\mathit{Single}}} c\big) \big)
+    \overline{att}(F)&=\ \bigvee_{a \in A} \big( \lnot a \bigwedge_{b:(b,a)\in R} \lnot b \big)
 \end{align*}
 
 

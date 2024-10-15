@@ -1,5 +1,5 @@
 \chapter{Implementations}
-In this chapter we dive into the implementation part and discuss different approaches. First, we specify how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. Next we explain two different settings to optimize the spurious/faithful check in \cref{sec:ImplementationsBFSandDFSApproach}. In \cref{sec:ImplementationsGeneratingSemanticsSets} we explain how we generated the semantics extensions and finally, we discuss disproved assumptions in \cref{sec:ImplementationsDisprovedAssumptions}.
+In this chapter we dive into the implementation part and discuss different approaches. First, we specify how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. Next we explain two different settings to optimize the spurious/faithful check in \cref{sec:ImplementationsBFSandDFSApproach}. In \cref{sec:ImplementationsGeneratingSemanticsSets} we explain how we generated the semantics extensions.
 
 \section{Generating AFs}
 \label{sec:ImplementationsCreatingAFs}
@@ -321,7 +321,7 @@ With the grid-based approach, we obtain a more structured AF. Structured in this
 
 
 
-\paragraph{Level-based} The last algorithm to create concrete AFs we provide, is the level-based approach. The arguments for this script are \texttt{<arg\_amount>}, \texttt{<level>} and \texttt{<p>}. Same as for the grid-based and random-based approach, \texttt{<arg\_amount>} defines how many arguments the computed AF has. The \texttt{<level>} argument restricts the height of the grid to the provided value and \texttt{<p>} is again the probability that an attack between to arguments occurs. The difference to the grid-based approach is the dimension of the grid. While the grid-based approach uses a $n \times n$ grid, in the level-based approach we use a $\texttt{<level>} \times n$ grid. In this context, $n$ is equal to $\lceil \texttt{<arg\_amount>}/\texttt{<level>} \rceil$. An example grid is depicted in \cref{fig:LevelBasedApproach}.
+\paragraph{Level-based} The last algorithm to create concrete AFs we provide, is the level-based approach. The arguments for this script are \texttt{<arg\_amount>}, \texttt{<level>} and \texttt{<p>}. Same as for the grid-based and random-based approach, \texttt{<arg\_amount>} defines how many arguments the computed AF has. The \texttt{<level>} argument restricts the height of the grid to the provided value and \texttt{<p>} is again the probability that an attack between to arguments occurs. The difference to the grid-based approach is the dimension of the grid. While the grid-based approach uses an $n \times n$ grid, in the level-based approach we use a $\texttt{<level>} \times n$ grid. In this context, $n$ is equal to $\lceil \texttt{<arg\_amount>}/\texttt{<level>} \rceil$. An example grid is depicted in \cref{fig:LevelBasedApproach}.
 
 
 \begin{figure}[h!]
@@ -558,7 +558,8 @@ We implemented the previously mentioned encodings and algorithm into the softwar
     \url{https://github.com/p4s3r0/argumentation-framework-clustering}
 \end{center}
 
-under the MIT license. We provide four different applications, e.g.\ \texttt{SETS}, \texttt{CHECK}, \texttt{CONCRETIZE} and \texttt{FAITHFUL}. Additionally, we need to add the corresponding data via flags, which we can use to change the program's behavior.
+\noindent
+under the MIT license. We provide four different applications, i.e.\ \texttt{SETS}, \texttt{CHECK}, \texttt{CONCRETIZE} and \texttt{FAITHFUL}. Additionally, we need to add the corresponding data via flags, which we can use to change the program's behavior.
 
 \paragraph{Computing extensions} \prog\ can compute all semantics extensions of a given AF. This program can be called with the \texttt{SETS} argument.
 
