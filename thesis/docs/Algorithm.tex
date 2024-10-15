@@ -1,9 +1,9 @@
-\chapter{Algorithm to obtain Faithful Clustering}
+\chapter{Algorithmic approaches to obtain Faithful Clustering}
 In this chapter we have a closer look at the algorithms we designed and how they work.
 We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are transformed to singletons) is computed. The approach to compute faithful clustered AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}.
 
 
-\section{Encodings for Semantics}
+\section{Boolean Encodings for Abstract Semantics}
 \label{sec:Encodings}
 We previously defined the semantics in mathematical notation. But since we use SAT-Solving to compute extensions under a chosen semantics we develop in this section encodings in Boolean logic of the semantics of clustered AFs. We develop these encodings for (abstract) conflict-free, (abstract) admissible, and (abstract) stable extensions. For each semantics we present the corresponding Boolean encoding and an example.
 
@@ -825,7 +825,7 @@ $\{a, c, d, e\}\bigl\}$. The pseudo-code for the last step is stated in \cref{al
 
 \newpage
 
-\section{Algorithmic Approach to Compute Faifthul Clusterings}
+\section{Finding Faithful Clusterings}
 \label{sec:AlgorithmicApproachToComputeFaifthulClusterings}
 When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t.\ we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the corresponding concrete AFs. Thus, we need to transform the clustered AF, s.t.\ only correct solutions can be drawen, which we then call faithful. The algorithm we designed, takes as input a concrete AF denoted to $G$, and an abstract AF $\hat{G}$. First we determine, if the abstract AF $\hat{G}$ is spurious, by calculating the semantics extensions and attempting to find spurious set. If no spurious set can be found, the AF is faithful and no further mutations are needed.
 
@@ -989,7 +989,7 @@ The three components (i.e.\ $\overline{cf}$, $\overline{att}$, $\overline{con}$)
 \end{align*}
 
 
-\section{Disproved Assumptions}
+\section{Relations between Spurious Sets }
 \label{sec:ImplementationsDisprovedAssumptions}
 
 When developing the tool, we came up with different theories. Some theories were discarded immediately, some were implemented (recall \cref{sec:HeuristicsAndRefinements}) and others had to be proven wrong. This section describes the most promising assumptions which turned out to be wrong.

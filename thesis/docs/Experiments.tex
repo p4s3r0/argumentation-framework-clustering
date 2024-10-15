@@ -1,4 +1,4 @@
-\chapter{Experiments}
+\chapter{Experimental Evaluation}
 \label{ch:experiment}
 In this chapter, we discuss the experiment that was conducted. In \cref{sec:GenerationOfInputInstances}, we describe how the AF instances were generated. Then, we describe the setup and environment in which the experiment was executed in \cref{sec:Setup}. Next, we split up the experiment into two programs, the faithful/spurious check in \cref{sec:FaithfulSpuriusCheck} and the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}. For every program, we ran test-run instances according to the two approaches, i.e., \ BFS and DFS, and investigated further the efficiency of the applied refinements to the corresponding semantics.
 
@@ -10,7 +10,7 @@ We generated the experiment instances with the previously mentioned scripts in \
 The arguments to be concretized for the concretization algorithm were chosen in the AF generation script. For every instance, we chose a random amount (between $1$ and the total amount of arguments in the cluster) of arguments, which had to be concretized. The randomness of generation is essential to ensure that we did not pick AFs that contributed to a misleading runtime by picking favorable AFs.
 
 
-\section{Setup}
+\section{Experimental Setup}
 \label{sec:Setup}
 The experiment was conducted in a personal computer environment. The exact specification can be seen in \cref{table:ExperimentSpecs}. Generally, we used an AMD CPU with 6 cores and 12 Threads running the \textit{x86\_64} architecture. We had a total RAM of 16GB, which sometimes was not enough, and we had to add another 16GB of SWAP memory. Every test run was conducted on the same setup, running Linux as the primary OS. In total, $75$ different AFs were tested under various configurations. These included the usage of the BFS and DFS algorithm, the three covered semantics, e.g., conflict-free, admissible, and stable, and running with and without the refinements. A separate Python script managed the tests by running every test instance as a subprocess and setting the timeout to 300s.
 
@@ -34,7 +34,7 @@ The experiment was conducted in a personal computer environment. The exact speci
 
 
 
-\section{Faithful Spurious Check}
+\section{Checking Faithulness}
 \label{sec:FaithfulSpuriusCheck}
 
 This section presents the data collected from the program, which checks if an abstract AF is faithful or spurious. We compare BFS and DFS in \cref{subsec:faithfulComparisonBFSvsDFS}. For these tests, we split plots into three categories, i.e., the three AF generator procedures (random-based, grid-based, and level-based). All three categories are split again on the specific semantics, i.e., conflict-free, admissible, and stable. Then, we checked how much impact the refinements had on the corresponding semantics. Finally, we packed all the runtimes into one plot to show the influence of the different generator approaches and created a table to show the impact of the number of arguments from the AF. Next, we did the same for the concretizing arguments program in \cref{sec:ConcretizingArgumentsProgram}.
@@ -364,10 +364,7 @@ Finally, we arranged the data into a single plot from all the generator approach
 
 
 
-
-
-
-\subsection{Comparison of Refinement and No-Refinement}
+\subsection{Impact of Refinements}
 \label{subsec:ComparisonOfRefinementAndNoRefinementOnFaithfulProgram}
 
 We implemented different refinements for each semantics. As data has shown, the refinements made for conflict-free semantics have a significant impact, as shown in \cref{fig:expfaithful/REFvsNOREF/grid-based} and \cref{fig:expfaithful/REFvsNOREF/level-based}. The refinement reduces the runtime significantly, especially for AFs with many conflict-free sets. We got some test-runs for the grid-based AFs, where we obtained a better result without the refinement. We hypothesize that the observed outliers may result from the DFS algorithm finding a spurious extension. Recall that the refinement for the conflict-free sets is to extract all the subsets from a computed conflict-free set. If all the subsets are faithful, we introduce many faithful/spurious checks, which leads to an increase in runtime that the DFS algorithm, without refinement, does not face. The same outlier can be seen the other way around in the grid-based plot at test-run 25. Here, the refinement extracted a subset of a computed conflict-free set, which was spurious. Without the refinement, no spurious set was found within the timeout. Besides conflict-free, the refinements made for admissible and stable only had a minor impact. We speculate that the SAT-Solver discarded the refinement for optimization reasons or the overhead of increasing the Boolean formula, which led to no significant improvement.
@@ -526,6 +523,71 @@ The data was arranged in a tabular format to enable a more comprehensive compari
 \end{table}
 
 
+\subsection{Comparison of Faithful Check Approaches}
+We tested the difference between the two faithful/spurious check approaches and compared them in \ref{fig:expfaithful/SATnoSATDiff}. Data shows that the SAT call approach is more efficient than the list comparison. This is because the list comparison needs to deconstruct the clusters, leading to an exponential increase of sets to check. This is especially bad for AFs with clusters that have an enormous amount of argument.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=\plotWidth/1.5,
+                height=\plotHeight,
+                xlabel={Runtime REF [s]},
+                ylabel={Test-run},
+                xmin=-10, xmax=310,
+                ymin=90, ymax=220,
+                xtick={0, 100, 200, 300},
+                ytick={100, 125, 150, 175, 200},
+                legend pos=south east,
+                ymajorgrids=true,
+                xmajorgrids=true,
+                grid style=dashed,
+            ]
+    
+            \addplot[color=\cA, line width=1.5pt]
+                table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/BFS_old.dat};
+            \addplot[color=\cB, line width=1.5pt]
+                table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/BFS_new.dat};
+    
+            \legend{List Comparison, SAT Call}
+            \end{axis}
+        \end{tikzpicture}
+        \subcaption{BFS algorithm}
+        \label{fig:expfaithful/SATnoSATBFS}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=\plotWidth/1.5,
+                height=\plotHeight,
+                xlabel={Runtime REF [s]},
+                xmin=-10, xmax=310,
+                ymin=90, ymax=220,
+                xtick={0, 100, 200, 300},
+                ytick={100, 125, 150, 175, 200},
+                legend pos=south east,
+                ymajorgrids=true,
+                xmajorgrids=true,
+                grid style=dashed,
+            ]
+    
+            \addplot[color=\cA, line width=1.5pt]
+                table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/DFS_old.dat};
+            \addplot[color=\cB, line width=1.5pt]
+                table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/DFS_new.dat};
+    
+            \legend{List Comparison, SAT Call}
+            \end{axis}
+        \end{tikzpicture}
+        \subcaption{DFS algorithm}
+        \label{fig:expfaithful/SATnoSATDFS}
+    \end{subfigure}
+    \caption{Comparison of faithful/spurious algorithms}
+    \label{fig:expfaithful/SATnoSATDiff}
+\end{figure}
 
 
 
@@ -851,7 +913,7 @@ Finally, we grouped the data by the AF generator procedure and plugged it into a
 \end{figure}
 
 
-\subsection{Comparison of Refinement and No-Refinement}
+\subsection{Impact of Refinements}
 \label{subsec:ComparisonOfRefinementAndNoRefinementOnConcretizingProgram}
 
 The results of the impact of the semantic-specific refinements on the arguments concretizing program are shown in this section. As previously mentioned in the faithful/spurious check, the refinements made for admissible and stable did not significantly impact. We hypothesize that the SAT-Solver has discarded the refinements for optimization reasons for these two semantics. Nevertheless, the refinement made for conflict-free is not added to the Boolean formula. However, it is more of an iterative improvement added at runtime by adding all the subsets of a computed conflict-free set.
@@ -974,4 +1036,5 @@ In \cref{table:ExperimentStatisticsConcretize}, we grouped the test-run instance
     \end{tabular}
 \label{table:ExperimentStatisticsConcretize}
 \end{table}
+
 

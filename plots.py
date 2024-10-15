@@ -116,7 +116,6 @@ def plotSemanticsSplit(test_runs, title):
     plt.show()
 
 
-
 def readTestFile(test_runs, file_name):
     with open(file_name, 'r') as f:
         f.readline()
@@ -167,7 +166,6 @@ def plotBFSvsDFS(test_runs, title):
     fig.suptitle(title)
     handles, labels = ax[0][0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
-    plt.show()
 
 
 def plotRefinementVSNoRef(test_runs, title):
@@ -309,6 +307,35 @@ def printForThesis(x, y):
 
 
 
+def plotBFSvsDFSspecial(test_runs, fai_tests_better, title):
+    # BFS vs DFS  ----------------------------------------------------------------------------------------
+    fig, ax = plt.subplots(2)
+    for x, alg in enumerate(["BFS", "DFS"]):
+        data_old = list()
+        data_new = list()
+        for gen in ["random-based", "grid-based", "level-based"]:
+            for sem in ["CF", "AD", "ST"]:
+                for file in test_runs[gen]:
+                    data_old.append(test_runs[gen][file][sem][alg]["False"])
+                    data_new.append(fai_tests_better[gen][file][sem][alg]["False"])
+        
+        sorted_data_old = sorted(data_old, key=lambda t: t.runtime)
+        sorted_data_new = sorted(data_new, key=lambda t: t.runtime)
+        ax[x].plot([y.runtime for y in sorted_data_old], range(len(sorted_data_old)), linewidth=2.0, label='old')
+        ax[x].plot([y.runtime for y in sorted_data_new], range(len(sorted_data_new)), linewidth=2.0, label='new')
+        ax[x].set_ylabel("Testrun numeration")
+        ax[x].set_xlabel("Runtime [s]")
+        ax[x].set_title(f"ye")
+        printForThesis([y.runtime for y in sorted_data_old], range(len(sorted_data_old)))
+        printForThesis([y.runtime for y in sorted_data_new], range(len(sorted_data_new)))
+
+
+    fig.suptitle(title)
+    handles, labels = ax[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='right')
+
+
+
 def main():
     fai_tests = dict()
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/ST/results_faithful_random-based.txt")
@@ -324,7 +351,15 @@ def main():
     readTestFile(fai_tests, "input/experiment/tests-run/faithful/CF/results_faithful_level-based.txt")
 
 
-    # plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
+    fai_tests_better = dict()
+    readTestFile(fai_tests_better, "input/experiment/tests-run/with_optimization/results_faithful.txt")
+
+    #plotBFSvsDFS(fai_tests_better, "better")
+    #plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
+    plotBFSvsDFSspecial(fai_tests, fai_tests_better, "h")
+    plt.show()
+
+    exit()
     # plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
     # plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
     # plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
