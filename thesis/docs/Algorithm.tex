@@ -1,6 +1,6 @@
 \chapter{Algorithmic approaches to obtain Faithful Clustering}
 In this chapter we have a closer look at the algorithms we designed and how they work.
-We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are transformed to singletons) is computed. The approach to compute faithful abstract AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. And finally we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements}.
+We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. Next, we described in \cref{sec:AlgorithmCheckingFaithfulness} how we decide if an AF is spurious or faithful. In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are transformed to singletons) is computed. The approach to compute faithful abstract AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. Then we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements} and finally we discuss a specific relation between spurious sets in \cref{sec:AlgorithmsRelationsBetweenSpuriousSets}.
 
 
 \section{Boolean Encodings for Abstract Semantics}
@@ -147,7 +147,6 @@ argument is not in the abstractly stable extension, it implies that an argument 
 abstractly stable extension is attacking it. Furthermore if the abstractly stable extension
 is not attacking an argument, then every singleton attacked by the argument is not in the
 abstractly stable extension. Other than conflict-free and admissible, the empty set is not a stable extension except if $\hat{A} = \emptyset$.
-
 \begin{definition}
     Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. We can now define the following formula.
     \begin{center}
@@ -204,6 +203,122 @@ The models of $\hat{stb}(\hat{G})$ in this example are $\bigl\{$$\{c, d\}$, $\{c
 \end{example}
 
 By comparing the models of $\hat{stb}(\hat{G})$ with the stable sets of $\hat{G}$, we find that they are identical. Specifically, \cref{def:booleanFormulaStable} is a Boolean expression to derive admissible sets from an AF. If the AF has no clusters, the Boolean expression reduces to the admissible formula defined earlier.
+
+
+\section{Checking Faithfulness}
+\label{sec:AlgorithmCheckingFaithfulness}
+In the context of abstract AFs, faithfulness is an important property. To be able to determine, if an AF is faithful or spurious we develop two different approaches, i.e., BFS and DFS wich are described in \cref{subsec:BFSandDFSAlgorithm}. To be able to show faithfulness or spuriousness for a specific abstract extension, we developed again two different procedures, i.e., list comparison and the SAT-based check described in \cref{subsec:ExtensionMapping}.
+
+\subsection{BFS and DFS}
+\label{subsec:BFSandDFSAlgorithm}
+Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algorithms to traverse graphs. Where BFS visits each node in order of distance to the start, DFS follows a direct path and only backtracks, if it has to. We, however, are not using the two approaches to traverse a graph, but we are using a similar principle on the computation of semantics.
+
+\paragraph{BFS} The BFS approach in our implementation, depicted in \cref{fig:ImplementationBFSVisualization}, first computes all the semantics extensions of the abstract AF and then checks, if any of the extensions is spurious. After one spurious extension is encountered, the algorithm is aborted, because if one extension is spurious the AF is spurious as well.
+
+The BFS approach is practical for AFs which do not have many semantics extensions. If the semantics sets take too long to compute, we will run into a timeout no matter at which seed the SAT-Solver is operating on. BFS is a solid and robust approach, nevertheless, there is no space of randomness and lucky early terminations.
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}
+        % Compute Block
+        \def \computeBlockX{0}
+        \def \computeBlockY{0}
+        \def \computeBlockWidth{3cm}
+        \def \computeBlockHeight{1.8cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\computeBlockWidth, minimum height=\computeBlockHeight , text width=\computeBlockWidth, align=center] at (\computeBlockX, \computeBlockY) {Compute all abstract extensions};
+
+
+        % Check Block
+        \def \checkBlockX{4}
+        \def \checkBlockY{0}
+        \def \checkBlockWidth{2cm}
+        \def \checkBlockHeight{1.8cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {Check if faithful};
+        % Brace
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (1.8, - \checkBlockHeight/2) --  (1.8, \checkBlockHeight/2);
+        \DrawAttackHorizontal{R}{1.7}{0}{3.15}{0}
+    \end{tikzpicture}
+    \caption{BFS visualization}
+    \label{fig:ImplementationBFSVisualization}
+\end{figure}
+
+
+\paragraph{DFS} On the other hand we have the DFS approach, depicted in \cref{fig:ImplementationDFSVisualization}. When using DFS, instead of calculating all the abstract extensions at once, we verify each computed set directly. Verifying in this context means, to check if the extension can be mapped to one of the concrete extensions. If an extension cannot be mapped, we found a spurious extension which shows spuriousness of the AF.
+
+DFS has some overhead, due to the context switches resulting with a longer computation power for faithful AFs. Nevertheless, depending on the seed of the SAT-Solver, we can obtain a result much faster than with BFS. If the first computed semantics extension is already spurious, we save a lot of computation power and can even solve AFs, which are not feasible for the BFS approach.
+
+
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        \def \bwidth{3cm}
+        \def \bheight{1.5cm}
+        % Block 1
+        \def \cbIX{0}
+        \def \cbIY{1.1cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIX, \cbIY) {Compute abstract extension};
+
+        % Block connection dotted
+        \draw[densely dotted,-, line width=0.3mm, >={To[length=4, width=5]}]
+        (\cbIX, 0.25cm) -- (\cbIX, -0.25cm);
+
+        % Block 2
+        \def \cbIIX{0}
+        \def \cbIIY{-1.1cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIX, \cbIIY) {Compute abstract extension};
+
+
+
+        % Block 3
+        \def \cbIIIX{4}
+        \def \cbIIIY{1.1cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIX, \cbIIIY) {Check if faithful};
+        \DrawAttackHorizontal{R}{1.3}{\cbIIIY}{2.7}{\cbIIIY}
+
+        % Block connection dotted
+        \draw[densely dotted,-, line width=0.3mm, >={To[length=4, width=5]}]
+        (\cbIIIX, 0.25cm) -- (\cbIIIX, -0.25cm);
+
+        % Block 4
+        \def \cbIIIIX{4}
+        \def \cbIIIIY{-1.1cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIIX, \cbIIIIY) {Check if faithful};
+        \DrawAttackHorizontal{R}{1.3}{\cbIIIIY}{2.7}{\cbIIIIY}
+
+
+        % Brace
+        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (5.8,-1.85) --  (5.8,1.85);
+        \DrawAttackHorizontal{R}{5.7}{0}{6.9}{0}
+
+        % Check Block
+        \def \checkBlockX{8}
+        \def \checkBlockY{0}
+        \def \checkBlockWidth{2.5cm}
+        \def \checkBlockHeight{3.5cm}
+        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {If any check is unsatisfiable, return spurious};
+    \end{tikzpicture}
+    \caption{DFS visualization}
+    \label{fig:ImplementationDFSVisualization}
+\end{figure}
+
+
+
+\subsection{Extension Mapping}
+\label{subsec:ExtensionMapping}
+To determine if an abstract extension is faithful or spurious, we need to map it to a concrete extension. If this is not possible, we found a spurious extension. We created two procedures for the mapping, i.e., list comparison and SAT-Based check.
+
+\paragraph{List Comparison}
+The first approach of mapping an abstract extension to a concrete extension is the list comparison. Here, all the concrete extensions are computed and are then checked iteratively for the mapping. Since list comparisons are highly optimized and do not need an additional SAT-Solver invocation, the approach can be efficient under certain circumstances.
+
+The issue with the list comparison of the computed extension is, that for AFs with big clusters (i.e.\ a cluster containing many arguments), the direct mapping of a an abstract extension is tedious. This is accounted to the many possibilities a cluster can transform into, e.g., for a cluster $\hat{h}$ containing the arguments $a$ and $b$, the extension $\{\hat{h}\}$ would have to be transformed into $\{a\}$, $\{b\}$ and $\{a, b\}$. This works fine for small clusters, but grows exponentially by $2^{cn}-1$ with $cn$ being the amount of clustered argument.
+
+
+\paragraph{SAT-Based check}
+For optimization reasons, we altered the way on how to check for faithfulness. That is, why we implemented a SAT-based check. Instead of computing the concrete extensions, we check if the formula of the semantics from the concrete AF is still satisfiable, if we add the abstract extension. The abstract extension is encoded with the corresponding Boolean variables, where every argument in the extension is set to \emph{true} and the arguments not in the extension is set to \emph{false}. The clusters are enrolled by the clustered arguments disjunctively, to cover every possible cluster mapping.
+
+
+
 
 
 \section{Concretizing Singletons}
@@ -665,9 +780,11 @@ $\hat{stb}(G) = \bigl\{\{b, \hat{h}\}, \{\hat{h}\}, \{b\}\bigl\}$, we can see th
 The first step is to filter out the clusters of the input, since clusters are not present in the concrete AF and therefore do not attack any singletons and are not being attacked. So we reduce the concretizer list from $\{b, \hat{h}\}$ to $\{b\}$.
 
 % Get combination as defender depth 2
-Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked by an argument. The depth defines how many arguments are between the attacks. A depth of $0$ is the actual argument, a depth of $1$ represents the direct attacker of the argument and the arguments, which are being attacked by the argument. A depth $2$ argument is an argument, which has some attack relation (e.g.\ attacks the argument or is attacked by the argument) with a depth $1$ argument.
+Next, we have a look at the neighbouring arguments of the current concretizer list.  Neighbours in this context are arguments which attack, or are being attacked by an argument. The depth defines how many arguments are between the attacks. A depth of $1$ represents the direct attacker of an argument and the arguments, which are being attacked by the argument. A depth $2$ argument is an argument, which has some attack relation (e.g.\ attacks the argument or is attacked by the argument) with a depth $1$ argument. Some arguments can have multiple depths (e.g.\ argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), then the lower depth is chosen as the representative.
 
-We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in dotted line style and the attacker with the same depth, depicted in dashed line style. The pseudo-code of this procedure is listed in \cref{alg:concretizerListNeighbours} where $N$ represents the list of neighbours at depth $2$ that we are computing. Some arguments can have multiple depths (e.g.\ argument $c$. It is a direct attacker of the argument $b$ with depth $0$, but also a direct attacker of the argument $c$ with depth $1$), then the lower depth is chosen as the representative.
+We used a search depth of $2$ in our implementation. So when having a look at our example, we take the defender of depth $1$ and $2$, in \cref{af:algorithmConcretizer3} depicted in dotted line style and the attacker, depicted in dashed line style. The pseudo-code of this procedure is listed in \cref{alg:concretizerListNeighbours} where $N$ represents the list of neighbours at depth $2$ that we are computing. Furthermore, the function $neighbours(arg)$ returns all the direct neighbours of the argument $arg$.
+
+
 
 %Depth 2 Attacker
 \vspace{0.1cm}
@@ -731,11 +848,16 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
         \Require $G: AF(A, R)$ \Comment{Concrete AF}
         \Require $s: list(Arguments)$ \Comment{Working List}
         \State $N$ $\gets$ $list()$ \Comment{$N$ = list of neighbours}
+        \State $n(1) \gets list()$ \Comment{List of neighbours with depth 1}
         \For{$s_i$ in $s$} \Comment{Get neighbours}
-            \For{$n(1)_i$ neighbour of $s_i$} \Comment{depth 1 attacker}
-                \For{$n(2)_i$ neighbour of $n(1)_i$} \Comment{depth 2 attacker}
-                    \State $N.append(n(1)_i$)
-                    \State $N.append(n(2)_i$)
+            \For{$n$ in $neighbours(s_i)$} \Comment{depth 1 attacker}
+                \State $n(1).append(n)$
+                \State $N.append(n)$
+            \EndFor
+            \For{$n(1)_i$ in $n(1)$}
+                \For{$n$ in $neighbours(n(1)_i)$} \Comment{depth 2 attacker}
+                    \State $n(2).append(n)$
+                    \State $N.append(n)$
                 \EndFor
             \EndFor
         \EndFor
@@ -908,19 +1030,13 @@ When taking a look at the conflict-free sets of the concrete AF $G$ (i.e.\ $\big
 \begin{algorithm}
     \caption{Compute Faithful Clusters}\label{alg:computeFaithfulClusters}
     \begin{algorithmic}[1]
-        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
-        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
-        \State $s_c \gets computeSemanticsExtension(G)$
-        \State $s_a \gets computeSemanticsExtension(\hat{G})$
-        \State $sp \gets computeSpuriousSemantics(s_c, s_a)$
-        \If{$sp.length == 0$}
-            \State \Return $\hat{G}$
-        \EndIf
+        \Require $G: AF(A, R)$ \Comment{Concrete AF}
+        \Require $\hat{G}: AF(\hat{A}, \hat{R})$ \Comment{Abstract AF}
+        \State $sp \gets computeSpuriousExtensions(G, \hat{G})$
         \State $conc \gets computeConcretizerList(sp)$
         \For{$set_i$ in $sp$}
             \State $\hat{G}' \gets concretize(\hat{G}, set_i)$
-            \State $s_a \gets computeSemanticsExtension(\hat{G}')$
-            \If{$sp.length == 0$}
+            \If{$checkFaithfulness(G, \hat{G}')$}
                 \State \Return $\hat{G}'$
             \EndIf
         \EndFor
@@ -987,14 +1103,14 @@ The three components (i.e.\ $\overline{cf}$, $\overline{att}$, $\overline{con}$)
 
 
 \section{Relations between Spurious Sets }
-\label{sec:ImplementationsDisprovedAssumptions}
+\label{sec:AlgorithmsRelationsBetweenSpuriousSets}
 
 When developing the tool, we came up with different theories. Some theories were discarded immediately, some were implemented (recall \cref{sec:HeuristicsAndRefinements}) and others had to be proven wrong. This section describes the most promising assumptions which turned out to be wrong.
 
 We came up with the theory, that every subset of a stable spurious extension, is spurious as well. Formally, if $S$ is a spurious stable set of the abstract AF $\hat{G}$. Then for every subset $T \subseteq S$, $T$ is spurious as well. This would reduce the computation time of finding spurious sets drastically. Unfortunately, we can disprove this theory with a counter-example.
 
 \begin{example}
-    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(d, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(a). The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined with the arguments $\hat{A}=\{\hat{g}, f\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, e\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g})$, $(\hat{g}, f)\bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(b).
+    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(d, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(a). The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined by the arguments $\hat{A}=\{\hat{g}\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, e, f\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g})\bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(b).
 
 
 \vspace{0.3cm}
@@ -1030,15 +1146,12 @@ We came up with the theory, that every subset of a stable spurious extension, is
     \begin{subfigure}[t]{0.45\textwidth}
     \centering
     \begin{tikzpicture}
-        \def \fx{2}   \def \fy{0}
         \def \gx{0}   \def \gy{0}
 
-        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a, b, c, d, e$};
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a, b, c, d, e, f$};
         \node at (\gx + 0.1, \gy+0.55) {$\hat{g}$};
         % Attacks
-        \DrawAttackHorizontal{R}{\gx+0.63}{\gy}{\fx}{\fy}
-        \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy+0.3}
+        \DrawSelfAttackLeftTopCluster{\gx-1}{\gy+0.3}
 
     \end{tikzpicture}
     \subcaption{Spurious abstract AF}
@@ -1049,36 +1162,5 @@ We came up with the theory, that every subset of a stable spurious extension, is
 \end{figure}
 \vspace{0.3cm}
 
-When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extensions $\bigl\{ \{\hat{g}\}, \{\hat{g}, f\}\bigl\}$. Since at least one of the abstractly stable extensions are spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When concretizing the subset a subset of $\{\hat{g}\}$, e.g.\ $\{a, c\}$ we obtain the AF $\hat{G}'$ depicted in \cref{af:ImplementationRefutedTheoryDefinitionSpurious}.
-
-
-\vspace{0.3cm}
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-        \def \ax{0}   \def \ay{-1}
-        \def \cx{1.5}   \def \cy{-1}
-        \def \fx{1.5}   \def \fy{0}
-        \def \gx{0}   \def \gy{0}
-
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$b, e, d$};
-        \node at (\gx + 0.1, \gy+0.55) {$\hat{g}$};
-
-        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
-        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
-        \draw[line width=0.3mm] (\fx, \fy) circle (0.3) node[anchor=center]{$f$};
-        % Attacks
-        \DrawAttackHorizontal{R}{\ax}{\ay}{\cx}{\cy}
-        \DrawAttackVertical{B}{\gx}{\gy}{\ax}{\ay}
-        \DrawAttackVertical{U}{\cx}{\cy}{\fx}{\fy}
-        \DrawAttackDiagonal{NRL}{\cx}{\cy}{\gx+0.35}{\gy-0.05}
-        \DrawSelfAttackLeftSingleton{\ax}{\ay}
-    \end{tikzpicture}
-\caption{Concretized AF $\hat{G}'$}
-\label{af:ImplementationRefutedTheoryDefinitionSpurious}
-\end{figure}
-\vspace{0.3cm}
-
-Now we compute the abstractly stable extensions of $\hat{G}'$ and obtain $\{\hat{g}, c\}$, which after expanding the cluster $\hat{g}=\{b, d\}$ we can map the abstract extension to the concrete extension. Thus, we found a faithful AF by concretizing a subset of a spurious stable extension which disproves the theory.
-
+When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extension $\{\hat{g}\}$. Since at least one of the abstractly stable extensions are spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When trying to map the subset of $\{\hat{g}\}$, e.g.\ $\{b, c, d\}$ to the concrete extension $\{b, c, d\}$, we can see that it is faithful. Thus, we found a subset of a spurious extension, which is not spurious.
 \end{example}

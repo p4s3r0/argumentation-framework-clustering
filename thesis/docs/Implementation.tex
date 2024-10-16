@@ -1,5 +1,5 @@
 \chapter{Implementations}
-In this chapter we dive into the implementation part and discuss different approaches. First, we specify how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. Next we explain two different settings to optimize the spurious/faithful check in \cref{sec:ImplementationsBFSandDFSApproach}. In \cref{sec:ImplementationsGeneratingSemanticsSets} we explain how we generated the semantics extensions.
+In this chapter we dive into the implementation part and discuss different approaches. First, we specify how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. In \cref{sec:ImplementationUsageAndSettings} we describe the usage of the implemented tool and the settings to change the inner workings of the algorithms.
 
 \section{Generating AFs}
 \label{sec:ImplementationsCreatingAFs}
@@ -440,118 +440,14 @@ With the level-based approach, we obtain the same structured AF as for the grid-
 \label{fig:ImplementationLevelBasedExampleAFs}
 \end{figure}
 
-\paragraph{clustering} The random-based, grid-based and level-based only generate concrete AFs. To be able to generate the abstract AFs based on the concrete ones, we created another independent script. Since clusters make a lot more sense when respecting the locality of the arguments, we cluster arguments which are next to each other (e.g.\ direct neighbours). The size of the cluster is determined on runtime and is a random value between $2$ and the amount of arguments present in the concrete AF.
-
-
-\newpage
-\section{BFS and DFS Approach}
-\label{sec:ImplementationsBFSandDFSApproach}
-Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algorithms to traverse graphs. Where BFS visits each node in order of distance to the start, DFS follows a direct path and only backtracks, if it has to. We, however, are not using the two approaches to traverse a graph, but we are using a similar principle to compute faithfulness of an abstract AF. The BFS approach in our implementation first computes all the semantics extensions of the abstract AF, then computes all the semantics extensions of the concrete AF and finally compares them to check for spuriousness.
-
-\begin{figure}[h!]
-    \centering
-    \begin{tikzpicture}
-        % Compute Block
-        \def \computeBlockX{0}
-        \def \computeBlockY{0}
-        \def \computeBlockWidth{3cm}
-        \def \computeBlockHeight{1.8cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\computeBlockWidth, minimum height=\computeBlockHeight , text width=\computeBlockWidth, align=center] at (\computeBlockX, \computeBlockY) {Compute all abstract extensions};
-
-
-        % Check Block
-        \def \checkBlockX{4}
-        \def \checkBlockY{0}
-        \def \checkBlockWidth{2cm}
-        \def \checkBlockHeight{1.8cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {Check if spurious};
-        
-        % Brace
-        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (1.8, - \checkBlockHeight/2) --  (1.8, \checkBlockHeight/2);
-        \DrawAttackHorizontal{R}{1.7}{0}{3.15}{0}
-
-        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt}] (6.2,- \checkBlockHeight/2) --  (6.2,\checkBlockHeight/2);
-        \DrawAttackHorizontal{L}{6.3}{0}{4.85}{0}
-
-        % Compute Block
-        \def \compBlockX{8}
-        \def \compBlockY{0}
-        \def \compBlockWidth{3cm}
-        \def \compBlockHeight{1.8cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\compBlockWidth, minimum height=\compBlockHeight , text width=\compBlockWidth, align=center] at (\compBlockX, \compBlockY) {Compute all concrete extensions};
-    \end{tikzpicture}
-    \caption{BFS visualization}
-    \label{fig:ImplementationBFSVisualization}
-\end{figure}
-
-
-
-The BFS approach, visualized in \cref{fig:ImplementationBFSVisualization} is practical for AFs which do not have many semantics extensions. If the semantics sets take too long to compute, we will run into a timeout no matter at which seed the SAT-Solver is operating on. BFS is a solid and robust approach, nevertheless, there is no space of randomness and lucky early terminations.
-
-On the other hand, we have the DFS approach depicted in \cref{fig:ImplementationDFSVisualization}. When using DFS, instead of calculating all the abstract extensions at once, we verify each computed set directly. Verifying in this context means, to check if the extension can be mapped to one of the concrete extensions. But instead of computing every possible concrete set, and checking for a valid mapping, we encode the extensions directly, add a new context (using incremental solving), and check for satisfiability. If the SAT-Solver returns \emph{UNSAT}, we found a spurious extension and, therefore, showed that the abstract AF is spurious.
-
-
-\begin{figure}[h]
-    \centering
-    \begin{tikzpicture}
-        \def \bwidth{3cm}
-        \def \bheight{1.5cm}
-        % Block 1
-        \def \cbIX{0}
-        \def \cbIY{1.1cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIX, \cbIY) {Compute abstract extension};
-
-        % Block connection dotted
-        \draw[densely dotted,-, line width=0.3mm, >={To[length=4, width=5]}]
-        (\cbIX, 0.25cm) -- (\cbIX, -0.25cm);
-
-        % Block 2
-        \def \cbIIX{0}
-        \def \cbIIY{-1.1cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIX, \cbIIY) {Compute abstract extension};
-
-
-
-        % Block 3
-        \def \cbIIIX{4}
-        \def \cbIIIY{1.1cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIX, \cbIIIY) {Verify on concrete AF};
-        \DrawAttackHorizontal{R}{1.3}{\cbIIIY}{2.7}{\cbIIIY}
-
-        % Block connection dotted
-        \draw[densely dotted,-, line width=0.3mm, >={To[length=4, width=5]}]
-        (\cbIIIX, 0.25cm) -- (\cbIIIX, -0.25cm);
-
-        % Block 4
-        \def \cbIIIIX{4}
-        \def \cbIIIIY{-1.1cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\bwidth, minimum height=\bheight , text width=\bwidth, align=center] at (\cbIIIIX, \cbIIIIY) {Verify on concrete AF};
-        \DrawAttackHorizontal{R}{1.3}{\cbIIIIY}{2.7}{\cbIIIIY}
-
-
-        % Brace
-        \draw [line width=0.3mm, decorate, decoration = {brace, amplitude=5pt, mirror}] (5.8,-1.85) --  (5.8,1.85);
-        \DrawAttackHorizontal{R}{5.7}{0}{6.9}{0}
-
-        % Check Block
-        \def \checkBlockX{8}
-        \def \checkBlockY{0}
-        \def \checkBlockWidth{2.5cm}
-        \def \checkBlockHeight{3.5cm}
-        \node[rectangle, draw, line width=0.3mm, minimum width=\checkBlockWidth, minimum height=\checkBlockHeight , text width=\checkBlockWidth, align=center] at (\checkBlockX, \checkBlockY) {If any verify block is \emph{UNSAT}, return spurious};
-    \end{tikzpicture}
-    \caption{DFS visualization}
-    \label{fig:ImplementationDFSVisualization}
-\end{figure}
-
-
-DFS has some overhead, due to the context switches resulting with a longer computation power for faithful AFs. Nevertheless, depending on the seed of the SAT-Solver, we can obtain a result much faster than with BFS. If the first computed semantics extension is already spurious, we save a lot of computation power and can even solve AFs, which are not feasible for the BFS approach.
+\paragraph{clustering} The random-based, grid-based and level-based only generate concrete AFs. To be able to generate the abstract AFs based on the concrete ones, we created another independent script. Since clusters make a lot more sense when respecting the locality of the arguments, we cluster arguments which are next to each other (e.g.\ direct neighbours) by traversing the AF via the attacks and adding the argument if we visit it the first time. The size of the cluster is determined on runtime and is a random value between $2$ and the amount of arguments present in the concrete AF.
 
 
 
 
 
 \section{Usage and Settings}
+\label{sec:ImplementationUsageAndSettings}
 We implemented the previously mentioned encodings and algorithm into the software called \prog. The tool uses Python as a primary programming language and the library z3 for SAT-Solving. The software is available at
 
 \begin{center}
@@ -631,3 +527,125 @@ We also implemented a visualization of the AFs, which can be triggered using the
 \end{center}
 
 The visualization will show the abstract AF and the concrete AF if they are part of the program call. Finally, it will show the resulting AF. To ''spectate`` the current computation and have more insight into the algorithm, we can add the \texttt{-verbose} flag. This will print interim findings to the user directly while calculating.
+
+
+\subsection{Input Format}
+The input format for the AFs has a clear structure and is divided into four parts: i.e.\ $header$, $attacks$, $orphans$ and $clusters$. The optional parts (i.e., $orphans$ and $clusters$) are introduced with the \texttt{--<name>--} tag. Each tag is defined and the usage of the part is explained in the corresponding paragraph. If an optional part is empty, e.g.\ we have a concrete AF without clusters, we can simply omit the part by not including the tag. The singletons and clusters need to be indexed consecutively with positive integers, i.e., letters and symbols are not allowed.
+
+\paragraph{Header} The header is the first line of the input file and is the unique ''p-line``. Here we specify the amount of singletons \texttt{<n>} present in the AF.
+
+\vspace{0.3cm}
+\begin{center}
+    \texttt{p af <n>}
+\end{center}
+\vspace{0.3cm}
+
+The amount \texttt{<n>} does not include the amount of clusters from the specific AF and has to be a positive integer greater than $0$. The abstracted arguments that are clustered are not included in the amount \texttt{<n>} as well.
+
+\paragraph{Attacks} Next, we define the attacks of the AF. Every attack is defined on a unique line and consists of a source \texttt{<s>} and a target \texttt{<t>}, which are the numerical indices of the arguments where \texttt{<s>} attacks \texttt{<t>}.
+
+\vspace{0.3cm}
+\begin{center}
+    \texttt{<s1> <t1>}\\
+    \texttt{<s2> <t2>}\\
+    \texttt{<s3> <t3>}\\
+    \texttt{<s4> <t4>}
+\end{center}
+\vspace{0.3cm}
+
+
+
+\paragraph{Orphans} If an argument is not referenced in the attacks, i.e.\ the argument does not attack any other argument and is not attacked by any other argument, we call it an orphan. Orphans are not required coercively and are defined in the orphans section with the \texttt{--attackless--} tag. Every orphan is defined on a unique line and is the numerical indices of the argument.
+
+\vspace{0.3cm}
+\begin{center}
+    \hspace{2.25cm}
+    \makebox[0pt]{%
+        \parbox{5cm}{% Adjust the width as necessary
+            \texttt{--attackless--}\\
+            \texttt{<a1>}\\
+            \texttt{<a2>}\\
+            \texttt{<a3>}\\
+            \texttt{<a4>}
+        }
+    }
+\end{center}
+\vspace{0.3cm}
+
+
+
+\paragraph{Clusters} The next optional part are the clusters. The tag is the \texttt{--cluster--} tag and each cluster is defined by a numerical positive integer and the indices of the arguments that are inside the cluster.
+
+\vspace{0.3cm}
+\begin{center}
+    \hspace{1cm}
+    \makebox[0pt]{%
+        \parbox{5cm}{% Adjust the width as necessary
+            \texttt{--cluster--}\\
+            \texttt{<c1> <- <a1> <a2> <a3>}
+            \texttt{<c2> <- <a4> <a5> <a6>}
+            \texttt{<c3> <- <a7> <a8> <a9>}
+        }
+    }
+\end{center}
+\vspace{0.3cm}
+
+The cluster \texttt{<c>} is followed by an arrow pointing to the cluster \texttt{<-}, followed by a list of argument indeces separated by spaces.
+
+\paragraph{Comments} Finally, we can use comment lines. A comment is marked as such, with a hashtag \texttt{\#} at the beginning of the line. Every character followed by the hastag is ignored by the parser.
+
+\vspace{0.3cm}
+\begin{center}
+    \texttt{\# This is a comment}
+\end{center}
+\vspace{0.3cm}
+
+
+\begin{example}
+    Let us define $\hat{G}=(\hat{A}, \hat{R})$ to be an abstract AF depicted in \cref{af:implementationInputExample}, with the arguments $\hat{A}=\{a, b, c, \hat{h}\}$ where the cluster $\hat{h}$ contains the arguments $d$, $e$ and $f$. The attacks of the cluster are defined as $\hat{R}=\big\{ (a, b), (\hat{h}, b), (\hat{h}, \hat{h})\big\}$.
+
+\vspace{0.3cm}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        % Singletons
+        \def \ax{0}     \def \ay{0}
+        \def \bx{1}     \def \by{0}
+        \def \cx{2}     \def \cy{0}
+        \def \hx{1}     \def \hy{-1}
+
+        \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$d, e, f$};
+        \node at (\hx+0.5, \hy+0.6) {$\hat{h}$};
+        \draw[line width=0.3mm] (\ax, \ay) circle (0.3) node[anchor=center]{$a$};
+        \draw[line width=0.3mm] (\bx, \by) circle (0.3) node[anchor=center]{$b$};
+        \draw[line width=0.3mm] (\cx, \cy) circle (0.3) node[anchor=center]{$c$};
+
+        % Attacks
+        \DrawSelfAttackLeftTopCluster{\hx-0.45}{\hy + 0.3}
+        \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
+        \DrawAttackVertical{U}{\hx}{\hy}{\bx}{\by}
+    \end{tikzpicture}
+    \caption{Abstract AF $\hat{G}$}
+    \label{af:implementationInputExample}
+\end{figure}
+
+\vspace{0.3cm}
+We can translate the AF into the following input format. The arguments are mapped to numerical positive numbers, i.e., $a \rightarrow 1$, $b \rightarrow 2$, $c \rightarrow 3$, $d \rightarrow 4$, $e \rightarrow 5$, $f \rightarrow 6$ and $\hat{h} \rightarrow 7$.
+
+\vspace{0.3cm}
+\begin{center}
+    \fbox{%
+        \parbox{5cm}{% Adjust the width as necessary
+            \texttt{p af 3}\\
+            \texttt{\# This is a comment}\\
+            \texttt{1 2}\\
+            \texttt{7 2}\\
+            \texttt{7 7}\\
+            \texttt{--attackless--}\\
+            \texttt{3}\\
+            \texttt{--cluster--}\\
+            \texttt{7 <- 4 5 6}
+        }
+    }
+\end{center}
+\end{example}
