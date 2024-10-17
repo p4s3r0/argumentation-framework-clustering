@@ -14,12 +14,10 @@ We further define a subset of arguments, denoted as $\hat{A}_{\mathit{Single}} \
 
 \paragraph{Conflict-Free} We begin with (abstract) conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, the empty set is always part of the conflict-free sets.
 \begin{definition}
-    Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. We can now define the following formula.
-    \begin{center}
+    Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. Define the following formula.
         \[ \varphi_{cf}(\hat{G}) =
         \bigwedge_{a \in \hat{A}_{\mathit{Single}}} \bigl( \bigwedge_{b:(b,a)\in \hat{R}, b \in \hat{A}_{\mathit{Single}}} \lnot \bigl( a \wedge b \bigl) \bigl)
         \]
-    \end{center}
     \label{def:booleanFormulaConflictFree}
 \end{definition}
 
@@ -78,12 +76,10 @@ If we compare the models of $\hat{cf}(\hat{G})$ with the conflict-free sets of $
 \paragraph{Admissible} Next we continue with (abstract) admissible sets. Recall that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. For admissibility, the empty set does always satisfy the criteria and therefore is part of the admissible sets.
 
 \begin{definition}
-    Let $\hat{G}=(\hat{A}, \hat{R})$ be an abstract AF. We can now define the following formula.
-    \begin{center}
+    Let $\hat{G}=(\hat{A}, \hat{R})$ be an abstract AF. Define the following formula.
         \[ \varphi_{adm}(\hat{G})=
         \varphi_{cf}(\hat{G}) \land  \bigwedge_{a \in \hat{A}_{\mathit{Single}}} \big( a \rightarrow \bigwedge_{b:(b,a) \in \hat{R}} \big( \bigvee_{c:(c,b) \in \hat{R}} c\big) \big)
         \]
-    \end{center}
     \label{def:booleanFormulaAdmissible}
 \end{definition}
 
@@ -148,12 +144,10 @@ abstractly stable extension is attacking it. Furthermore if the abstractly stabl
 is not attacking an argument, then every singleton attacked by the argument is not in the
 abstractly stable extension. Other than conflict-free and admissible, the empty set is not a stable extension except if $\hat{A} = \emptyset$.
 \begin{definition}
-    Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. We can now define the following formula.
-    \begin{center}
+    Let $\hat{G}=(\hat{A},\hat{R})$ be an abstract AF. Define the following formula.
         \[ \varphi_{stb}(\hat{G}) =
         \varphi_{cf}(\hat{G}) \land \bigwedge_{a \in \hat{A}} \big( a \bigvee_{b:(b,a)\in \hat{R}} b\big) \land \bigwedge_{a \in \hat{A}} \big( \big(  a \bigwedge_{b:(b,a) \in \hat{R}} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in \hat{A}_{\mathit{Single}}} \lnot c\big) \big)
         \]
-    \end{center}
     \label{def:booleanFormulaStable}
 \end{definition}
 
@@ -847,8 +841,8 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
     \begin{algorithmic}[1]
         \Require $G: AF(A, R)$ \Comment{Concrete AF}
         \Require $s: list(Arguments)$ \Comment{Working List}
-        \State $N$ $\gets$ $list()$ \Comment{$N$ = list of neighbours}
-        \State $n(1) \gets list()$ \Comment{List of neighbours with depth 1}
+        \State $N$ $\gets$ $\emptyset$ \Comment{$N$ = list of neighbours}
+        \State $n(1) \gets \emptyset$ \Comment{List of neighbours with depth 1}
         \For{$s_i$ in $s$} \Comment{Get neighbours}
             \For{$n$ in $neighbours(s_i)$} \Comment{depth 1 attacker}
                 \State $n(1).append(n)$
@@ -856,7 +850,6 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
             \EndFor
             \For{$n(1)_i$ in $n(1)$}
                 \For{$n$ in $neighbours(n(1)_i)$} \Comment{depth 2 attacker}
-                    \State $n(2).append(n)$
                     \State $N.append(n)$
                 \EndFor
             \EndFor

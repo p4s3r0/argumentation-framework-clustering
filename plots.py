@@ -147,22 +147,26 @@ def plotBFSvsDFS(test_runs, title):
     fig, ax = plt.subplots(3, 3)
     for y, gen in enumerate(test_runs):
         for x, sem in enumerate(["CF", "AD", "ST"]):
-            data = list()
+            data_BFS = list()
+            data_DFS = list()
             for file in test_runs[gen]:
-                data.append((test_runs[gen][file][sem]["BFS"]["True"], test_runs[gen][file][sem]["DFS"]["True"]))
-                data.append((test_runs[gen][file][sem]["BFS"]["False"], test_runs[gen][file][sem]["DFS"]["False"]))
+                data_BFS.append(test_runs[gen][file][sem]["BFS"]["True"])
+                data_DFS.append(test_runs[gen][file][sem]["DFS"]["True"])
+
+                data_BFS.append(test_runs[gen][file][sem]["BFS"]["False"])
+                data_DFS.append(test_runs[gen][file][sem]["DFS"]["False"])
             # sort data over BFS runtime
-            sorted_data = sorted(data, key=lambda t: (t[0].runtime, t[1].runtime))
-            ax[y][x].plot([y[0].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='BFS')
-            ax[y][x].plot([y[1].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='DFS')
+            sorted_data_BFS = sorted(data_BFS, key=lambda t: (t.runtime))
+            sorted_data_DFS = sorted(data_DFS, key=lambda t: (t.runtime))
+            ax[y][x].plot([y.runtime for y in sorted_data_BFS], range(len(sorted_data_BFS)), linewidth=2.0, label='BFS')
+            ax[y][x].plot([y.runtime for y in sorted_data_DFS], range(len(sorted_data_DFS)), linewidth=2.0, label='DFS')
             ax[y][x].set_ylabel("Testrun numeration")
             ax[y][x].set_xlabel("Runtime [s]")
             ax[y][x].set_title(f"{gen} {sem}")
-            # printForThesis([y[0].runtime for y in sorted_data], range(len(sorted_data)))
-            # printForThesis([y[1].runtime for y in sorted_data], range(len(sorted_data)))
+            printForThesis([y.runtime for y in sorted_data_BFS], range(len(sorted_data_BFS)))
+            printForThesis([y.runtime for y in sorted_data_DFS], range(len(sorted_data_DFS)))
 
 
-    print("here")
     fig.suptitle(title)
     handles, labels = ax[0][0].get_legend_handles_labels()
     fig.legend(handles, labels, loc='right')
@@ -173,19 +177,23 @@ def plotRefinementVSNoRef(test_runs, title):
     fig, ax = plt.subplots(3, 3)
     for y, gen in enumerate(test_runs):
         for x, sem in enumerate(["CF", "AD", "ST"]):
-            data = list()
+            data_REF = list()
+            data_NOREF = list()
             for file in test_runs[gen]:
                 for BFS_DFS in ["BFS", "DFS"]:
-                    data.append((test_runs[gen][file][sem][BFS_DFS]["True"], test_runs[gen][file][sem][BFS_DFS]["False"]))
+                    data_REF.append(test_runs[gen][file][sem][BFS_DFS]["True"])
+                    data_NOREF.append(test_runs[gen][file][sem][BFS_DFS]["False"])
             # sort data over BFS runtime
-            sorted_data = sorted(data, key=lambda t: (t[0].runtime, t[1].runtime))
+
+            sorted_data_REF = sorted(data_REF, key=lambda t: (t.runtime))
+            sorted_data_NOREF = sorted(data_NOREF, key=lambda t: (t.runtime))
 
             if sem == "CF":
-               printForThesis([y[0].runtime for y in sorted_data], range(len(sorted_data)))
-               printForThesis([y[1].runtime for y in sorted_data], range(len(sorted_data)))
+               printForThesis([y.runtime for y in sorted_data_REF], range(len(data_REF)))
+               printForThesis([y.runtime for y in sorted_data_NOREF], range(len(data_NOREF)))
 
-            ax[y][x].plot([y[0].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='REF')
-            ax[y][x].plot([y[1].runtime for y in sorted_data], range(len(sorted_data)), linewidth=2.0, label='NO-REF')
+            ax[y][x].plot([y.runtime for y in sorted_data_REF], range(len(data_REF)), linewidth=2.0, label='REF')
+            ax[y][x].plot([y.runtime for y in sorted_data_NOREF], range(len(data_NOREF)), linewidth=2.0, label='NO-REF')
             ax[y][x].set_xlabel("Runtime [s]")
             ax[y][x].set_ylabel("Testrun numeration")
             ax[y][x].set_title(f"{gen} {sem}")
@@ -354,18 +362,18 @@ def main():
     fai_tests_better = dict()
     readTestFile(fai_tests_better, "input/experiment/tests-run/with_optimization/results_faithful.txt")
 
-    plotBFSvsDFS(fai_tests_better, "better")
+    # plotBFSvsDFS(fai_tests_better, "better")
     #plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
-    plotBFSvsDFSspecial(fai_tests, fai_tests_better, "h")
-    plt.show()
+    #plotBFSvsDFSspecial(fai_tests, fai_tests_better, "h")
 
-    exit()
-    plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
-    # plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
+    #plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
+    #plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
     # plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
-    plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
+    #plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
     #
     # calculateValues(fai_tests)
+    #exit()
+
 
 
 
@@ -386,10 +394,11 @@ def main():
     readTestFile(con_tests, "input/experiment/tests-run/concretize/CF/results_concretize_level-based.txt")
 
 
-    # plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
+    #plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
     # plotBFSvsDFSDirect(con_tests, "CONCRETIZE program Scatter Plot BFS vs DFS")
-    # plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
-    plotRefinementSDirect(con_tests, "CONCRETIZE program  Scatter Plot REF vs NO-REF")
+    plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
+    plt.show()
+    #plotRefinementSDirect(con_tests, "CONCRETIZE program  Scatter Plot REF vs NO-REF")
     # plotSemanticsSplit(con_tests, "CONCRETIZE, Runtime of Testruns per Semantic")
 
     calculateValues(con_tests)
