@@ -362,13 +362,13 @@ def main():
     fai_tests_better = dict()
     readTestFile(fai_tests_better, "input/experiment/tests-run/with_optimization/results_faithful.txt")
 
-    # plotBFSvsDFS(fai_tests_better, "better")
+    #plotBFSvsDFS(fai_tests_better, "better")
     #plotBFSvsDFS(fai_tests, "FAITHFUL program BFS vs DFS")
     #plotBFSvsDFSspecial(fai_tests, fai_tests_better, "h")
 
     #plotBFSvsDFSDirect(fai_tests, "FAITHFUL program Scatter Plot BFS vs DFS")
     #plotRefinementVSNoRef(fai_tests, "FAITHFUL program REF vs NO-REF")
-    # plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
+    #plotRefinementSDirect(fai_tests, "FAITHFUL program  Scatter Plot REF vs NO-REF")
     #plotSemantics(fai_tests, "FAITHFUL, Runtime of Testruns per Semantic")
     #
     # calculateValues(fai_tests)
@@ -393,10 +393,11 @@ def main():
     readTestFile(con_tests, "input/experiment/tests-run/concretize/CF/results_concretize_grid-based.txt")
     readTestFile(con_tests, "input/experiment/tests-run/concretize/CF/results_concretize_level-based.txt")
 
+    plotSemantics(con_tests, "FAITHFUL, Runtime of Testruns per Semantic")
 
     #plotBFSvsDFS(con_tests, "CONCRETIZE program BFS vs DFS")
     # plotBFSvsDFSDirect(con_tests, "CONCRETIZE program Scatter Plot BFS vs DFS")
-    plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
+    #plotRefinementVSNoRef(con_tests, "CONCRETIZE program REF vs NO-REF")
     plt.show()
     #plotRefinementSDirect(con_tests, "CONCRETIZE program  Scatter Plot REF vs NO-REF")
     # plotSemanticsSplit(con_tests, "CONCRETIZE, Runtime of Testruns per Semantic")

@@ -72,9 +72,9 @@ Note, that the numeration does not begin at $1$ because all the test-runs below 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/CF/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -101,9 +101,9 @@ Note, that the numeration does not begin at $1$ because all the test-runs below 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/AD/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -130,9 +130,9 @@ Note, that the numeration does not begin at $1$ because all the test-runs below 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/ST/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/random-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -166,9 +166,9 @@ BFS and DFS differences increase when we change the AF generation approach to th
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/CF/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -195,9 +195,9 @@ BFS and DFS differences increase when we change the AF generation approach to th
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/AD/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -223,9 +223,9 @@ BFS and DFS differences increase when we change the AF generation approach to th
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/ST/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/grid-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -259,9 +259,9 @@ The difference increases even further when the AF generator approach is changed 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/CF/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -287,9 +287,9 @@ The difference increases even further when the AF generator approach is changed 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/AD/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -315,9 +315,9 @@ The difference increases even further when the AF generator approach is changed 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/ST/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/level-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -348,11 +348,11 @@ Finally, we arranged the data into a single plot from all the generator approach
             set layers
         ]
 
-        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+        \addplot[only marks, color=c1, mark=+, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/all/random-based.dat};
-        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+        \addplot[only marks, color=c2, mark=triangle, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/all/level-based.dat};
-        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+        \addplot[only marks, color=c3, mark=o, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/BFSvsDFS/all/grid-based.dat};
         \legend{random-based, grid-based, level-based}
         \pgfonlayer{axis foreground}
@@ -390,9 +390,9 @@ The refinement reduces the runtime significantly, especially for AFs with many c
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/grid-based/REF.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/grid-based/NOREF.dat};
         \legend{Refined, Not-Refined}
         \end{axis}
@@ -418,9 +418,9 @@ The refinement reduces the runtime significantly, especially for AFs with many c
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/level-based/REF.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/level-based/NOREF.dat};
         \legend{Refined, Not-Refined}
         \end{axis}
@@ -429,7 +429,12 @@ The refinement reduces the runtime significantly, especially for AFs with many c
     \label{fig:expfaithful/REFvsNOREF/level-based}
 \end{figure}
 
-In \cref{fig:expfaithful/REFvsNOREF/OnePlot}, we can see the performance of the refinements against no refinements. The scatter plot represents for every datapoint the runtime of the testcase with the refinements as the x-value and the runtime without the refinement as the y-value. There is no significant difference except for some outliers for admissible and stable. We hypothesize that due to the refinement, we pushed the SAT-Solver in a specific direction (like changing the seed), where he found some lucky spurious extensions. Nevertheless, most of the time, the refinements made for non-conflict-free semantics had no fundamental impact on the runtime. On the other hand, the refinement made for conflict-free semantics significantly improved the runtime, besides some outliers.
+
+
+
+\subsection{Comparison of all Test-runs}
+
+In this section, we compare the data over all the test-run instances. In \cref{fig:expfaithful/REFvsNOREF/OnePlot}, we can see the performance of the refinements against no refinements. The scatter plot represents for every datapoint the runtime of the testcase with the refinements as the x-value and the runtime without the refinement as the y-value. There is no significant difference except for some outliers for admissible and stable. We hypothesize that due to the refinement, we pushed the SAT-Solver in a specific direction (like changing the seed), where he found some lucky spurious extensions. Nevertheless, most of the time, the refinements made for non-conflict-free semantics had no fundamental impact on the runtime. On the other hand, the refinement made for conflict-free semantics significantly improved the runtime, besides some outliers.
 
 \begin{figure}[H]
     \centering
@@ -450,11 +455,11 @@ In \cref{fig:expfaithful/REFvsNOREF/OnePlot}, we can see the performance of the 
             set layers
         ]
 
-        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+        \addplot[only marks, color=c1, mark=+, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/all/random-based.dat};
-        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+        \addplot[only marks, color=c2, mark=triangle, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/all/grid-based.dat};
-        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+        \addplot[only marks, color=c3, mark=o, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/REFvsNOREF/all/level-based.dat};
         \legend{conflict-free, admissible, stable}
         \pgfonlayer{axis foreground}
@@ -467,9 +472,7 @@ In \cref{fig:expfaithful/REFvsNOREF/OnePlot}, we can see the performance of the 
 \end{figure}
 
 
-
-\subsection{Comparison of all Test-runs}
-In this section, we compare the data over all test-run instances, precisely how many test-runs did not run into a timeout depending on the semantics and the mean runtime of the passed test cases. We ran a total amount of $900$ test-runs, split up into $3$ semantics leading to $300$ test-runs for each semantics and depicted the runtime of the solved instances. Note, that the y-axis represents the numeration of test-runs starting at $100$, since all the test-runs below were solved in seconds. The x-axis shows the runtime of the test-run. In \cref{fig:expfaithful/Semantics/OnePlot} we can observe that the most solvable semantics is the stable semantics. Following admissible semantics, the least solved test-runs have conflict-free semantics. The reason for this is the number of semantic extensions of the AFs. If an AF has many semantic extensions, the runtime of the faithful check increases.
+Furthermore, we look at how many test-runs did not run into a timeout depending on the semantics and the mean runtime of the passed test cases. We ran a total amount of $900$ test-runs, split up into $3$ semantics leading to $300$ test-runs for each semantics and depicted the runtime of the solved instances. Note, that the y-axis represents the numeration of test-runs starting at $100$, since all the test-runs below were solved in seconds. The x-axis shows the runtime of the test-run. In \cref{fig:expfaithful/Semantics/OnePlot} we can observe that the most solvable semantics is the stable semantics. Following admissible semantics, the least solved test-runs have conflict-free semantics. The reason for this is the number of semantic extensions of the AFs. If an AF has many semantic extensions, the runtime of the faithful check increases.
 
 
 \begin{figure}[H]
@@ -490,11 +493,11 @@ In this section, we compare the data over all test-run instances, precisely how 
             grid style=dashed,
         ]
 
-        \addplot[color=\cA, line width=1.5pt]
+        \addplot[color=c1, line width=1.5pt, densely dashed]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/Semantics/CF.dat};
-        \addplot[color=\cB, line width=1.5pt]
+        \addplot[color=c2, line width=1.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/Semantics/AD.dat};
-        \addplot[color=\cC, line width=1.5pt]
+        \addplot[color=c3, line width=1.5pt, densely dotted]
             table [x=x, y=y, col sep=space] {docs/plot_data/faithful/Semantics/ST.dat};
 
         \legend{conflict-free, admissible, stable}
@@ -549,9 +552,9 @@ We tested the difference between the two faithful/spurious check approaches and 
                 grid style=dashed,
             ]
     
-            \addplot[color=\cA, line width=1.5pt]
+            \addplot[color=c1, line width=1.5pt, densely dashed]
                 table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/BFS_old.dat};
-            \addplot[color=\cB, line width=1.5pt]
+            \addplot[color=c2, line width=1.5pt]
                 table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/BFS_new.dat};
     
             \legend{List Comparison, SAT Call}
@@ -577,9 +580,9 @@ We tested the difference between the two faithful/spurious check approaches and 
                 grid style=dashed,
             ]
     
-            \addplot[color=\cA, line width=1.5pt]
+            \addplot[color=c1, line width=1.5pt, densely dashed]
                 table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/DFS_old.dat};
-            \addplot[color=\cB, line width=1.5pt]
+            \addplot[color=c2, line width=1.5pt]
                 table [x=x, y=y, col sep=space] {docs/plot_data/faithful/OldNewApproach/DFS_new.dat};
     
             \legend{List Comparison, SAT Call}
@@ -627,9 +630,9 @@ For the runtime on the DFS approach, the AFs created with the random-based proce
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -656,9 +659,9 @@ For the runtime on the DFS approach, the AFs created with the random-based proce
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -685,9 +688,9 @@ For the runtime on the DFS approach, the AFs created with the random-based proce
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/random-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -716,9 +719,9 @@ The second AFs generator procedure is the grid-based approach. Similar to the ra
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -745,9 +748,9 @@ The second AFs generator procedure is the grid-based approach. Similar to the ra
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -775,9 +778,9 @@ For stable semantics, the DFS approach managed to solve every test-run instance 
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/grid-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -809,9 +812,9 @@ Finally, the remaining AF generator approach is the level-based procedure. We pr
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/CF/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -838,9 +841,9 @@ Finally, the remaining AF generator approach is the level-based procedure. We pr
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/AD/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -866,9 +869,9 @@ Finally, the remaining AF generator approach is the level-based procedure. We pr
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/BFS.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/level-based/ST/DFS.dat};
         \legend{BFS, DFS}
         \end{axis}
@@ -899,11 +902,11 @@ Finally, we grouped the data by the AF generator procedure and plugged it into a
             set layers
         ]
 
-        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+        \addplot[only marks, color=c1, mark=+, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/all/random-based.dat};
-        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+        \addplot[only marks, color=c2, mark=triangle, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/all/level-based.dat};
-        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+        \addplot[only marks, color=c3, mark=o, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/BFSvsDFS/all/grid-based.dat};
         \legend{random-based, grid-based, level-based}
         \pgfonlayer{axis foreground}
@@ -942,9 +945,9 @@ For BFS, the refinement for conflict-free semantics improves the runtime for eve
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/grid-based/REF.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/grid-based/NOREF.dat};
         \legend{Refined, Not-Refined}
         \end{axis}
@@ -970,9 +973,9 @@ For BFS, the refinement for conflict-free semantics improves the runtime for eve
             xmajorgrids=true,
             grid style=dashed,
         ]
-        \addplot[color=\cA, mark=square, densely dashed]
+        \addplot[color=c1, mark=square, mark options={solid, line width=0.5pt}, densely dashed, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/level-based/REF.dat};
-        \addplot[color=\cB, mark=square]
+        \addplot[color=c2, mark=square, mark options={line width=0.5pt}, line width=1pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/level-based/NOREF.dat};
         \legend{Refined, Not-Refined}
         \end{axis}
@@ -1004,11 +1007,11 @@ In this section, we compare the efficiency of the refinements to the correspondi
             set layers
         ]
 
-        \addplot[only marks, color=\cA, mark=+, mark size=4.5pt]
+        \addplot[only marks, color=c1, mark=+, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/all/random-based.dat};
-        \addplot[only marks, color=green, mark=triangle, mark size=4.5pt]
+        \addplot[only marks, color=c2, mark=triangle, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/all/grid-based.dat};
-        \addplot[only marks, color=\cC, mark=o, mark size=4.5pt]
+        \addplot[only marks, color=c3, mark=o, mark options={line width=1pt}, mark size=4.5pt]
             table [x=x, y=y, col sep=space] {docs/plot_data/concretize/REFvsNOREF/all/level-based.dat};
         \legend{conflict-free, admissible, stable}
         \pgfonlayer{axis foreground}
@@ -1018,6 +1021,42 @@ In this section, we compare the efficiency of the refinements to the correspondi
     \end{tikzpicture}
     \caption{Performance comparison of Refinement and No-Refinement by Semantics}
     \label{fig:expconcretize/REFvsNOREF/OnePlot}
+\end{figure}
+
+
+
+In \cref{fig:expconcretize/Semantics/OnePlot} we visualize the runtimes of the test-run instances which did not timeout. We split the data into the three implemented semantics and observed that stable semantics is again the semantics, with the least amount of timeouts. But other than for the faithful/spurious check, for the concretizing arguments program, conflict-free and admissible semantics are very similar when compared to the runtime of the solved test-run instances.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \begin{axis}[
+            width=\plotWidth,
+            height=\plotHeightSmall,
+            xlabel={Runtime [s]},
+            ylabel={Test-run},
+            xmin=-10, xmax=310,
+            ymin=80, ymax=250,
+            xtick={0, 100, 200, 300},
+            ytick={0, 100, 200, 300},
+            legend pos=south east,
+            ymajorgrids=true,
+            xmajorgrids=true,
+            grid style=dashed,
+        ]
+
+        \addplot[color=c1, line width=1.5pt, densely dashed]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/Semantics/CF.dat};
+        \addplot[color=c2, line width=1.5pt]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/Semantics/AD.dat};
+        \addplot[color=c3, line width=1.5pt, densely dotted]
+            table [x=x, y=y, col sep=space] {docs/plot_data/concretize/Semantics/ST.dat};
+
+        \legend{conflict-free, admissible, stable}
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Solved test-runs depending on semantics}
+    \label{fig:expconcretize/Semantics/OnePlot}
 \end{figure}
 
 In \cref{table:ExperimentStatisticsConcretize}, we grouped the test-run instances by the argument amount of the AFs. We then computed the mean runtime for all the implemented semantics, i.e., conflict-free, admissible, and stable. Furthermore, we stated the test-run instances that did not terminate before the timeout of 300s. As the table shows, there is a direct correlation between the increase in arguments of an AF and the amount of timeouted test-runs. 
