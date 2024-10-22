@@ -7,7 +7,7 @@ In this chapter we recall the required background of the thesis. We start with b
 
 Argumentation frameworks were first formally described by Dung in 1995 \cite{DUNG1995321}. They represent an information state, where various conclusions can be drawn from. An AF $G = (A, R)$ consists of two parameters: a set of arguments $A$, and a collection of relations $R$, called attacks which describe the conflicts between the arguments.
 
-They are mostly used in the fields of Artificial Intelligence (AI), e.g.\ in automated reasoning and logic programming \cite{AFINAIARLP, AFINAIARLPexample}. But do also find their applications in other fields like natural language processing \cite{AFINNLP}, trust and reputation systems, legal and medical reasoning \cite{legalAndMedicalReasoning}, and even in game theory and strategic reasoning \cite{AFinGames}.
+They are mostly used in the fields of Artificial Intelligence (AI), e.g.\ in automated reasoning and logic programming \cite{AFINAIARLP, AFINAIARLPexample}. But do also find their applications in other fields like natural language processing \cite{AFINNLP}, legal and medical reasoning \cite{legalAndMedicalReasoning}, and even in game theory and strategic reasoning \cite{AFinGames}.
 
 AFs are represented by a directed graph, where the nodes are an abstraction of the arguments $A$, and the arrows represent the attacks $R$. 
 
@@ -93,11 +93,11 @@ To be able to conclude something, out of an abstract AF, we need to define seman
 
 
 
-\paragraph{Stable}  An extension is stable if it is conflict-free, and if for every argument, which is not in the stable extension, there exists an attacker in the stable extension. The stable sets of an AF $G$ are denoted as $stb(G)$.
+\paragraph{Stable}  An extension is stable if it is conflict-free, and if for every argument, which is not in the stable extension, there exists an attacker in the stable extension. We sometimes call a stable extensions also a stable set. The stable sets (or extensions) of an AF $G$ are denoted as $stb(G)$.
 
 
 \begin{definition}[\cite{DUNG1995321}]
-    Let $G=(A,R)$ be an AF. Then a set  $S \subseteq A$ is stable in $G$ if and only if $S \in cf(G), and b \not\in S$ implies that there is an $a \in S$ with $(a, b) \in R$.
+    Let $G=(A,R)$ be an AF. Then a set  $S \subseteq A$ is stable in $G$ if and only if $S \in cf(G), and\ b \not\in S$ implies that there is an $a \in S$ with $(a, b) \in R$.
 \end{definition}
 \begin{example}
         The stable extensions of the AF $G$ in \cref{af:backgroundAFexample1} are
@@ -106,15 +106,15 @@ To be able to conclude something, out of an abstract AF, we need to define seman
 \end{example}
 
 
-The specific rules of a semantics can also be defined via a Boolean formula \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}. Which then can be used to encode the AFs to be solvable with different solvers like Answer Set Programming (ASP) \cite{BrewkaET11, DBLP:journals/argcom/EglyGW10} or, as in our case, with a SAT-Solver \cite{BacchusJM21}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be ''beyond`` NP to decide whether an argument is acceptable (whether there exists, e.g., an admissible set containing a queried argument) under a specific semantics argumentation \cite{DvorakD18}.
+The specific rules of a semantics can also be defined via a Boolean formula \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}. Which then can be used to encode the AFs to be solvable with different solvers like a solver for Answer Set Programming (ASP) \cite{BrewkaET11, DBLP:journals/argcom/EglyGW10} or, as in our case, with a SAT-Solver \cite{BacchusJM21}. Unfortunately, drawing a conclusion from an AF can be challenging, e.g., it can be NP-complete and sometimes even be ''beyond`` NP to decide whether an argument is acceptable (whether there exists, e.g., an admissible set containing a queried argument) under a specific argumentation semantics \cite{DvorakD18}.
 
 
 
 \section{Clustering of Argumentation Frameworks}
 \label{sec:ClusteringOfArgumentationFrameworks}
 
-When talking about AFs in general, we already have an abstraction layer. By clustering, we add another layer of abstraction where we combine different arguments into one or multiple so called \emph{clusters}. These clustered AFs (i.e.\ abstract AFs) have semantics extensions, just as non-clustered AFs (i.e.\ concrete AFs), which we call abstract semantics extensions. The arguments which are not clustered are called \emph{singletons}. The name is derived from set theory, where singleton refers to a set containing exactly one argument.
-By definition, a cluster is a single entity (composed of multiple arguments) which can be integrated in an AF to reduce the complexity. While reducing the overall complexity of the AF with clusters, we add a new computation layer: computing \emph{faithful} abstract AFs. The term \emph{faithful} describes the property of a abstract AF, that every abstract semantics extension can be mapped to a concrete semantics extension. If the abstract AF creates a semantics set which cannot be mapped to a concrete set, we call it \emph{spurious}.
+When talking about AFs in general, we already have an abstraction layer. By clustering, we add another layer of abstraction where we combine different arguments into one or multiple so called \emph{clusters}. These clustered AFs (i.e.\ abstract AFs) have extensions, just as non-clustered AFs (i.e.\ concrete AFs), which we call abstract extensions. The arguments which are not clustered are called \emph{singletons}. The name is derived from set theory, where singleton refers to a set containing exactly one argument.
+By definition, a cluster is a single entity (composed of multiple arguments) which can be integrated in an AF to reduce the complexity. While reducing the overall complexity of the AF with clusters, we add a new computation layer: computing \emph{faithful} abstract AFs. The term \emph{faithful} describes the property of an abstract AF, that every abstract extension can be mapped to a concrete extension. If the abstract AF creates a set $X$ under an abstract semantics which cannot be mapped to a set under the corresponding concrete semantics, we call the set $X$ \emph{spurious}.
 
 Abstract AFs can also be modelled with graphs. One can represent each singleton argument as a node, attacks as arrows, and each cluster can be represented by a rectangle with every clustered argument inside of it. Let us have a look at an example and define the abstract AF $\hat{G}=(\hat{A}, \hat{R})$ with the arguments $\hat{A}=\{d, e, \hat{h}\}$, where the cluster $\hat{h}$ contains the arguments $\{a, b, c, d\}$ and the attacks being $\hat{R}=\bigl\{(\hat{h}, d)$, $(d, e)$, $(e, d)$, $(\hat{h},\hat{h})\bigl\}$.  This AF can be represented as a directed graph as shown in \cref{af:backgroundExampleClusterSpurious}.
 
@@ -142,7 +142,7 @@ Abstract AFs can also be modelled with graphs. One can represent each singleton 
 \end{figure}
 
 
-Since clusters can not be treated the exact same way as an argument, we need to refine the definitions of the semantics. When referring to the alternative semantics used in abstract AFs, we call them \emph{abstract} semantics (e.g.\ abstractly conflict-free ($\hat{cf}$), abstractly admissible ($\hat{adm}$) and abstractly stable ($\hat{stb}$)). Let us consider a abstract AF $\hat{G}=\{\hat{A}, \hat{R}\}$ and redefine the semantics. Note, that we can extract the singletons from a set $S$ (composed of singletons and clusters), by applying the $singleton(S)$ function.
+Since clusters can not be treated the exact same way as an argument, we need to refine the definitions of the semantics. When referring to the alternative semantics used in abstract AFs, we call them \emph{abstract} semantics (e.g.\ abstractly conflict-free ($\hat{cf}$), abstractly admissible ($\hat{adm}$) and abstractly stable ($\hat{stb}$)). Let us consider an abstract AF $\hat{G}=\{\hat{A}, \hat{R}\}$ and redefine the semantics. To extract the singletons from a set S (composed of singletons and clusters), we make use of the $singleton(S)$ function.
 
 \paragraph{Conflict-Free} A set of arguments is abstractly conflict-free, if there is no attack between the singletons of the set.
 
@@ -156,7 +156,7 @@ Since clusters can not be treated the exact same way as an argument, we need to 
     $\{d\}$,
     $\{e\}$,
     $\{\hat{h}\}$,
-    $\{e, \hat{h}\}$,
+    $\{e, \hat{h}\}$ and
     $\{d, \hat{h}\}$.
 \end{example}
 
@@ -256,12 +256,11 @@ $\hat{R}=\bigl\{(\hat{h}, e), (e, \hat{h}), (\hat{h}, \hat{h})\bigl\}$. The atta
 
 
 If we compare the stable extensions of the concrete AF $G$ (i.e.\ 
-$stb(G)=\bigl\{\{a, e\}$, $\{a, d\}$ $\bigl\}$) with the abstractly stable extensions of the abstract AF $\hat{G}$ (i.e.\ 
+$stb(G)=\bigl\{\{a, e\}$, $\{a, d\} \bigl\}$) with the abstractly stable extensions of the abstract AF $\hat{G}$ (i.e.\ 
 $\hat{stb}(G)=\bigl\{$ 
 $\{\hat{h}\}$, 
 $\{e\}$, 
-$\{e, \hat{h}\}$ 
-$\bigl\}$), 
+$\{e, \hat{h}\}\bigl\}$), 
 we see that it is spurious due to the abstractly stable extension $\{e\}$ which cannot be mapped to one of the concrete stable extensions. The mapping of semantics extensions with abstract AFs is done the same way as for concrete AFs, except that clusters can mutate to every possible combination of the abstract Arguments. In our example, the cluster $\hat{h}$ can mutate to
 $\{a\}$, 
 $\{b\}$, 

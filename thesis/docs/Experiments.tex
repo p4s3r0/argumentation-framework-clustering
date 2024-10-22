@@ -49,7 +49,7 @@ This section presents the data collected from the program, which checks if an ab
 \newcommand{\plotHeightSmall}{5cm}
 
 
-We implemented two approaches to check for faithfulness, i.e., BFS and DFS. Both were tested and showed different results according to the AFs generation procedure. Note that we had a total amount of $450$ test-runs, split up into 9 plots (i.e.\ $50$ test-runs for each AF generator approach). The plots are structured in a way, s.t.\ every step on the y-axis represents a test-run instance (i.e.\ a single invocation of the program to solve a specific task) and the x-axis represents the runtime of the test-run instance in seconds. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
+We implemented two approaches to check for faithfulness, i.e., BFS and DFS. Both were tested and showed different results according to the AFs generation procedure. Note that we had a total amount of $450$ test-runs, split up into 9 plots (i.e., each plot has $50$ test-runs, as we have 25 test instances per generator approach, each of which was executed twice: one with refinements and once without). The plots are structured in a way, s.t.\ every step on the y-axis represents a test-run instance (i.e.\ a single invocation of the program to solve a specific task) and the x-axis represents the runtime of the test-run instance in seconds. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
 Note, that the numeration does not begin at $1$ because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions is less. Thus, BFS and DFS are similar.
 
 
@@ -513,7 +513,7 @@ The data was arranged in a tabular format to enable a more comprehensive compari
 
 \begin{table}[htb]
     \centering
-    \caption{test-runs Statistics spurious check mean runtime}
+    \caption{Test-runs Statistics spurious check mean runtime}
     \begin{tabular}{ |l|l|l|l| }
         \hline
             arguments amount & cf [s] (timeout)& adm [s] (timeout)& stb [s] (timeout)\\
@@ -530,7 +530,7 @@ The data was arranged in a tabular format to enable a more comprehensive compari
 
 
 \subsection{Comparison of Faithful Check Approaches}
-We tested the difference between the two faithful/spurious check approaches and compared them in \ref{fig:expfaithful/SATnoSATDiff}. Data shows that the SAT call approach is more efficient than the list comparison. This is because the list comparison needs to deconstruct the clusters, leading to an exponential increase of sets to check. This is especially bad for AFs with clusters that have an enormous amount of argument.
+We tested the difference between the two faithful/spurious check approaches and compared them in \ref{fig:expfaithful/SATnoSATDiff}. Data shows that the SAT call approach is more efficient than the list comparison. This is because the list comparison needs to deconstruct the clusters. This is especially bad for AFs with clusters that have an enormous amount of argument.
 
 \begin{figure}[H]
     \centering
@@ -610,7 +610,7 @@ This section presents the data collected from the concretizing arguments program
 
 Since the program for concretizing arguments uses the faithful/spurious check multiple times, we can compare the impact on the runtime of the BFS and DFS approaches. We start with the first AF generator procedure, i.e., the random-based approach. Here we created three plots: in \cref{fig:expconcretize/BFSvsDFS/random/CF} the conflict-free semantics is shown, in \cref{fig:expconcretize/BFSvsDFS/randomAD} we depicted the admissible semantics and in \cref{fig:expconcretize/BFSvsDFS/random/ST} the stable semantics. For these test-cases, the DFS approach dominates the BFS approach in every instance. We hypothesize that this is the repeated check of spurious AFs, which is more favorable for DFS. Furthermore, BFS not only stands no chance against DFS, but in most instances, it does not terminate before the timeout. This is especially critical for the admissible and stable semantics.
 
-For the runtime on the DFS approach, the AFs created with the random-based procedure were trivial to solve but ran into a timeout when the complexity of the AFs increased.
+For the runtime on the DFS approach, most of the AFs created with the random-based procedure were trivial to solve, and some ran into a timeout once the complexity of the AFs increased.
 
 
 \begin{figure}[H]
@@ -699,7 +699,7 @@ For the runtime on the DFS approach, the AFs created with the random-based proce
     \label{fig:expconcretize/BFSvsDFS/random/ST}
 \end{figure}
 
-The second AFs generator procedure is the grid-based approach. Similar to the random-based approach, DFS dominates the BFS algorithm as shown in \cref{fig:expconcretize/BFSvsDFS/grid/CF}, \cref{fig:expconcretize/BFSvsDFS/grid/AD} and \cref{fig:expconcretize/BFSvsDFS/grid/ST}. The spikes at the conflict-free plot are edge cases that produce many semantics extensions, and the algorithm encountered the spurious extension only at a late stage.
+The second AFs generator procedure is the grid-based approach. Similar to the random-based approach, DFS dominates the BFS algorithm as shown in \cref{fig:expconcretize/BFSvsDFS/grid/CF}, \cref{fig:expconcretize/BFSvsDFS/grid/AD} and \cref{fig:expconcretize/BFSvsDFS/grid/ST}.
 
 
 \begin{figure}[H]
@@ -1064,7 +1064,7 @@ In \cref{table:ExperimentStatisticsConcretize}, we grouped the test-run instance
 
 \begin{table}[H]
     \centering
-    \caption{test-runs Statistics concretize arguments mean runtime}
+    \caption{Test-runs Statistics concretize arguments mean runtime}
     \begin{tabular}{ |l|l|l|l| }
         \hline
             arguments amount & cf [s] (timeout)& adm [s] (timeout)& stb [s] (timeout)\\

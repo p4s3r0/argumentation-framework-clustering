@@ -1,6 +1,6 @@
-\chapter{Algorithmic approaches to obtain Faithful Clustering}
+\chapter{Algorithmic Approaches to Obtain Faithful Clustering}
 In this chapter we have a closer look at the algorithms we designed and how they work.
-We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. Next, we described in \cref{sec:AlgorithmCheckingFaithfulness} how we decide if an AF is spurious or faithful. In \cref{sec:ConcretizingSingletons} we explain, the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are transformed to singletons) is computed. The approach to compute faithful abstract AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. Then we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements} and finally we discuss a specific relation between spurious sets in \cref{sec:AlgorithmsRelationsBetweenSpuriousSets}.
+We begin with \cref{sec:Encodings}, where we define the Boolean encodings for the semantics. Next, we described in \cref{sec:AlgorithmCheckingFaithfulness} how we decide if an AF is spurious or faithful. In \cref{sec:ConcretizingSingletons} we explain the concretization of a clustered argument. Next, in \cref{sec:ComputationOfConcretizerList} we explain how the concretizer list (a list of clustered arguments which are transformed to singletons) is computed. The approach to compute faithful abstract AFs is then described in \cref{sec:AlgorithmicApproachToComputeFaifthulClusterings}. Then we state the heuristics and refinements in \cref{sec:HeuristicsAndRefinements} and finally we discuss a specific relation between spurious sets in \cref{sec:AlgorithmsRelationsBetweenSpuriousSets}.
 
 
 \section{Boolean Encodings for Abstract Semantics}
@@ -9,7 +9,7 @@ We previously defined the semantics in mathematical notation. But since we use S
 
 In general, given an AF $\hat{G}=(\hat{A}, \hat{R})$, we will use Boolean variables corresponding to arguments. That is, if $a \in \hat{A}$ is an argument, then $a$ is also a Boolean variable. The intended meaning is then that in a truth-value assignment a variable $a$ is \emph{true}, then there is a corresponding set of arguments with $a$ in the set. Formally, if $\tau$ is a truth-value assignment on the variables in $\hat{A}$, then the corresponding set of arguments is defined as $\{a \in A \mid \tau(a) = 1\}$, where $1$ is the numerical equivalent to the Boolean \emph{true}.
 
-We further define a subset of arguments, denoted as $\hat{A}_{\mathit{Single}} \subseteq \hat{A}$ consisting of the singletons arguments of the the AF $G$, which effectively excludes each cluster.
+We further define a subset of arguments, denoted as $\hat{A}_{\mathit{Single}} \subseteq \hat{A}$ consisting of the singletons arguments of the AF $G$, which effectively excludes each cluster.
 
 
 \paragraph{Conflict-Free} We begin with (abstract) conflict-free sets. Recall that a set of (clustered) arguments is conflict-free if there is no attack between singletons in the set. Thus, the empty set is always part of the conflict-free sets.
@@ -42,7 +42,7 @@ We further define a subset of arguments, denoted as $\hat{A}_{\mathit{Single}} \
             \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e, f, g$};
             \node at (\hx + 0.1, \hy+0.55) {$\hat{h}$};
 
-            % Attacks
+            % AttacksinproceedingsBesnardDoutreBooleanFormulaSemantics
             \DrawAttackHorizontal{R}{\ax}{\ay}{\bx}{\by}
             \DrawAttackHorizontal{R}{\bx}{\by}{\cx}{\cy}
             \DrawAttackHorizontal{B}{\dx}{\dy}{\hx+0.3}{\hy}
@@ -57,7 +57,7 @@ We further define a subset of arguments, denoted as $\hat{A}_{\mathit{Single}} \
 
 With \cref{def:booleanFormulaConflictFree} we obtain the following Boolean formula.
 \begin{align*}
-    \hat{cf}(\hat{G}) =\ &
+    \varphi_{cf}(\hat{G}) =\ &
     \lnot(b \land a)  \land
     \lnot(b \land d)  \land
     \lnot(a \land d)  \land
@@ -67,10 +67,10 @@ With \cref{def:booleanFormulaConflictFree} we obtain the following Boolean formu
     \lnot(c \land d)
 \end{align*}
 
-The models (i.e\ sets of variables assigned to true) of $\hat{cf}(\hat{G})$ in this example are $\bigl\{\emptyset$, $\{b\}$, $\{c\}$, $\{d\}$, $\{\hat{h}\}$, $\{b, \hat{h}\}$, $\{c, \hat{h}\}$, $\{d, \hat{h}\}\bigl\}$.
+The models (i.e\ sets of variables assigned to true) of $\varphi_{cf}(\hat{G})$ in this example are $\bigl\{\emptyset$, $\{b\}$, $\{c\}$, $\{d\}$, $\{\hat{h}\}$, $\{b, \hat{h}\}$, $\{c, \hat{h}\}$, $\{d, \hat{h}\}\bigl\}$.
 \end{example}
 
-If we compare the models of $\hat{cf}(\hat{G})$ with the conflict-free sets of $\hat{G}$, we can observe that they are equal. In fact, \cref{def:booleanFormulaConflictFree} is a Boolean representation to obtain conflict-free sets from an AF. The formula can be applied to concrete and abstract AFs, because if no cluster is present, the formula corresponds to the previously defined conflict-free formula and only adds the layer of abstraction if at least one cluster is present.
+If we compare the models of $\varphi_{cf}(\hat{G})$ with the conflict-free sets of $\hat{G}$, we can observe that they are equal. In fact, \cref{def:booleanFormulaConflictFree} is a Boolean representation to obtain conflict-free sets from an AF. The formula can be applied to concrete and abstract AFs, because if no cluster is present, the formula corresponds to the previously defined conflict-free formula and only adds the layer of abstraction if at least one cluster is present \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}.
 
 
 \paragraph{Admissible} Next we continue with (abstract) admissible sets. Recall that a set of arguments is abstractly admissible, if it is abstractly conflict-free and if every singleton which is being attacked, has a defender. For admissibility, the empty set does always satisfy the criteria and therefore is part of the admissible sets.
@@ -124,17 +124,17 @@ If we compare the models of $\hat{cf}(\hat{G})$ with the conflict-free sets of $
 
 By applying the formula defined in \cref{def:booleanFormulaAdmissible} to the AF $\hat{G}$, we obtain the following Boolean expression.
 \begin{align*}
-    \hat{adm}(\hat{G}) = &\big(
+    \varphi_{adm}(\hat{G}) = &\big(
      \lnot (a \land a) \land \lnot (a \land d) \land \lnot (b \land d) \land \lnot (b \land c) \land \lnot (b \land d) \land \lnot (c \land b) \land \lnot (d \land e) \land \\
       & \lnot (d \land d) \land \lnot (e \land d) \big) \land\\
       &\bigl( a \rightarrow ((a \lor d) \land (e \lor d)) \land \bigl( b \rightarrow ((a \lor d) \land (b) \land (e \lor d)) \bigl) \bigl) \land\\
       &\bigl( c \rightarrow ((a \lor c \lor d) \land (\hat{h})) \bigl) \land \bigl( d \rightarrow (d) \land (e \lor d) \bigl) \land \bigl( e \rightarrow (e \lor d) \bigl)
 \end{align*}
 
-The models of $\hat{adm}(\hat{G})$ in this example are $\big\{\emptyset$, $\{c\}$, $\{e\}$, $\{\hat{h}\}$, $\{c, e\}$, $\{c, \hat{h}\}$, $\{e, \hat{h}\}$, $\{c, e, \hat{h}\} \big\}$.
+The models of $\varphi_{adm}(\hat{G})$ in this example are $\big\{\emptyset$, $\{c\}$, $\{e\}$, $\{\hat{h}\}$, $\{c, e\}$, $\{c, \hat{h}\}$, $\{e, \hat{h}\}$, $\{c, e, \hat{h}\} \big\}$.
 \end{example}
 
-If we compare the models of $ \hat{adm}(\hat{G})$ with the admissible sets of $\hat{G}$, we can observe that they are equal. Indeed, \cref{def:booleanFormulaAdmissible} provides a Boolean representation that allows the derivation of admissible sets from an AF. If the AF $\hat{G}$ has no cluster, the formula reduces a previously defined formula for admissible sets \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}.
+If we compare the models of $ \varphi_{adm}(\hat{G})$ with the admissible sets of $\hat{G}$, we can observe that they are equal. Indeed, \cref{def:booleanFormulaAdmissible} provides a Boolean representation that allows the derivation of admissible sets from an AF. If the AF $\hat{G}$ has no cluster, the formula reduces a previously defined formula for admissible sets \cite{inproceedingsBesnardDoutreBooleanFormulaSemantics}.
 
 
 
@@ -185,7 +185,7 @@ abstractly stable extension. Other than conflict-free and admissible, the empty 
 
 If we apply the encoded formula defined in \cref{def:booleanFormulaStable} to the AF $\hat{G}$, we obtain the following Boolean expression.
 \begin{align*}
-    \hat{stb}(\hat{G}) = &\bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) 
+    \varphi_{stb}(\hat{G}) = &\bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) 
     \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \bigl) \land\\
     & \bigl( (a \lor a \lor b \lor d) \land (b \lor a \lor c) \land (d \lor b) \land (\hat{h} \lor c)\bigl) \land \\
     & \bigl( ((a \land \lnot a \land \lnot b \land \lnot d) \rightarrow (\lnot a \land \lnot b)\bigl) \land\\
@@ -193,21 +193,21 @@ If we apply the encoded formula defined in \cref{def:booleanFormulaStable} to th
 \end{align*}
 
 
-The models of $\hat{stb}(\hat{G})$ in this example are $\bigl\{$$\{c, d\}$, $\{c, d, \hat{h}\} \bigl\}$.
+The models of $\varphi_{stb}(\hat{G})$ in this example are $\bigl\{$$\{c, d\}$, $\{c, d, \hat{h}\} \bigl\}$.
 \end{example}
 
-By comparing the models of $\hat{stb}(\hat{G})$ with the stable sets of $\hat{G}$, we find that they are identical. Specifically, \cref{def:booleanFormulaStable} is a Boolean expression to derive admissible sets from an AF. If the AF has no clusters, the Boolean expression reduces to the admissible formula defined earlier.
+By comparing the models of $\varphi_{stb}(\hat{G})$ with the stable sets of $\hat{G}$, we find that they are identical. Specifically, \cref{def:booleanFormulaStable} is a Boolean expression to derive stable sets from an AF. If the AF has no clusters, the Boolean expression reduces to the stable formula defined earlier.
 
 
 \section{Checking Faithfulness}
 \label{sec:AlgorithmCheckingFaithfulness}
-In the context of abstract AFs, faithfulness is an important property. To be able to determine, if an AF is faithful or spurious we develop two different approaches, i.e., BFS and DFS wich are described in \cref{subsec:BFSandDFSAlgorithm}. To be able to show faithfulness or spuriousness for a specific abstract extension, we developed again two different procedures, i.e., list comparison and the SAT-based check described in \cref{subsec:ExtensionMapping}.
+In the context of abstract AFs, faithfulness is an important property. To be able to determine if an AF is faithful or spurious we develop two different approaches, i.e., BFS and DFS wich are described in \cref{subsec:BFSandDFSAlgorithm}. To be able to show faithfulness or spuriousness for a specific abstract extension, we developed again two different procedures, i.e., list comparison and the SAT-based check described in \cref{subsec:ExtensionMapping}.
 
 \subsection{BFS and DFS}
 \label{subsec:BFSandDFSAlgorithm}
 Breadth-First-Search (BFS) and Depth-First-Search (DFS) are usually used in algorithms to traverse graphs. Where BFS visits each node in order of distance to the start, DFS follows a direct path and only backtracks, if it has to. We, however, are not using the two approaches to traverse a graph, but we are using a similar principle on the computation of semantics.
 
-\paragraph{BFS} The BFS approach in our implementation, depicted in \cref{fig:ImplementationBFSVisualization}, first computes all the semantics extensions of the abstract AF and then checks, if any of the extensions is spurious. After one spurious extension is encountered, the algorithm is aborted, because if one extension is spurious the AF is spurious as well.
+\paragraph{BFS} The BFS approach in our implementation, depicted in \cref{fig:ImplementationBFSVisualization}, first computes all the semantics extensions of the abstract AF and then checks if any of the extensions is spurious. After one spurious extension is encountered, the algorithm is aborted, because if one extension is spurious the AF is spurious as well.
 
 The BFS approach is practical for AFs which do not have many semantics extensions. If the semantics sets take too long to compute, we will run into a timeout no matter at which seed the SAT-Solver is operating on. BFS is a solid and robust approach, nevertheless, there is no space of randomness and lucky early terminations.
 
@@ -305,7 +305,7 @@ To determine if an abstract extension is faithful or spurious, we need to map it
 \paragraph{List Comparison}
 The first approach of mapping an abstract extension to a concrete extension is the list comparison. Here, all the concrete extensions are computed and are then checked iteratively for the mapping. Since list comparisons are highly optimized and do not need an additional SAT-Solver invocation, the approach can be efficient under certain circumstances.
 
-The issue with the list comparison of the computed extension is, that for AFs with big clusters (i.e.\ a cluster containing many arguments), the direct mapping of a an abstract extension is tedious. This is accounted to the many possibilities a cluster can transform into, e.g., for a cluster $\hat{h}$ containing the arguments $a$ and $b$, the extension $\{\hat{h}\}$ would have to be transformed into $\{a\}$, $\{b\}$ and $\{a, b\}$. This works fine for small clusters, but grows exponentially by $2^{cn}-1$ with $cn$ being the amount of clustered argument.
+The issue with the list comparison of the computed extension is, that for AFs with big clusters (i.e.\ a cluster containing many arguments), the direct mapping of an abstract extension is tedious. This is because of the many possibilities a cluster can transform into, e.g., for a cluster $\hat{h}$ containing the arguments $a$ and $b$, the extension $\{\hat{h}\}$ could transformed into $\{a\}$, $\{b\}$ and $\{a, b\}$. This works fine for small clusters, but can be become more computationally intensive for larger clusters.
 
 
 \paragraph{SAT-Based check}
@@ -317,7 +317,7 @@ For optimization reasons, we altered the way on how to check for faithfulness. T
 
 \section{Concretizing Singletons}
 \label{sec:ConcretizingSingletons}
-When operating on abstract AFs, a crucial transformation is to extract arguments from a cluster and transform it to a singleton. This is called concretizing. When clustering singletons, the cluster inherits the attacks of the argument, concretizing is the inverse operation. This means, that it needs to revert the changes done by the clustering. Since clustering does not preserve all the informations, i.e.\ the attacks directed towards and originating from the clustered arguments, the abstraction does lead to a loss of details. To be able to concretize argument, this needs to compensated by providing additionally the concrete AF. With the concrete AF we can reconstruct the attacks of the arguments and transform the AF in such a way, as if it was primarily abstracted the same manner, but without the arguments intended to be concretized.
+When operating on abstract AFs, a crucial transformation is to extract arguments from a cluster and transform it to a singleton. This is called concretizing. When clustering singletons, the cluster inherits the attacks of the argument, concretizing is the inverse operation. This means, that it needs to revert the changes done by the clustering. Since clustering does not preserve all the information, i.e.\ the attacks directed towards and originating from the clustered arguments, the abstraction does lead to a loss of details. To be able to concretize argument, this needs to compensate by providing additionally the concrete AF. With the concrete AF we can reconstruct the attacks of the arguments and transform the AF in such a way, as if it was primarily abstracted the same manner, but without the arguments intended to be concretized.
 
 Concretizing a list of arguments is done iteratively by duplicating the abstract AF $\hat{F}$ to create a new AF $\hat{F}'$ and transforming it. The transformation is guided by five steps considering the unchanged abstract AF $\hat{F}$ and the concrete AF $F$. To improve the understanding of each step, we accompany the explanation with the example depicted in \cref{example:concretizationOfArguments}, where we concretize the arguments $a$ and $b$.
 
@@ -831,7 +831,7 @@ We used a search depth of $2$ in our implementation. So when having a look at ou
         \DrawAttackVertical{D}{\ex}{\ey}{\fx}{\fy}
         \DrawAttackDiagonal{PLR}{\fx}{\fy}{\gx}{\gy}
     \end{tikzpicture}
-    \caption{Singletons depth with $b$ as viewpoint}
+    \caption{Depth of singletons from the perspective of $b$}
     \label{af:algorithmConcretizer3}
 \end{figure}
 \vspace{-0.2cm}
@@ -940,7 +940,7 @@ $\{a, c, d, e\}\bigl\}$. The pseudo-code for the last step is stated in \cref{al
 
 \section{Finding Faithful Clusterings}
 \label{sec:AlgorithmicApproachToComputeFaifthulClusterings}
-When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t.\ we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the corresponding concrete AFs. Thus, we need to transform the abstract AF, s.t.\ only correct solutions can be drawen, which we then call faithful. The algorithm we designed, takes as input a concrete AF denoted to $G$, and an abstract AF $\hat{G}$. First we determine, if the abstract AF $\hat{G}$ is spurious, by calculating the semantics extensions and attempting to find spurious set. If no spurious set can be found, the AF is faithful and no further mutations are needed.
+When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t.\ we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the corresponding concrete AFs. Thus, we need to transform the abstract AF, s.t.\ only correct solutions can be drawn, which we then call faithful. The algorithm we designed, takes as input a concrete AF denoted to $G$, and an abstract AF $\hat{G}$. First we determine, if the abstract AF $\hat{G}$ is spurious, by calculating the semantics extensions and attempting to find spurious set. If no spurious set can be found, the AF is faithful and no further mutations are needed.
 
 But if we find spurious extensions, we build the concretizer list as specified previously in \cref{sec:ComputationOfConcretizerList}. Recall, that the concretizer list operates with the depth of neighbours of $2$. This means, that depending on the AF, we can not guarantee to find a faithful AF. If the spurious extension of an AF $G$ has an argument $a$ with depth 3 to an argument $b$, and the only faithful AF is the concrete one, then we will not find the faithful AF.
 
@@ -1071,7 +1071,7 @@ The two new introduced components (i.e.\ $\overline{cf}$ and $\overline{def}$) d
     \overline{def}(F)&=\ \big( \bigvee_{a \in A_{\mathit{Single}}}\big( a \land \bigvee_{b:(b,a)\in R} \big( \bigwedge_{c:(c, b)\in R} \lnot c\big)\big) \big)
 \end{align*}
 
-\paragraph{Stable} For the stable semantics we apply the same principle as for abstract admissibility. Since we cannot conclude anything from the subsets of the computed (abstract) semantics, we need to add the negation of the stable formula for the concrete AF. With this, we reduce the semantics extensions which need to be computed for showing spuriousness or faithfulness drastically, without losing crucial information. The eliminated abstract extensions are simply the extensions, which can be directly mapped to the concrete stable extensions. The remaining extensions that need to be computed are either spurious extensions, or extensions which have at least one cluster and need to be expanded and checked separately for spuriousness. Recall, that a set of
+\paragraph{Stable} For the stable semantics we apply the same principle as for abstract admissibility. Since we cannot conclude anything from the subsets of the computed (abstract) semantics, we need to add the negation of the stable formula for the concrete AF. With this, we aim to reduce the semantics extensions which need to be computed for showing spuriousness or faithfulness, without losing crucial information. The eliminated abstract extensions are simply the extensions, which can be directly mapped to the concrete stable extensions. The remaining extensions that need to be computed are either spurious extensions, or extensions which have at least one cluster and need to be expanded and checked separately for spuriousness. Recall, that a set of
 arguments is abstractly stable, if it is abstractly conflict-free and if an argument is not in the abstractly stable extension, it implies that an argument in the abstractly stable extension is attacking it. Furthermore if the abstractly stable extension is not attacking an argument, then every singleton attacking the argument is not in the abstractly stable extension. We refine this formula from \cref{def:booleanFormulaStable}, denoted as $\varphi_{stb}$ with the refinement denoted as $\eta_{stb}$.
 
 
@@ -1083,11 +1083,11 @@ Here $\eta_{stb}$ is defined as the negated stable formula of the concrete AF.
 
 
 $$
-\eta_{stb}(F) =\ \overline{cf}(F) \land \overline{att}(F)
+\eta_{stb}(F) =\ \overline{cf}(F) \lor \overline{att}(F)
 $$
 
 
-The three components (i.e.\ $\overline{cf}$, $\overline{att}$, $\overline{con}$) represent three different conditions which together define the refinement. Here, $\overline{cf}$ is the negated part of conflict-freeness of the concrete AF, $\overline{att}$ describes, that we want to ignore the concrete stable sets which impliy that if and argument being outside the stable set, has an attacker inside the stable set. Finally, $\overline{con}$ is the negated form of if the stable extension is not attacking an argument, then every singleton atacking the argument is not in the abstractly stable extension.
+The two components (i.e.\ $\overline{cf}$, $\overline{att}$) represent two different conditions which together define the refinement. Here, $\overline{cf}$ is the negated part of conflict-freeness of the concrete AF and $\overline{att}$ describes that we want to ignore the concrete stable sets which impliy that if and argument being outside the stable set, has an attacker inside the stable set.
 
 \begin{align*}
     \overline{cf}(F)&=\ \bigvee_{a \in A_{\mathit{Single}}} \big( \bigvee_{b:(b,a)\in R, b \in A_{\mathit{Single}}} \big( a \land b \big) \big)\\[0.2cm]
@@ -1103,8 +1103,7 @@ When developing the tool, we came up with different theories. Some theories were
 We came up with the theory, that every subset of a stable spurious extension, is spurious as well. Formally, if $S$ is a spurious stable set of the abstract AF $\hat{G}$. Then for every subset $T \subseteq S$, $T$ is spurious as well. This would reduce the computation time of finding spurious sets drastically. Unfortunately, we can disprove this theory with a counter-example.
 
 \begin{example}
-    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(d, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(a). The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined by the arguments $\hat{A}=\{\hat{g}\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, e, f\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g})\bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(b).
-
+    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(d, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(a). The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined by the arguments $\hat{A}=\{\hat{g}, e\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, f\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g}), (\hat{g}, e)\bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(b).
 
 \vspace{0.3cm}
 \begin{figure}[h]
@@ -1139,12 +1138,15 @@ We came up with the theory, that every subset of a stable spurious extension, is
     \begin{subfigure}[t]{0.45\textwidth}
     \centering
     \begin{tikzpicture}
-        \def \gx{0}   \def \gy{0}
+        \def \ex{0}   \def \ey{0}
+        \def \gx{0}   \def \gy{-1}
 
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a, b, c, d, e, f$};
-        \node at (\gx + 0.1, \gy+0.55) {$\hat{g}$};
+        \draw[line width=0.3mm] (\ex, \ey) circle (0.3) node[anchor=center]{$e$};
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a, b, c, d, f$};
+        \node at (\gx + 0.4, \gy+0.55) {$\hat{g}$};
         % Attacks
-        \DrawSelfAttackLeftTopCluster{\gx-1}{\gy+0.3}
+        \DrawSelfAttackLeftTopCluster{\gx-0.8}{\gy+0.3}
+        \DrawAttackVertical{U}{\gx}{\gy}{\ex}{\ey}
 
     \end{tikzpicture}
     \subcaption{Spurious abstract AF}
@@ -1155,5 +1157,5 @@ We came up with the theory, that every subset of a stable spurious extension, is
 \end{figure}
 \vspace{0.3cm}
 
-When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extension $\{\hat{g}\}$. Since at least one of the abstractly stable extensions are spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When trying to map the subset of $\{\hat{g}\}$, e.g.\ $\{b, c, d\}$ to the concrete extension $\{b, c, d\}$, we can see that it is faithful. Thus, we found a subset of a spurious extension, which is not spurious.
+When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extensions $\big\{\{\hat{g}\}, \{\hat{g}, e\}\big\}$. Since the abstractly stable extensions $\{\hat{g}, e\}$ is spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When trying to map a subset of $\{\hat{g}, e\}$, e.g.\ $\{\hat{g}\}$ to the concrete extension $\{b, c, d\}$, we can see that it is faithful. Thus, we found a subset of a spurious extension, which is not spurious.
 \end{example}
