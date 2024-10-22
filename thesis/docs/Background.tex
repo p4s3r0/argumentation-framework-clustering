@@ -51,12 +51,12 @@ AFs are represented by a directed graph, where the nodes are an abstraction of t
     \end{figure}
 \end{example}
 
-To be able to conclude something, out of an abstract AF, we need to define semantics. Semantics define subsets of arguments that satisfy semantic-specific rules. Dung already defined different semantics \cite{Dung1995-DUNOTA-2} like conflict-free, admissible and stable.
+To be able to conclude something, out of an abstract AF, we need to define semantics. Semantics define subsets of arguments that satisfy semantic-specific rules. Dung already defined different semantics \cite{DUNG1995321} like conflict-free, admissible and stable.
 
 \newpage
 \paragraph{Conflict-Free} According to Dung's definitions, a set is conflict-free if there are no attacks between the arguments in the conflict-free set. A conflict-free set is mainly a building block for the other semantics, which means here that each admissible set or stable extension is conflict-free. We denote the set of conflict-free sets of an AF $G$ by $cf(G)$.
 
-\begin{definition}[\cite{Dung1995-DUNOTA-2}]
+\begin{definition}[\cite{DUNG1995321}]
     Let $G=(A,R)$ be an AF. Then a set $S \subseteq A$ is conflict-free in $G$ if and only if for each $a, b \in S$ we have $(a, b) \not\in R$.
 \end{definition}
 
@@ -78,7 +78,7 @@ To be able to conclude something, out of an abstract AF, we need to define seman
 \paragraph{Admissible}  A set is admissible, if each attacked argument in the admissible set has a defender in the admissible set. The admissible sets of an AF $G$ are represented as $adm(G)$.
 
 
-\begin{definition}[\cite{Dung1995-DUNOTA-2}]
+\begin{definition}[\cite{DUNG1995321}]
     Let $G=(A,R)$ be an AF. Then a set $S \subseteq A$ is admissible in $G$ if and only if $S \in cf(G)$ and if $a \in S$ with $(b, a) \in R$, then there is a $c \in S$ with $(c, b) \in R$.
 \end{definition}
 \begin{example}
@@ -96,7 +96,7 @@ To be able to conclude something, out of an abstract AF, we need to define seman
 \paragraph{Stable}  An extension is stable if it is conflict-free, and if for every argument, which is not in the stable extension, there exists an attacker in the stable extension. The stable sets of an AF $G$ are denoted as $stb(G)$.
 
 
-\begin{definition}[\cite{Dung1995-DUNOTA-2}]
+\begin{definition}[\cite{DUNG1995321}]
     Let $G=(A,R)$ be an AF. Then a set  $S \subseteq A$ is stable in $G$ if and only if $S \in cf(G), and b \not\in S$ implies that there is an $a \in S$ with $(a, b) \in R$.
 \end{definition}
 \begin{example}
@@ -389,7 +389,7 @@ A SAT(isfability)-Solver is used to compute Boolean formulas in an efficient way
 
 
 
-SAT-Solvers do find there applications in various domains, e.g.\ in verification and validation of software and hardware \cite{DBLP:conf/dagstuhl/Gogolla09, DBLP:books/daglib/0045943}. But also in AI and machine learning \cite{DBLP:books/sp/20/Simon20} and even in security~\cite{DBLP:journals/iacr/LinYXTS24}.
+SAT-Solvers do find there applications in various domains, e.g.\ in verification and validation of software and hardware \cite{DBLP:conf/dagstuhl/Gogolla09, DBLP:books/daglib/0045943}. But also in AI and machine learning \cite{DBLP:books/sp/20/Simon20} and even in security~\cite{DBLP:series/natosec/WeissenbacherM12}.
 
 The decision problem of deciding whether a Boolean formula is satisfiable (SAT) is NP-complete, and it was the first problem to be shown to be NP-complete \cite{Cook71}. Subsequently, many other problems were shown to be NP-hard, due to a reduction from SAT.
 
