@@ -1,8 +1,13 @@
+###############################################################################
+# This script was used to ran experiments with the projects. Feel free to chan-
+# ge it and run your own tests. The results are depicted and described in the
+# thesis.
+###############################################################################
+
 import subprocess
 import colorama
 import os
 import time
-import psutil
 import gc
 
 EXP = f"{colorama.Fore.BLUE}[EXP]{colorama.Style.RESET_ALL}"
@@ -10,7 +15,6 @@ EXP_OK = f"{colorama.Fore.GREEN}[EXP]{colorama.Style.RESET_ALL}"
 EXP_TEST = f"{colorama.Fore.LIGHTBLACK_EX}[EXP]{colorama.Style.RESET_ALL}"
 
 testcases_path = "input/experiment"
-
 
 class TestBench:
     def __init__(self) -> None:
@@ -25,7 +29,6 @@ class Testcase:
     def __init__(self, concrete, abstract) -> None:
         self.concrete = concrete
         self.abstract = abstract
-
 
 
 
@@ -50,9 +53,7 @@ def init_testcases():
         test = Testcase(f"{test_bench.level_based_path}/concrete/{t}", f"{test_bench.level_based_path}/abstract/{t}")
         test_bench.level_based_testcases.append(test)
 
-
     return test_bench
-
 
 
 
@@ -87,6 +88,7 @@ def extract_data_faithful(res, com):
         "memory": temp[3]
     }
     return data
+
 
 
 def getDataFromFile(test):
@@ -148,6 +150,7 @@ def extractData(test, timeout, result, refinement, semantics, BFSDFS, program, c
     data["input_file_concrete"] = test.concrete
     data["input_file_abstract"] = test.abstract
     writeTestResultToFile(data)
+
 
 
 def RUN_TEST_FAITHFUL(tests, generator_approach, BFS_DFS, semantics, refinement):
@@ -212,10 +215,9 @@ def RUN_TEST_CONCRETIZE(tests, generator_approach, BFS_DFS, semantics, refinemen
 def main():
     test_bench = init_testcases()
     do_tests = False
-    # FAITHFUL ---------------------------------------------------------
-    for approach in ["grid-based"]:
+    for approach in ["random-based", "grid-based", "level-based"]:
         for BFS_or_DFS in ["BFS", "DFS"]:
-            for semantics in ["ST"]:
+            for semantics in ["CF", "AD", "ST"]:
                 for refinement in [True, False]:
                     tests = None
                     if approach == "random-based":
@@ -226,9 +228,7 @@ def main():
                         tests = test_bench.level_based_testcases
 
                     RUN_TEST_FAITHFUL(tests, approach, BFS_or_DFS, semantics, refinement)
-                    #RUN_TEST_CONCRETIZE(tests, approach, BFS_or_DFS, semantics, refinement)
-
-    # CONCRETIZE ------------------------------------------------------
+                    RUN_TEST_CONCRETIZE(tests, approach, BFS_or_DFS, semantics, refinement)
 
 
 
