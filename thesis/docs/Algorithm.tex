@@ -1103,7 +1103,7 @@ When developing the tool, we came up with different theories. Some theories were
 We came up with the theory, that every subset of a stable spurious extension, is spurious as well. Formally, if $S$ is a spurious stable set of the abstract AF $\hat{G}$. Then for every subset $T \subseteq S$, $T$ is spurious as well. This would reduce the computation time of finding spurious sets drastically. Unfortunately, we can disprove this theory with a counter-example.
 
 \begin{example}
-    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(d, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(a). The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined by the arguments $\hat{A}=\{\hat{g}, e\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, f\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g}), (\hat{g}, e)\bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(b).
+    Let us define $G=(A,R)$ to be a concrete AF, with the arguments $A=\{a, b, c, d, e, f\}$ and the attacks $R=\bigl\{ (b, a)$, $(a, d)$, $(a, c)$, $(c, e)$, $(c, f)$, $(d, f) \bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(a). The spurious abstract AF $\hat{G}=(\hat{A}, \hat{R})$ is defined by the arguments $\hat{A}=\{\hat{g}, e\}$, with the cluster $\hat{g}$ containing the arguments $\{a, b, c, d, f\}$ and the attacks being $\hat{R}=\bigl\{(\hat{g}, \hat{g}), (\hat{g}, e)\bigl\}$ depicted in \cref{fig:AlgorithmRefutedTheoryDefinition}(b).
 
 \vspace{0.3cm}
 \begin{figure}[h]
@@ -1157,5 +1157,5 @@ We came up with the theory, that every subset of a stable spurious extension, is
 \end{figure}
 \vspace{0.3cm}
 
-When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extensions $\big\{\{\hat{g}\}, \{\hat{g}, e\}\big\}$. Since the abstractly stable extensions $\{\hat{g}, e\}$ is spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When trying to map a subset of $\{\hat{g}, e\}$, e.g.\ $\{\hat{g}\}$ to the concrete extension $\{b, c, d\}$, we can see that it is faithful. Thus, we found a subset of a spurious extension, which is not spurious.
+When computing the stable extensions of $G$, we obtain $\bigl\{b, c, d\bigl\}$, for the abstract AF $\hat{G}$ we get the abstractly stable extensions $\big\{\{\hat{g}\}, \{\hat{g}, e\}\big\}$. Since the abstractly stable extension $\{\hat{g}, e\}$ is spurious, we have a spurious abstract AF. Now, we can have a look at the subsets of the spurious extensions and check if every subset is spurious as well. When trying to map a subset of $\{\hat{g}, e\}$, e.g.\ $\{\hat{g}\}$ to the concrete extension $\{b, c, d\}$, we can see that it is faithful. Thus, we found a subset of a spurious extension, which is not spurious.
 \end{example}
