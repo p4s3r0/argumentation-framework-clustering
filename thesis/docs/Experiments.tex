@@ -49,7 +49,7 @@ This section presents the data collected from the program, which checks if an ab
 \newcommand{\plotHeightSmall}{5cm}
 
 
-We implemented two approaches to check for faithfulness, i.e., BFS and DFS. Both were tested and showed different results according to the AFs generation procedure. Note that we had a total amount of $450$ test-runs, split up into 9 plots (i.e., each plot has $50$ test-runs, as we have 25 test instances per generator approach, each of which was executed twice: one with refinements and once without). The plots are structured in a way, s.t.\ every step on the y-axis represents a test-run instance (i.e.\ a single invocation of the program to solve a specific task) and the x-axis represents the runtime of the test-run instance in seconds. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
+We implemented two approaches to check for faithfulness, i.e., BFS and DFS. Both were tested and showed different results according to the AFs generation procedure. Note that we had a total amount of $450$ test-runs, split up into 9 plots (i.e., each plot has $50$ test-runs, as we have 25 test instances per generator approach, each of which was executed twice: once with refinements and once without). The plots are structured in a way, s.t.\ every step on the y-axis represents a test-run instance (i.e.\ a single invocation of the program to solve a specific task) and the x-axis represents the runtime of the test-run instance in seconds. First of all, let us have a look at the runtime of the random-based generated test-runs depicted in \cref{fig:expfaithful/BFSvsDFS/random/CF}, \cref{fig:expfaithful/BFSvsDFS/random/AD} and \cref{fig:expfaithful/BFSvsDFS/random/ST}.
 Note, that the numeration does not begin at $1$ because all the test-runs below 40 were trivial and could be solved in under a second. We assume that since the random-based approach has more attacks than the other approaches, the amount of semantics extensions is less. Thus, BFS and DFS are similar.
 
 
@@ -236,7 +236,7 @@ BFS and DFS differences increase when we change the AF generation approach to th
 
 
 
-The difference increases even further when the AF generator approach is changed to the level-based procedure. As we can see in \cref{fig:expfaithful/BFSvsDFS/level/CF}, \cref{fig:expfaithful/BFSvsDFS/level/AD} and \cref{fig:expfaithful/BFSvsDFS/level/ST}, DFS dominates BFS especially in the conflict-free and admissible semantics. This is due to the bigger size of the semantics extensions. Recall that the conflict-free sets are a subset of the admissible sets, and the admissible sets are a subset of the stable extensions.
+The difference increases even further when the AF generator approach is changed to the level-based procedure. As we can see in \cref{fig:expfaithful/BFSvsDFS/level/CF}, \cref{fig:expfaithful/BFSvsDFS/level/AD} and \cref{fig:expfaithful/BFSvsDFS/level/ST}, DFS dominates BFS especially in the conflict-free and admissible semantics. This is due to the bigger size of the semantics extensions. Recall that the conflict-free sets are a superset of the admissible sets, and the admissible sets are a superset of the stable extensions.
 
 
 
@@ -327,7 +327,7 @@ The difference increases even further when the AF generator approach is changed 
 \end{figure}
 
 
-Finally, we arranged the data into a single plot from all the generator approaches in \cref{fig:expfaithful/BFSvsDFS/OnePlot}. Here, we can see that DFS dominates in almost all of the test-runs on the BFS approach, and in the few cases where BFS is more efficient than DFS, it is by a minor factor. Especially with the AFs generated with the level-based procedure, DFS is way more efficient. This is because, on level-based AFs, we have far more extensions than on random-based ones, and computing all of them with the BFS algorithm leads to a lousy runtime. On the other hand, random-based AFs have far fewer extensions due to fewer attacks. Thus, BFS can be faster than DFS, since it does not have to deal with as many context switches.
+Finally, we arranged the data into a single plot from all the generator approaches in \cref{fig:expfaithful/BFSvsDFS/OnePlot}. Here, we can see that DFS dominates in almost all of the test-runs on the BFS approach, and in the few cases where BFS is more efficient than DFS, it is by a minor factor. Especially with the AFs generated with the level-based procedure, DFS is way more efficient. This is because, on level-based AFs, we have far more extensions than on random-based, and computing all of them with the BFS algorithm leads to a lousy runtime. On the other hand, random-based AFs have far fewer extensions due to fewer attacks. Thus, BFS can be faster than DFS, since it does not have to deal with as many context switches.
 
 \begin{figure}[H]
     \centering
@@ -370,7 +370,7 @@ Finally, we arranged the data into a single plot from all the generator approach
 \label{subsec:ComparisonOfRefinementAndNoRefinementOnFaithfulProgram}
 
 We implemented different refinements for each semantics. As data has shown, the refinements made for conflict-free semantics have a significant impact, as shown in \cref{fig:expfaithful/REFvsNOREF/grid-based} and \cref{fig:expfaithful/REFvsNOREF/level-based}. Note that we had a total amount of $450$ test-runs, but we only show the interesting conflict-free results with $50$ test-runs per AF generator. The plots are structured in a way, s.t.\ every step on the y-axis represents a test-run instance (i.e.\ a single invocation of the program to solve a specific task) and the x-axis represents the runtime of the test-run instance in seconds.
-The refinement reduces the runtime significantly, especially for AFs with many conflict-free sets. We got some test-runs for the grid-based AFs, where we obtained a better result without the refinement. We hypothesize that the observed outliers may result from the DFS algorithm finding a spurious extension. Recall that the refinement for the conflict-free sets is to extract all the subsets from a computed conflict-free set. If all the subsets are faithful, we introduce many faithful/spurious checks, which leads to an increase in runtime that the DFS algorithm, without refinement, does not face. The same outlier can be seen the other way around in the grid-based plot at test-run 25. Here, the refinement extracted a subset of a computed conflict-free set, which was spurious. Without the refinement, no spurious set was found within the timeout. Besides conflict-free, the refinements made for admissible and stable only had a minor impact. We speculate that the SAT-Solver discarded the refinement for optimization reasons or the overhead of increasing the Boolean formula, which led to no significant improvement.
+The refinement reduces the runtime significantly, especially for AFs with many conflict-free sets. We got some test-runs for the grid-based AFs, where we obtained a better result without the refinement. We hypothesize that the observed outliers may result from the DFS algorithm finding a spurious extension. Recall that the refinement for the conflict-free sets is to extract all the subsets from a computed conflict-free set. If all the subsets are faithful, we introduce many faithful/spurious checks, which leads to an increase in runtime that the DFS algorithm, without refinement, does not face. The same outlier do exist the other way around where the refinement extracts a subset of a computed conflict-free set, which is spurious. Without the refinement, no spurious set was found within the timeout. Besides conflict-free, the refinements made for admissible and stable only had a minor impact. We speculate that the SAT-Solver discarded the refinement for optimization reasons or the overhead of increasing the Boolean formula, which led to no significant improvement.
 
 
 \begin{figure}[H]
@@ -480,13 +480,13 @@ Furthermore, we look at how many test-runs did not run into a timeout depending 
     \begin{tikzpicture}
         \begin{axis}[
             width=\plotWidth,
-            height=\plotHeightSmall,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Test-run},
             xmin=-10, xmax=310,
             ymin=90, ymax=310,
             xtick={0, 100, 200, 300},
-            ytick={0, 100, 200, 300},
+            ytick={0, 100, 150, 200, 250, 300},
             legend pos=south east,
             ymajorgrids=true,
             xmajorgrids=true,
@@ -508,7 +508,7 @@ Furthermore, we look at how many test-runs did not run into a timeout depending 
 \end{figure}
 
 
-The data was arranged in a tabular format to enable a more comprehensive comparison from a higher-level viewpoint. We computed the mean value of the test-runs depending on the AF number of arguments and semantics. Furthermore, we excluded the runtime from the test runs that ran into a timeout and stated the exact amount. In \cref{table:ExperimentStatisticsFaithfulCheck}, we can observe that with the increase in the AF's size, the faithful/spurious check's runtime also increases. The same holds for the amount of timeouts.
+The data was arranged in a tabular format to enable a more comprehensive comparison from a higher-level viewpoint. We computed the mean value of the test-runs depending on the AF number of arguments and semantics. Furthermore, we excluded the runtime from the test runs that ran into a timeout and stated the exact amount. In \cref{table:ExperimentStatisticsFaithfulCheck}, we can observe that with the increase in size of the AF, the faithful/spurious check's runtime also increases. The same holds for the amount of timeouts.
 
 
 \begin{table}[htb]
@@ -994,8 +994,8 @@ In this section, we compare the efficiency of the refinements to the correspondi
         \begin{axis}[
             width=\plotWidth,
             height=\plotHeight,
-            xlabel={Runtime REF [s]},
-            ylabel={Runtime NO-REF [s]},
+            xlabel={Runtime refinement [s]},
+            ylabel={Runtime no-refinement [s]},
             xmin=-10, xmax=310,
             ymin=-10, ymax=310,
             xtick={0, 100, 200, 300},
@@ -1032,13 +1032,13 @@ In \cref{fig:expconcretize/Semantics/OnePlot} we visualize the runtimes of the t
     \begin{tikzpicture}
         \begin{axis}[
             width=\plotWidth,
-            height=\plotHeightSmall,
+            height=\plotHeight,
             xlabel={Runtime [s]},
             ylabel={Test-run},
             xmin=-10, xmax=310,
             ymin=80, ymax=250,
             xtick={0, 100, 200, 300},
-            ytick={0, 100, 200, 300},
+            ytick={0, 100, 150, 200, 300},
             legend pos=south east,
             ymajorgrids=true,
             xmajorgrids=true,

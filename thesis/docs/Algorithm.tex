@@ -23,7 +23,7 @@ We further define a subset of arguments, denoted as $\hat{A}_{\mathit{Single}} \
 
 
 \begin{example}
-    Let us have a look at an example and define the abstract AF $\hat{G} = (\hat{A}, \hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsConflictFree}. With the arguments $\hat{A}=\{a, b, c, d\}$ and the attacks $\hat{R}=\big\{ (a,a)$, $(a,b)$, $(b,c)$, $(d,a)$, $(d,b)$, $(d,c)\big\}$.
+    Let us have a look at an example and define the abstract AF $\hat{G} = (\hat{A}, \hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsConflictFree}. Where $\hat{A}=\{a, b, c, d, \hat{h}\}$, the cluster $\hat{h}$ contains $\{e, f, g\}$ and the attacks are $\hat{R}=\big\{ (a,a)$, $(a,b)$, $(b,c)$, $(d,a)$, $(d,b)$, $(d,c)$, $(d, \hat{h})$, $(\hat{h}, d)\big\}$.
 
     \begin{figure}[H]
         \centering
@@ -85,7 +85,7 @@ If we compare the models of $\varphi_{cf}(\hat{G})$ with the conflict-free sets 
 
 
 \begin{example}
-    Let us have a look at an example and define the AF $\hat{G}=(\hat{A},\hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsAdmissible}. Where the arguments are $\hat{A}=\{a, b, c, d, e\}$ and the attacks $\hat{R}=\big\{ (a,a), (a,b), (b,c), (d,a), (d,b), (d,d), (d, e), (e, d)\big\}$.
+    Let us have a look at an example and define the AF $\hat{G}=(\hat{A},\hat{R})$ to be the AF depicted in \cref{af:algorithmEncodingsAdmissible}. Where $\hat{A}=\{a, b, c, d, e, \hat{h}\}$ and $\hat{R}=\big\{ (a,a), (a,b), (b,c), (d,a),$ $(d,b), (d,d), (d, e), (e, d), (\hat{h}, c), (c, \hat{h})\big\}$ with the cluster $\hat{h}$ containing $f$ and $g$.
 
     \begin{figure}[H]
         \centering
@@ -201,7 +201,7 @@ By comparing the models of $\varphi_{stb}(\hat{G})$ with the stable sets of $\ha
 
 \section{Checking Faithfulness}
 \label{sec:AlgorithmCheckingFaithfulness}
-In the context of abstract AFs, faithfulness is an important property. To be able to determine if an AF is faithful or spurious we develop two different approaches, i.e., BFS and DFS wich are described in \cref{subsec:BFSandDFSAlgorithm}. To be able to show faithfulness or spuriousness for a specific abstract extension, we developed again two different procedures, i.e., list comparison and the SAT-based check described in \cref{subsec:ExtensionMapping}.
+In the context of abstract AFs, faithfulness is an important property. To be able to determine if an AF is faithful or spurious we develop two different approaches, i.e., BFS and DFS which are described in \cref{subsec:BFSandDFSAlgorithm}. To be able to show faithfulness or spuriousness for a specific abstract extension, we developed again two different procedures, i.e., list comparison and the SAT-based check described in \cref{subsec:ExtensionMapping}.
 
 \subsection{BFS and DFS}
 \label{subsec:BFSandDFSAlgorithm}
@@ -401,8 +401,8 @@ We do not consider attacks in this step since they depend on the concrete- and a
         \draw[line width=0.3mm] (\dx, \dy) circle (0.3) node[anchor=center]{$d$};
         % Cluster
 
-        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$a,b,c$};
-        \node at (\gx + 0.1, \gy + 0.5) {$\hat{g}$};
+        \node[rectangle, draw, line width=0.3mm] at (\gx, \gy) {$\phantom{a,} c\phantom{, b}$};
+        \node at (\gx + 0.74, \gy + 0.2) {$\hat{g}$};
 
         \node[rectangle, draw, line width=0.3mm] at (\hx, \hy) {$e,f$};
         \node at (\hx + 0.1, \hy + 0.5) {$\hat{h}$};
@@ -768,7 +768,7 @@ Let us have a look at an example to demonstrate how the concretizer list is comp
 
 If we have a look at the stable extensions of the concrete AF $G$, i.e.\ 
 $stb(G) = \bigl\{\{b, c\}\bigl\}$ and at the abstractly stable extensions of the abstract AF $\hat{G}$, i.e.\ 
-$\hat{stb}(G) = \bigl\{\{b, \hat{h}\}, \{\hat{h}\}, \{b\}\bigl\}$, we can see that the abstractly stable extensions $\{\hat{h}\}$ and $\{b\}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\{b, \hat{h}\}$.
+$\hat{stb}(\hat{G}) = \bigl\{\{b, \hat{h}\}, \{\hat{h}\}, \{b\}\bigl\}$, we can see that the abstractly stable extensions $\{\hat{h}\}$ and $\{b\}$ are spurious. The input to the concretizer list computation is a collection of the arguments of all the spurious sets, which in this case is $\{b, \hat{h}\}$.
 
 % Filter Cluster out of spurious set, because we cant concretize cluster
 The first step is to filter out the clusters of the input, since clusters are not present in the concrete AF and therefore do not attack any singletons and are not being attacked. So we reduce the concretizer list from $\{b, \hat{h}\}$ to $\{b\}$.
@@ -911,8 +911,8 @@ $\{a, c, d, e\}\bigl\}$. The pseudo-code for the last step is stated in \cref{al
 \begin{algorithm}
     \caption{Computation of Concretizer list Algorithm: Combinations and Cleanup}\label{alg:concretizerListCombinationAndCleanup}
     \begin{algorithmic}[1]
-        \Require $G: AF(a_1, r_1)$ \Comment{Concrete AF}
-        \Require $\hat{G}: AF(a_2, r_2)$ \Comment{Abstract AF}
+        \Require $G: AF(A, R)$ \Comment{Concrete AF}
+        \Require $\hat{G}: AF(\hat{A}, \hat{R})$ \Comment{Abstract AF}
         \Require $s: list(Arguments)$ \Comment{Working List}
         \Require $ca: list(Arguments)$ \Comment{Concretize arguments parameter}
 
@@ -942,7 +942,7 @@ $\{a, c, d, e\}\bigl\}$. The pseudo-code for the last step is stated in \cref{al
 \label{sec:AlgorithmicApproachToComputeFaifthulClusterings}
 When clustering AFs, information gets lost. If crucial information is abstracted in a way, s.t.\ we can draw erroneous conclusions, we have a spurious AF. Spurious abstract AFs do not represent the corresponding concrete AFs. Thus, we need to transform the abstract AF, s.t.\ only correct solutions can be drawn, which we then call faithful. The algorithm we designed, takes as input a concrete AF denoted to $G$, and an abstract AF $\hat{G}$. First we determine, if the abstract AF $\hat{G}$ is spurious, by calculating the semantics extensions and attempting to find spurious set. If no spurious set can be found, the AF is faithful and no further mutations are needed.
 
-But if we find spurious extensions, we build the concretizer list as specified previously in \cref{sec:ComputationOfConcretizerList}. Recall, that the concretizer list operates with the depth of neighbours of $2$. This means, that depending on the AF, we can not guarantee to find a faithful AF. If the spurious extension of an AF $G$ has an argument $a$ with depth 3 to an argument $b$, and the only faithful AF is the concrete one, then we will not find the faithful AF.
+But if we find spurious extensions, we build the concretizer list as specified previously in \cref{sec:ComputationOfConcretizerList}. Recall, that the concretizer list operates with the depth of neighbours of $2$. This means, that depending on the AF, we can not guarantee to find a faithful AF. If the spurious extension of an AF $\hat{G}$ has an argument $a$ with depth 3 to an argument $b$, and the only faithful AF is the concrete one, then we will not find the faithful AF.
 
 Finally, we concretize the concretizer list set after set and check for faithfulness. The algorithm is listed in \cref{alg:computeFaithfulClusters}.
 
@@ -1017,7 +1017,7 @@ Finally, we concretize the concretizer list set after set and check for faithful
 \vspace{0.3cm}
 
 
-When taking a look at the conflict-free sets of the concrete AF $G$ (i.e.\ $\bigl\{ \emptyset,$ $\{b\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{b, d\},$  $\{c, e\},$ $\{d, e\} \bigl\}$) and the abstractly conflict-free sets of the abstract AF $\hat{G}$ (e.g.\ $\bigl\{ \emptyset,$ $\{c\},$ $\{d\},$ $\{e\},$ $\{\hat{h}\},$ $\{c, e\},$ $\{c, \hat{h}\},$ $\{d, e\},$ $\{d, \hat{h}\},$ $\{e, \hat{h}\},$ $\{c, e, \hat{h}\},$ $\{e, d, \hat{h}\} \bigl\}$) we can observe, that the abstract AF $\hat{G}$ is spurious due to the sets $\bigl\{\{\hat{h}, d, e\},$ $\{\hat{h}, e\},$ $\{c, \hat{h}, e\},$ $\{c, \hat{h}\}\bigl\}$. Now we compute the concretizer list and obtain the sets $\bigl\{ \{a\}, \{b\}, \{a, b\}\bigl\}$. In this example, the only faithful solution we can obtain by concretizing is the concrete AF $G$. Thus, concretizing the set $\{a, b\}$ leads to a faithful AF.
+When taking a look at the conflict-free sets of the concrete AF $G$ (i.e.\ $\bigl\{ \emptyset,$ $\{b\},$ $\{c\},$ $\{d\},$ $\{e\},$ $\{b, d\},$  $\{c, e\},$ $\{d, e\} \bigl\}$) and the abstractly conflict-free sets of the abstract AF $\hat{G}$ (i.e.\ $\bigl\{ \emptyset,$ $\{c\},$ $\{d\},$ $\{e\},$ $\{\hat{h}\},$ $\{c, e\},$ $\{c, \hat{h}\},$ $\{d, e\},$ $\{d, \hat{h}\},$ $\{e, \hat{h}\},$ $\{c, e, \hat{h}\},$ $\{e, d, \hat{h}\} \bigl\}$) we can observe, that the abstract AF $\hat{G}$ is spurious due to the sets $\bigl\{\{\hat{h}, d, e\},$ $\{\hat{h}, e\},$ $\{c, \hat{h}, e\},$ $\{c, \hat{h}\}\bigl\}$. Now we compute the concretizer list and obtain the sets $\bigl\{ \{a\}, \{b\}, \{a, b\}\bigl\}$. In this example, the only faithful solution we can obtain by concretizing is the concrete AF $G$. Thus, concretizing the set $\{a, b\}$ leads to a faithful AF.
 \vspace{0.5cm}
 
 \begin{algorithm}

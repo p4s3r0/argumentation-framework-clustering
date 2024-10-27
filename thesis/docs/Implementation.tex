@@ -1,11 +1,11 @@
 \chapter{Implementations}
-In this chapter we dive into the implementation part and discuss different approaches. First, we specify how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. In \cref{sec:ImplementationUsageAndSettings} we describe the usage of the implemented tool and the settings to change the inner workings of the algorithms.
+In this chapter we dive into the implementation part and discuss different approaches. First, we specify how the AFs we run the experiments on were created in \cref{sec:ImplementationsCreatingAFs}. Here we describe three different methods, with their advantages and disadvantages. In \cref{sec:ImplementationUsageAndSettings} we describe the usage of the implemented tool and the settings to change the inner workings of the algorithms and furthermore, we specify the input format of the AFs.
 
 \section{Generating AFs}
 \label{sec:ImplementationsCreatingAFs}
 We created three different approaches to generate AFs. Each of them has a different idea and generates AFs with different properties. While the random-based approach generates AFs, which are typically not similar to real-world problems, the grid-based approach has more structure. The level-based approach has even more structure and assures that we can not derive too many neighbours from a problematic argument. For each approach, we provide an additional figure for better visualization and example AFs generated with the algorithm.
 
-\paragraph{Random-based} Let us begin with the random-based approach. The arguments of the script are \texttt{<arg\_amount>} and \texttt{<p>}. The \texttt{<arg\_amount>} specifies how many arguments the AF has and the argument \texttt{<p>} defines the probability of an attack between two arguments. Basically, if we take a look at \cref{fig:LevelBasedApproach} we can see a graph with potential attacks depicted with dotted arrows. Every potential attack has a a probability of \texttt{<p>} to be an actual attack of the generated AF.
+\paragraph{Random-based} Let us begin with the random-based approach. The arguments of the script are \texttt{<arg\_amount>} and \texttt{<p>}. The \texttt{<arg\_amount>} specifies how many arguments the AF has and the argument \texttt{<p>} defines the probability of an attack between two arguments. Basically, if we take a look at \cref{fig:RandomBasedApproach} we can see a graph with potential attacks depicted with dotted arrows. Every potential attack has a a probability of \texttt{<p>} to be an actual attack of the generated AF.
 
 
 \begin{figure}[h!]
@@ -14,7 +14,7 @@ We created three different approaches to generate AFs. Each of them has a differ
         \def \rectSize{0.7cm}
         \def \rectSpace{1.8cm}
         \def \rectCircleAdaption{0.1cm}
-        
+
         \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (0, 0) {};
         \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (\rectSpace, 0) {};
         \node[circle, draw, line width=0.3mm, minimum width=\rectSize, minimum height=\rectSize] at (0, \rectSpace) {};
@@ -41,10 +41,10 @@ We created three different approaches to generate AFs. Each of them has a differ
 
     \end{tikzpicture}
     \caption{Random-based approach with $Amount=4$ and $p=1$}
-    \label{fig:LevelBasedApproach}
+    \label{fig:RandomBasedApproach}
 \end{figure}
 
-Random-based generated AFs have the property (depending on the probability value) of being hard to to predict on how good the AF is solvable. This is due the fact, that the neighbours of each argument are highly dependent on the amount of attacks and randomness (since an argument can attack every other arguments). Example AFs generated with the random-based approach can be seen in \cref{fig:ImplementationRandomBasedExampleAFs}
+Random-based generated AFs have the property (depending on the probability value) of being hard to predict on how good the AF is solvable. This is due the fact, that the neighbours of each argument are highly dependent on the amount of attacks and randomness (since an argument can attack every other arguments). Example AFs generated with the random-based approach can be seen in \cref{fig:ImplementationRandomBasedExampleAFs}
 
 
 \vspace{0.3cm}
@@ -159,7 +159,7 @@ Random-based generated AFs have the property (depending on the probability value
 
 
 
-\paragraph{Grid-based} Next we are going to discuss the grid-based approach. The arguments for the script are \texttt{<arg\_amount>}, being the amount of arguments the AF has and \texttt{<p>}, which is the probability that an attack between two arguments occurs. Different to the random-based approach, attacks can only happen between the direct neighbours of the grid (i.e.\ top, bottom, right, left). The grid is an $n \times n$ grid, with $n$ being equal to $\lfloor (\sqrt{\texttt{<arg\_amount>}}) \rfloor$. An example grid can be seen in \cref{fig:GridBasedApproach}.
+\paragraph{Grid-based} Next we are going to discuss the grid-based approach. The arguments for the script are \texttt{<arg\_amount>}, being the amount of arguments the AF has and \texttt{<p>}, which is the probability that an attack between two arguments occurs. Different to the random-based approach, attacks can only happen between the direct neighbours of the grid (i.e.\ top, bottom, left, right). The grid is an $n \times n$ grid, with $n$ being equal to $\lfloor (\sqrt{\texttt{<arg\_amount>}}) \rfloor$. An example grid can be seen in \cref{fig:GridBasedApproach}.
 
 \begin{figure}[h!]
     \centering
@@ -463,7 +463,7 @@ under the MIT license. We provide four different applications, i.e.\ \texttt{SET
     \texttt{python3 main.py SETS <path\_af>}
 \end{center}
 
-The argument \texttt{<path\_af>} is the path to the AF, of which the semantics extensions should be computed. To set the semantics of the extension, check the additional flags in the paragraph below.
+The argument \texttt{<path\_af>} is the path to the AF file, of which the semantics extensions should be computed. To set the semantics of the extension, check the additional flags in the paragraph below.
 
 \paragraph{Spurious/Faithful check} To check if an abstract AF is faithful or spurious, the program is called with the \texttt{CHECK} argument and followed by the abstract AF and the concrete AF.
 
@@ -488,7 +488,7 @@ The following arguments are again the path to the abstract AF, followed by the p
     \texttt{python3 main.py CONCRETIZE <path\_abs\_af> -c <path\_con\_af> -p <conc\_args>}
 \end{center}
 
-In addition to the abstract and concrete AF paths, we can specify a list of arguments, separated by spaces, to be concretized. The list of arguments \texttt{<conc\_args>} needs to be directly after the \texttt{-p} flag. Additionally, we can use positional arguments like \texttt{-s <semantics>} to specify the semantics or \texttt{-a <alg>} to determine if we want to use BFS or DFS.
+In addition to the abstract and concrete AF paths, we can specify a list of arguments, separated by spaces, to be concretized. The list of arguments \texttt{<conc\_args>} needs to be directly after the \texttt{-p} flag. Furthermore, we can use additional flags.
 
 \paragraph{Additional Flags} To have complete control of the inner workings of the program and the output printed to the user, we implemented additional flags. The first flag is the semantics flag.
 
@@ -501,7 +501,7 @@ This argument determines the semantics we are operating on. It is optional for e
 Next, when executing the program to concretize arguments from a cluster, we need a list of the arguments.
 
 \begin{center}
-    \texttt{-p <conc\_args>} 
+    \texttt{-p <conc\_args>}
 \end{center}
 
 The arguments that need to be concrete are listed after the \texttt{-p} tag and specified in a joint list separated by spaces.
@@ -526,8 +526,15 @@ We also implemented a visualization of the AFs, which can be triggered using the
     \texttt{-vis}
 \end{center}
 
-The visualization will show the abstract AF and the concrete AF if they are part of the program call. Finally, it will show the resulting AF. To ''spectate`` the current computation and have more insight into the algorithm, we can add the \texttt{-verbose} flag. This will print interim findings to the user directly while calculating.
+The visualization will show the abstract AF and the concrete AF if they are part of the program call. Finally, it will show the resulting AF.
 
+To ''spectate`` the current computation and have more insight into the algorithm, we can add the 
+
+\begin{center}
+    \texttt{-verbose}
+\end{center}
+
+flag. This will print interim findings to the user directly while calculating.
 
 \subsection{Input Format}
 The input format for the AFs has a clear structure and is divided into four parts: i.e.\ $header$, $attacks$, $orphans$ and $clusters$. The optional parts (i.e., $orphans$ and $clusters$) are introduced with the \texttt{--<name>--} tag. Each tag is defined and the usage of the part is explained in the corresponding paragraph. If an optional part is empty, e.g.\ we have a concrete AF without clusters, we can simply omit the part by not including the tag. The singletons and clusters need to be indexed consecutively with positive integers, i.e., letters and symbols are not allowed.
