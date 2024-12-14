@@ -185,11 +185,12 @@ abstractly stable extension. Other than conflict-free and admissible, the empty 
 
 If we apply the encoded formula defined in \cref{def:booleanFormulaStable} to the AF $\hat{G}$, we obtain the following Boolean expression.
 \begin{align*}
-    \varphi_{stb}(\hat{G}) = &\bigl( (\lnot (a \land a)) \land (\lnot (a \land b)) 
+    \varphi_{stb}(\hat{G}) = &\bigl( (\lnot (a \land a)) \land (\lnot (a \land b))
     \land (\lnot (b \land a)) \land (\lnot (b \land c)) \land (\lnot (d \land b)) \bigl) \land\\
     & \bigl( (a \lor a \lor b \lor d) \land (b \lor a \lor c) \land (d \lor b) \land (\hat{h} \lor c)\bigl) \land \\
     & \bigl( ((a \land \lnot a \land \lnot b \land \lnot d) \rightarrow (\lnot a \land \lnot b)\bigl) \land\\
-    & \bigl((b \land \lnot a \land \lnot c) \rightarrow (\lnot a \land \lnot d)) \land ((d \land \lnot b) \rightarrow \lnot a)\bigl)
+    & \bigl((b \land \lnot a \land \lnot c) \rightarrow (\lnot a \land \lnot d)) \land ((d \land \lnot b) \rightarrow \lnot a)\bigl)\\
+    & \bigl( (\hat{h} \land b) \rightarrow (\lnot c)\bigl)
 \end{align*}
 
 

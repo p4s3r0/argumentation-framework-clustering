@@ -1,57 +1,50 @@
-# argumentation-framework-clustering
-GitHub Repository for my Master's Thesis in Computer Science at the University of Technology Graz
+# ClustArg
 
-# WORK IN PROGRESS
+## Introduction
+ClustArg is a versatile tool designed with a focus on **abstract Argumentation Frameworks (AFs)**, providing a powerful platform for analyzing and computing different argumentation semantics. The tool is intended to help researchers and practitioners explore and evaluate abstract AFs, which represent the structure of argumentation without specifying the details of individual arguments. By implementing three core semantics—**conflict-free**, **admissible**, and **stable**—ClustArg enables the assessment of the acceptability and coherence of arguments within these abstract frameworks. Additionally, the tool supports refinements and two distinct extension calculation processes: **Breadth-First Search (BFS)** and **Depth-First Search (DFS)**, offering flexible approaches for analyzing AFs from different perspectives.
 
-## Important Formulas
+With ClustArg, users can:
 
-### Conflict Free Sets
-$$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big) \big)$$
+- Compute the semantics of **concrete AFs**, providing insights into the acceptability of individual arguments and sets of arguments.
+- Compute the semantics of **abstract AFs**, enabling the analysis of abstract argumentation structures without needing a fully instantiated set of arguments.
+- Check if an **abstract AF is faithful**, ensuring that the abstract representation correctly reflects the structure of the argumentation.
+- Compute **semantic extensions** and identify situations leading to **spuriousness**, where extensions may not align with expected logical behavior.
+- Transform an AF that was initially spurious into one that is **faithful**, ensuring the argumentation structure is logically consistent and valid.
 
-### Refinement Conflict Free Sets
+ClustArg is intended for researchers, developers, and anyone interested in exploring the dynamic landscape of argumentation frameworks and their semantics.
 
----
-### Admissible Sets
-$$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big)\big) \land  \bigwedge_{a \in A_{SINGLETONS}} \big( a \rightarrow \bigwedge_{b:(b,a) \in R} \big( \bigvee_{c:(c,b) \in R} c\big) \big)\big)$$
+## Installation
 
+ClustArg is coded in Python and includes a `requirements.txt` file for easy installation of dependencies. To set up the tool, simply follow these steps:
 
-### Refinement Admissible Sets
-We refine the formula for the admissible Sets $\varphi_{adm-abs}(\hat F)$ , by adding the refinement $\varphi'(F)$.
+### 1. Clone this repository:
 
-$$ \varphi_{adm-abs}(\hat F) \land \varphi'(F) $$
+```bash
+git clone https://github.com/yourusername/project-repo.git
+```
 
+### 2. Navigate into the project directory:
 
-$$\varphi_{adm-abs}(\hat F) = \bigwedge_{\hat a \in \hat A_{SINGLETONS}} \big( \bigwedge_{\hat b:(\hat b,\hat a)\in \hat R, \hat b \in \hat A_{SINGLETONS}} \lnot \big( \hat a \wedge \hat b \big) \land \big( \hat a \rightarrow \bigwedge_{\hat b:(\hat b,\hat a) \in \hat R} \big( \bigvee_{\hat c:(\hat c,\hat b) \in \hat R} \hat c\big) \big)\big)$$
+```bash
+cd argumentation-framework-clustering
+```
 
+### 3. (Optional but recommended) Set up a virtual environment to manage dependencies:
 
-$$\varphi'(F) = \bigwedge_{\hat a \in \hat A_{CLUSTER}} \big( \hat a \rightarrow \bigvee_{a \in \hat a} a \big)  \land \overline{cf}(F) \land \overline{def}(F)$$
+```bash
+python3 -m venv venv
+source venv/bin/activate  # On Windows use: venv\Scripts\activate
+```
 
-$$\overline{cf}(F)=\bigvee_{a \in A_{SINGLETONS}} \big( \bigvee_{b:(b,a)\in R, b \in A_{SINGLETONS}} \big( a \land b \big) \big)$$
+### 4. Install the required dependencies:
 
-$$\overline{def}(F) = \bigvee_{a \in A_{SINGLETONS}}\big( a \land \bigvee_{b:(b,a)\in R} \big( \bigwedge_{c:(c, b)\in R} \lnot c\big)\big)$$
+```bash
+pip3 install -r requirements.txt
+```
 
----
+## Usage
 
-### Stable Sets 
-$$ \bigwedge_{a \in A_{SINGLETONS}} \big( \bigwedge_{b:(b,a)\in R, b \in A_{SINGLETONS}} \lnot \big( a \wedge b \big) \big) \land \bigwedge_{a \in A} \big( a \bigvee_{b:(b,a)\in R} b\big) \land \bigwedge_{a \in A} \big( \big(  a \bigwedge_{b:(b,a) \in R} \lnot b\big)  \rightarrow \big( \bigwedge_{c:(a,c), c \in A_{SINGLETONS}} \lnot c\big) \big)$$
-
-
-### Refinement Stable Sets
-We refine the formula for the stable Sets $\varphi_{st-abs}(\hat F)$ , by adding the refinement $\varphi'(F)$.
-
-$$ \varphi_{st-abs}(\hat F) \land \varphi'(F) $$
-
-$$\varphi_{st-abs}(\hat F) = \bigwedge_{\hat a \in \hat A_{SINGLETONS}} \big( \bigwedge_{\hat b:(\hat b,\hat a)\in \hat R, \hat b \in \hat A_{SINGLETONS}} \lnot \big( \hat a \wedge \hat b \big) \big) \land \bigwedge_{\hat a \in \hat A} \big( \hat a \bigvee_{\hat b:(\hat b,\hat a)\in \hat R} \hat b\big) \land \bigwedge_{\hat a \in \hat A} \big( \big(  \hat a \bigwedge_{\hat b:(\hat b,\hat a) \in \hat R} \lnot \hat b\big)  \rightarrow \big( \bigwedge_{\hat c:(\hat a,\hat c), \hat c \in \hat A_{SINGLETONS}} \lnot \hat c\big) \big)$$
-
-$$\varphi'(F) = \bigwedge_{\hat a \in \hat A_{CLUSTER}} \big( \hat a \rightarrow \bigvee_{a \in \hat a} a \big)  \land \overline{cf}(F) \land \overline{att}(F) \land \overline{con}(F)$$
-
-$$\overline{cf}(F) = \bigvee_{a \in A_{SINGLETONS}} \big( \bigvee_{b:(b,a)\in R, b \in A_{SINGLETONS}} \big( a \land b \big) \big) $$
-
-$$\overline{att}(F) = \bigvee_{a \in A} \big( \lnot a \bigwedge_{b:(b,a)\in R} \lnot b \big)$$
-
-$$\overline{con}(F) = \bigvee_{a \in A} \big( \big( a \bigwedge_{b:(b,a)\in R} \lnot b) \land \big(\bigvee_{c:(a,c), c\in A_{SINGLETON}} c\big) \big)$$
-
----
+TODO
 
 # References and Other Works
 [Checking the acceptability of a set of arguments](https://www.researchgate.net/publication/221535800_Checking_the_acceptability_of_a_set_of_arguments)

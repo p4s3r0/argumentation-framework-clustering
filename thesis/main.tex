@@ -1,7 +1,25 @@
 \documentclass[twoside,openright]{scrreprt}
+\usepackage[a4paper, inner=4.2cm, outer=2.1cm, top=2.7cm, bottom=5.8cm]{geometry}  % Set the margins
 
 \usepackage[msc]{tugrazthesis}
 \usepackage{filecontents}  % for the integrated bibliography file (backwards compatibility)
+
+
+
+% \usepackage{fancyhdr}  % Load the package
+% \pagestyle{fancy}      % Use the 'fancy' page style
+% \renewcommand{\headrulewidth}{0pt}
+% \fancyhf{}             % Clear existing header and footer
+% \fancyfoot[C]{\thepage} % Place page number in the center of the footer
+% \fancypagestyle{plain}{
+%   \fancyhf{}             % Clear header and footer for plain style
+%   \renewcommand{\headrulewidth}{0pt} % Remove the top line
+%   \fancyfoot[C]{\thepage} % Center the page number in the footer for chapter pages
+% }
+
+
+
+
 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -103,8 +121,6 @@ Argumentation frameworks (AFs) are a fundamental approach to formalize argumenta
 Since clustering argumentation frameworks is a relatively new concept, algorithmic approaches were not studied thoroughly yet. This thesis investigates the application of Boolean Satisfiability in creating and transforming clustered argumentation frameworks. We develop algorithms for determining if a given clustering is faithful, i.e., does not lead to erroneous conclusions, and to compute faithful clusterings by concretizations (extraction from clusters) until faithfulness is reached. We consider the stable argumentation semantics and the concepts of conflict-free sets and admissible sets. Moreover, we study variants based on Breadth-First-Search (BFS) and Depth-First-Search (DFS) and refinements of our algorithms.
 
 We provide an empirical evaluation of an implementation of our algorithms. The results indicate that depending on the structure and size of the argumentation framework, one procedure performs better than the other. While the refinements do not show improvement for admissible and stable semantics, for conflict-free sets our refinement improves performance. For the two procedures of determining faithfulness or spuriousness, BFS and DFS, both find applicability in terms of runtime performance for all of the examined semantics. While BFS is more efficient on small argumentation frameworks (with a size of up to 10 arguments), DFS outperforms BFS on more complex argumentation frameworks.
-
-
 
 
 
