@@ -20,7 +20,7 @@ ClustArg is coded in Python and includes a `requirements.txt` file for easy inst
 ### 1. Clone this repository:
 
 ```bash
-git clone https://github.com/yourusername/project-repo.git
+git clone https://github.com/p4s3r0/argumentation-framework-clustering.git
 ```
 
 ### 2. Navigate into the project directory:
