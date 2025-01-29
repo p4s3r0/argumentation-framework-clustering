@@ -44,7 +44,58 @@ pip3 install -r requirements.txt
 
 ## Usage
 
+### Generate Semantics Extensions
+
+To generate semantic extensions, the SETS program can be used. By replacing `<sem>` with the appropriate abbreviation (`CF` for conflict-free, `AD` for admissible, or `ST` for stable) and `<inp>` with the input path of the AF, the program can produce the desired semantics.
+
+```bash
+python3 main.py SETS <inp> -s <sem>
+```
+
+
+### Determine Faithfulness/Spuriousness
+
+Use the CHECK program to determine whether the abstract AF is faithful relative to the concrete AF. Replace `<abs>` with the file name of the abstract AF, `<con>` with the file name of the concrete AF and <sem> with the appropriate semantics. This tool enables verification of faithfulness between the abstract and concrete argumentation frameworks.
+
+```bash
+python3 main.py CHECK <abs> -c <con> -s <sem>
+```
+
+### Create Faithful AF
+
+Use the FAITHFUL program to transform a spurious abstract AF <abs> into a faithful AF based on the concrete AF <con>. Additionally, replace <sem> with the corresponding semantics (i.e., `CF`, `AD`, or `ST`) to guide the transformation process. This ensures the resulting abstract AF aligns faithfully with the concrete AF under the specified semantics.
+
+```bash
+python3 main.py FAITHFUL <abs> -c <con> -s <sem>
+```
+
+### Concretize specific Arguments and Generate Faithful AF
+
+Use the CONCRETIZE program to concretize a list of arguments and include additional arguments to ensure faithfulness. Replace `<abs>` with the abstract AF file, `<con>` with the concrete AF file, `<sem>` with the semantic abbreviation (i.e., `CF`, `AD`, or `ST`), and `<args>` with a space-separated list of arguments. This process helps maintain consistency and faithfulness between the abstract and concrete argumentation frameworks.
+
+```bash
+python3 main.py CONCRETIZE <abs> -c <con> -s <sem> -p <args>
+```
+
+
+## Optional Flags
+
+| Flag | Description | Options |
+| -------- | ----------- | ----------- |
+| `f`  | Program to be executed | `SETS`, `CHECK`, `FAITHFUL`, `CONCRETIZE` | 
+| `i`  | Path to the input file | - |
+| `-c` | Defines the path of the file containing the concrete AF | - |
+| `-s` | Defines the semantics | `CF`, `AD`, `ST` |
+| `-a` | Specifies the algorithm | `BFS`, `DFS`|
+| `-p` | Lists the arguments to be concretized separated by spaces | - |
+| `-vis` | Boolean value to visualize AFs | `None` |
+| `-verbose` | Boolean value to print additional computation steps | `None` |
+| `-noref` | Boolean value to disable refinements| `None` |
+| `-exp` |||
+
+
 TODO
+
 
 # References and Other Works
 [Checking the acceptability of a set of arguments](https://www.researchgate.net/publication/221535800_Checking_the_acceptability_of_a_set_of_arguments)
