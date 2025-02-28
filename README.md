@@ -91,13 +91,13 @@ python3 main.py CONCRETIZE <abs> -c <con> -s <sem> -p <args>
 | `-vis` | Boolean value to visualize AFs | `None` |
 | `-verbose` | Boolean value to print additional computation steps | `None` |
 | `-noref` | Boolean value to disable refinements| `None` |
-| `-exp` |||
+| `-exp` | Boolean value to enter Experiment mode| `None`|
 
-
-TODO
 
 
 # References and Other Works
+[Thesis: Computation of Clustered Argumentation Frameworks via Boolean Satisfiability](https://docs.google.com/viewer?url=https://fileserver.p4s3r0.it/personal/documents/MSc-thesis.pdf)
+
 [Checking the acceptability of a set of arguments](https://www.researchgate.net/publication/221535800_Checking_the_acceptability_of_a_set_of_arguments)
 
 [Existential Abstraction on Argumentation Frameworks via Clustering](https://proceedings.kr.org/2021/52/kr2021-0052-saribatur-et-al.pdf)
